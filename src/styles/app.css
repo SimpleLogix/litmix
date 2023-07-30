@@ -1,6 +1,7 @@
 :root{
     --dark: #1e1e1e;
     --light: #fefdfb;
+    --green: #1db954;
 }
 
 body,html{
@@ -16,4 +17,7 @@ body,html{
     align-items: center;
 }
 
-div{height: 100vh;}
+.column{
+    flex-direction: column;
+}
+
