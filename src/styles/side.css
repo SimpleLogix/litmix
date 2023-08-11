@@ -1,0 +1,64 @@
+.logo{
+    color: var(--green);
+    margin: 64px;
+    font-size: 48px;
+}
+
+.icon{
+    width: 5vw;
+    height: 5vw;
+    min-width: 80px;
+    min-height: 80px;
+    border-radius: 50%;
+    border: 2px solid var(--light);
+}
+
+.username{
+    margin-top: 8px;
+    font-size: 24px;
+    letter-spacing: 0.35px;
+}
+
+.join-date{
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    margin-bottom: 96px;
+}
+
+.menu-item-container{
+    width: 80%;
+    height: 80px;
+    border-radius: 16px;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.menu-item-container:hover{
+    background-color: #353537;
+}
+
+.menu-selected{background-color: #353537}
+
+.menu-icon{
+    width: 32px;
+    height: 32px;
+    margin: 16px;
+}
+
+.icon,.menu-icon{
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.info{
+    position: absolute;
+    bottom: 12px;
+    font-size: 12px;
+}
+
+div>span{
+    text-decoration: underline;
+    font-style: italic;
+    font-size: 14px;
+}

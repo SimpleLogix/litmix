@@ -1,23 +1,48 @@
-:root{
+:root {
     --dark: #1e1e1e;
-    --light: #fefdfb;
+    --light: #DCDCDD;
     --green: #1db954;
+    --bg: #242529;
 }
 
-body,html{
+body,
+html {
     margin: 0;
     height: 100vh;
-    background-color: var(--dark);
+    background-color: var(--bg);
     color: var(--light);
 }
 
-.center{
+.center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.column{
+.column {
     flex-direction: column;
 }
 
+.app {
+    display: flex
+}
+
+.border {
+    height: 80vh;
+    border: 1px solid var(--light);
+    align-self: flex-end;
+    opacity: 0.45;
+}
+
+.side-frame {
+    height: 100vh;
+    width: 33.34vw;
+    max-width: 360px;
+    justify-content: flex-start;
+    position: relative;
+}
+
+.main-frame {
+    height: 100vh;
+    width: 100%;
+}

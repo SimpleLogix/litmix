@@ -1,11 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import "./styles/app.css";
-import Home from "./pages/Home";
+import SideFrame from "./components/SideFrame";
+import MainFrame from "./components/MainFrame";
 
 function App() {
-  return <div>
-    <Home></Home>
-  </div>;
+
+  const [page, setPage] = useState("Dashboard");
+
+  return (
+    <div className="app">
+      <SideFrame page={page} setPage={setPage}></SideFrame>
+      <div className="border"></div>
+      <MainFrame page={page}></MainFrame>
+    </div>
+  );
 }
 
 export default App;
