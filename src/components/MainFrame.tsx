@@ -1,4 +1,6 @@
 import React from "react";
+import Dashboard from "../pages/Dashboard";
+import Discover from "../pages/Discover";
 
 type Props = {
   page: string;
@@ -7,7 +9,7 @@ type Props = {
 const MainFrame = ({ page }: Props) => {
   return (
     <div className="main-frame center">
-      {page === "Dashboard" ? <div>Dashboard</div> : <div>Discover</div>}
+      {page === "Dashboard" ? <Dashboard /> : <Discover />}
     </div>
   );
 };

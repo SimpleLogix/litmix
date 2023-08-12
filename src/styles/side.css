@@ -1,10 +1,16 @@
-.logo{
+.side-frame>img {
+    width: 70%;
     color: var(--green);
-    margin: 64px;
+    margin: 40px 64px 96px 64px;
     font-size: 48px;
+    cursor: pointer;
 }
 
-.icon{
+.side-frame>img:hover {
+    width: 72%;
+}
+
+.icon {
     width: 5vw;
     height: 5vw;
     min-width: 80px;
@@ -13,19 +19,19 @@
     border: 2px solid var(--light);
 }
 
-.username{
+.username {
     margin-top: 8px;
     font-size: 24px;
     letter-spacing: 0.35px;
 }
 
-.join-date{
+.join-date {
     font-size: 12px;
     letter-spacing: 0.4px;
     margin-bottom: 96px;
 }
 
-.menu-item-container{
+.menu-item-container {
     width: 80%;
     height: 80px;
     border-radius: 16px;
@@ -34,30 +40,33 @@
     cursor: pointer;
 }
 
-.menu-item-container:hover{
+.menu-item-container:hover {
     background-color: #353537;
 }
 
-.menu-selected{background-color: #353537}
+.menu-selected {
+    background-color: #353537
+}
 
-.menu-icon{
+.menu-icon {
     width: 32px;
     height: 32px;
     margin: 16px;
 }
 
-.icon,.menu-icon{
+.icon,
+.menu-icon {
     background-size: cover;
     background-repeat: no-repeat;
 }
 
-.info{
+.info {
     position: absolute;
     bottom: 12px;
     font-size: 12px;
 }
 
-div>span{
+div>span {
     text-decoration: underline;
     font-style: italic;
     font-size: 14px;

@@ -3,6 +3,11 @@
     --light: #DCDCDD;
     --green: #1db954;
     --bg: #242529;
+    --bg2: #35373D;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body,
@@ -37,7 +42,7 @@ html {
 .side-frame {
     height: 100vh;
     width: 33.34vw;
-    max-width: 360px;
+    max-width: 324px;
     justify-content: flex-start;
     position: relative;
 }
