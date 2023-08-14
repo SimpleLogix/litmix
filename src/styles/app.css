@@ -16,6 +16,7 @@ html {
     height: 100vh;
     background-color: var(--bg);
     color: var(--light);
+    font-family: 'Inter', 'Roboto', sans-serif;
 }
 
 .center {
