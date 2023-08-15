@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/card-one.css";
 import {
   ResponsiveContainer,
@@ -12,44 +12,81 @@ import {
 
 type Props = {};
 
-interface DisplayedData {
+interface displayedData {
   year: string;
-  value: string;
-  cumulativeValue: number;
+  value: number;
+  cumValue: number;
 }
 
-const data = [
-  { name: "2017", uv: 200, cv: 200 },
-  { name: "2018", uv: 300, cv: 500 },
-  { name: "2019", uv: 400, cv: 900 },
-  { name: "2020", uv: 550, cv: 1450 },
-  { name: "2021", uv: 700, cv: 2150 },
-  { name: "2022", uv: 1800, cv: 2950 },
+const SP_DATA: displayedData[] = [
+  { year: "2017", value: 200, cumValue: 200 },
+  { year: "2018", value: 300, cumValue: 500 },
+  { year: "2019", value: 400, cumValue: 900 },
+  { year: "2020", value: 550, cumValue: 1450 },
+  { year: "2021", value: 700, cumValue: 2150 },
+  { year: "2022", value: 1800, cumValue: 2950 },
 ];
 
 const CardOne = (props: Props) => {
-  const [displayedData, setDisplayedData] = useState(data[data.length - 1].cv);
+  const [displayedData, setDisplayedData] = useState<displayedData>(
+    SP_DATA[SP_DATA.length - 1]
+  );
 
-  // Tooltip on Hover
+  // rechartrs tooltip is not a react component,
+  // so I made this janky workaround
   const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      setDisplayedData(payload[0].value);
-      console.log(`UV Value: ${payload[0].value}`);
-    }
+    useEffect(() => {
+      if (active && payload && payload.length) {
+        setDisplayedData(payload[0].payload);
+      } else {
+        setDisplayedData(SP_DATA[SP_DATA.length - 1]);
+      }
+    }, [active, payload]);
+
     return null;
   };
 
   return (
     <div className="card stream-time-card column">
       <h3>Total Stream Time</h3>
-      <p>{displayedData}</p>
+      <div className="card-one-displayed-data ">
+        <p className="stream-year-total">
+          {displayedData.value}
+          <span>
+            mins <span>({displayedData.year})</span>
+          </span>
+        </p>
+        <p className="stream-cum-total">
+          {displayedData.cumValue}
+          <span>mins</span>
+        </p>
+      </div>
       <div className="stream-time-line-container center">
         <ResponsiveContainer width="90%" height="100%">
-          <LineChart data={data}>
-            <Line type="monotone" dataKey="uv" stroke="#8884d8" />
-            <Line type="monotone" dataKey="cv" stroke="#82ca9d" />
+          <LineChart data={SP_DATA}>
             <CartesianGrid stroke="#ccc" vertical={false} />
-            <XAxis dataKey="name" axisLine={false} tickLine={false} />
+            <Line
+              type="monotone"
+              dataKey="value"
+              stroke="#d8f9db"
+              strokeWidth={2.5}
+              strokeOpacity={0.8}
+              dot={{ fill: "#d8f9db", strokeWidth: 2, stroke: "#d8f9db" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="cumValue"
+              stroke="#3c4a3e"
+              strokeWidth={2.5}
+              strokeOpacity={0.8}
+              dot={{ fill: "#3c4a3e", strokeWidth: 2, stroke: "#3c4a3e" }}
+            />
+            <XAxis
+              dataKey="year"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fill: "#DCDCDD" }}
+            />
             <YAxis hide />
             <Tooltip content={<CustomTooltip />} />
           </LineChart>

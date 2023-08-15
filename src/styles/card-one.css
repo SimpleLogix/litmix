@@ -7,16 +7,38 @@
 .stream-time-card>h3 {
     padding-left: 24px;
     margin-bottom: 0;
-    letter-spacing: 0.25px;
+    letter-spacing: 0.35px;
+}
+.card-one-displayed-data{
+    position: absolute;
+    top: 52px;
+    left: 52px;
 }
 
-.stream-time-card>p {
-    position: absolute;
+.card-one-displayed-data>p {
+    height: 32px;
     font-size: 32px;
     font-weight: 700;
     letter-spacing: 0.5px;
-    top: 52px;
-    left: 52px;
+    margin: 0;
+}
+
+.stream-year-total{
+    color: var(--forest)
+}
+.stream-cum-total{
+    color: var(--mint)
+}
+
+.card-one-displayed-data>p>span {
+    font-size: 16px;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.25px;
+    margin: 0;
+}
+.card-one-displayed-data>p>span>span{
+    font-size: 10px;
 }
 
 .stream-time-line-container{
