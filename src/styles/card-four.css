@@ -1,0 +1,65 @@
+.card-four {
+    position: relative;
+    background-color: var(--bg2);
+}
+
+.genres-container {
+    width: 50%;
+    height: 100%;
+    gap: 8px;
+    user-select: none;
+}
+
+.genres-container>div {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 8px;
+}
+
+.square {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+}
+
+.selected-square {
+    outline: 1px solid var(--light-opaque);
+}
+
+.genre-text {}
+
+.selected-genre-text {
+    font-weight: 600;
+}
+
+.card-four>h3 {
+    position: absolute;
+    top: 4px;
+    left: 24px;
+}
+
+.pie-chart{
+    width: 75%;
+    height: 100%;
+    position: relative;
+}
+
+.genre-text-value {
+    font-size: 36px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.genre-text-value>div:nth-child(2){
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--mint);
+}
+
+.genre-text-value>div>span{
+    font-size: 20px;
+    font-style: normal;
+    text-decoration: none;
+}

@@ -9,6 +9,7 @@ import {
   YAxis,
   Tooltip,
 } from "recharts";
+import { stringifyNum } from "../../utils/utils";
 
 type Props = {};
 
@@ -51,14 +52,15 @@ const CardOne = (props: Props) => {
       <h3>Total Stream Time</h3>
       <div className="card-one-displayed-data ">
         <p className="stream-year-total">
-          {displayedData.value}
+          {stringifyNum(displayedData.value)}
           <span>
+            {" "}
             mins <span>({displayedData.year})</span>
           </span>
         </p>
         <p className="stream-cum-total">
-          {displayedData.cumValue}
-          <span>mins</span>
+          {stringifyNum(displayedData.cumValue)}
+          <span> mins</span>
         </p>
       </div>
       <div className="stream-time-line-container center">

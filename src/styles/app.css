@@ -1,6 +1,7 @@
 :root {
     --dark: #1e1e1e;
-    --light: #DCDCDD;
+    --light: #dcdcdd;
+    --light-opaque: rgba(220, 220, 221, 0.5);
     --green: #1db954;
     --bg: #242529;
     --bg2: #35373D;
