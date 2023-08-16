@@ -5,6 +5,7 @@
     --green: #1db954;
     --bg: #242529;
     --bg2: #35373D;
+    --bg-opaque: rgba(36, 37, 41, 0.2);
     --forest: #3c4a3e;
     --mint: #d8f9db;
 }

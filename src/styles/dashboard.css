@@ -91,13 +91,6 @@
     background-repeat: no-repeat;
 }
 
-.card-three {
-    background-color: var(--light);
-    color: var(--bg);
-}
-
-
-
 .card-five {
     position: relative;
 }

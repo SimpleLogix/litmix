@@ -75,6 +75,7 @@ const CardFour = (props: Props) => {
       <div className="genres-container center column">
         {GENRES.map((genre, index) => (
           <div
+            key={`genre-${index}`}
             className="center"
             onMouseEnter={() => handleMouseEnterCell(genre, index)}
           >
