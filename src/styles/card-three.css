@@ -1,12 +1,18 @@
 .card-three {
+    position: relative;
     background-color: var(--light);
     color: var(--bg);
     justify-content: flex-start;
 }
 
 .card-three-header {
+    display: flex;
+    position: absolute;
+    width: 60%;
     gap: 16px;
-    margin-top: 12px;
+    top: 12px;
+    left: 23%;
+    color: var(--dark);
 }
 
 .card-three-body {
@@ -30,7 +36,6 @@
 .heatmap-breakdown {
     width: 40%;
     height: 100%;
-    border: 1px solid blue;
 }
 
 /** ------ */
@@ -41,7 +46,6 @@
     grid-template-columns: repeat(7, 14.2857%);
     grid-template-rows: repeat(5, 20%);
     border: 1px solid black;
-    border-bottom: none;
 }
 
 .heatmap-row {
@@ -49,27 +53,30 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    margin-right: -1px;
 }
 
 
 .heatmap-row>div {
-    border-right: none;
-    border-left: none;
+    border-right: 0;
 }
 
-.heatmap-row:last-child>div {
-    border-bottom: none;
+
+.heatmap-row>div:last-child {
+    border-right: 1px solid black;
 }
 
-.heatmap-row>div:first-child {
-    border-left: 1px solid black;
-}
 
 .heatmap-day {
     width: 100%;
     height: 100%;
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
+    border: 1px solid transparent;
+}
+
+.heatmap-day:hover {
+    cursor: pointer;
+    border: 1px solid var(--forest);
+    
 }
 
 .heatmap-row-wrapper {
@@ -78,11 +85,12 @@
 
 .heatmap-row-header {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
+    margin: 0 8%;
 }
 
 .heatmap-row-header>span {
-    font-size: 12px;
+    font-size: 11.25px;
     text-decoration: none;
 }
