@@ -7,17 +7,20 @@ import CardThree from "../components/dashboard/CardThree";
 import CardFour from "../components/dashboard/CardFour";
 import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
+import { heatmapDataType } from "../utils/globals";
 
-type Props = {};
+type Props = {
+  heatmapData: heatmapDataType;
+};
 
-const Dashboard = (props: Props) => {
+const Dashboard = ({ heatmapData }: Props) => {
   return (
     <div className="dashboard-root column">
       <Header title="Statistics" action="Upload"></Header>
       <div className="dashboard-body">
         <CardOne />
         <CardTwo />
-        <CardThree />
+        <CardThree heatmapData={heatmapData} />
         <CardFour />
         <CardFive />
         <CardSix />

@@ -1,38 +1,4 @@
-const MONTHS: Record<number, string> = {
-    0: 'Jan',
-    1: 'Feb',
-    2: 'Mar',
-    3: 'Apr',
-    4: 'May',
-    5: 'June',
-    6: 'July',
-    7: 'Aug',
-    8: 'Sept',
-    9: 'Oct',
-    10: 'Nov',
-    11: 'Dec',
-}
-
-const ColorMap: Record<number, string> = {
-
-    0: "#fff",
-    0.1: "#c5f4d1",
-    0.2: "#b2efc7",
-    0.3: "#9eeabc",
-    0.4: "#8be5b2",
-    0.5: "#78e0a8",
-    0.6: "#64dba0",
-    0.7: "#51d095",
-    0.8: "#3ec58b",
-    0.9: "#2bbf81",
-    1: "#18ba77",
-    404: "transparent",
-};
-
-export interface dateData {
-    date: string;
-    count: number;
-}
+import { ColorMap, HeatmapData, MONTHS, heatmapDataType } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -66,18 +32,17 @@ export const getColor = (num: number) => {
     return color || ColorMap[0];
 }
 
-// raw data type of heat map
-export type heatmapDataType = Map<string, Map<string, Map<string, number>>>;
-
 export function createDateValues(): heatmapDataType {
     const sample: heatmapDataType = new Map();
-
-    const date = new Date(2016, 0, 1);
-    for (let i = 0; i < 365; i++) {
+    let yearD = 2006;
+    let date = new Date(yearD, 0, 1);
+    for (let i = 0; i < 365 * 18; i++) {
         const year = date.getUTCFullYear().toString();
         const month = String(date.getUTCMonth() + 1).padStart(2, '0');
         const day = String(date.getUTCDate()).padStart(2, '0');
-        const count = Math.random();
+        const colorValue = Math.random();
+        const songCount = Math.floor(colorValue * 100);
+        const minsStreamed = Math.floor(Math.random() * 100000);
 
         let yearMap = sample.get(year);
         if (!yearMap) {
@@ -85,47 +50,38 @@ export function createDateValues(): heatmapDataType {
             sample.set(year, yearMap);
         }
 
-        let monthRecord = yearMap.get(month);
-        if (!monthRecord) {
-            monthRecord = new Map();
-            yearMap.set(month, monthRecord);
+        let monthMap = yearMap.get(month);
+        if (!monthMap) {
+            monthMap = new Map();
+            yearMap.set(month, monthMap);
         }
 
-        monthRecord.set(day, count);
+        const heatmapData: HeatmapData = { date: `${year}-${month}-${day}`, songCount, minsStreamed, colorValue };
+        monthMap.set(day, heatmapData);
 
         date.setUTCDate(date.getUTCDate() + 1);
     }
-
-    console.log(sample.get("2016"));
-
     return sample;
-
 }
 
 
+
 // filter heatmap data based on month range
-export const filterHeatmapData = (values: heatmapDataType, startDate: Date): dateData[] => {
+export const filterHeatmapData = (values: heatmapDataType, startDate: Date): HeatmapData[] => {
     return Array.from(values.keys())
         .filter((year) => year === startDate.getFullYear().toString())
         .flatMap((year) => {
             const endDate = startDate.getMonth() + 3;
             return Array.from(values.get(year)?.keys() || [])
                 .filter((month) => parseInt(month) >= (startDate.getMonth() + 1) && parseInt(month) <= (endDate))
-                .flatMap((month) => {
-                    // Use Array.from and .entries() to iterate through Map
-                    return Array.from(values.get(year)?.get(month)?.entries() || []).map(
-                        ([day, count]) => ({
-                            date: `${year}-${month}-${day}`,
-                            count,
-                        })
-                    );
-                });
+                .flatMap((month) => Array.from(values.get(year)?.get(month)?.values() || []));
         });
 };
 
+
 // pad up the non - existent days
-export const padMonthData = (values: dateData[], startDate: Date) => {
-    const paddedValues: dateData[] = [];
+export const padMonthData = (values: HeatmapData[], startDate: Date) => {
+    const paddedValues: HeatmapData[] = [];
     const startingMonth = startDate.getMonth(); // Start with the provided month
     let dayIndex = 0;
 
@@ -136,7 +92,7 @@ export const padMonthData = (values: dateData[], startDate: Date) => {
 
         // Fill in empty days before the first day of the month
         for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
-            paddedValues.push({ date: "", count: 404 }); // empty dateData
+            paddedValues.push({ date: "", colorValue: 404, minsStreamed: -1, songCount: -1 }); // empty dateData
         }
 
         // Fill in the actual data for the month
@@ -147,7 +103,7 @@ export const padMonthData = (values: dateData[], startDate: Date) => {
 
         // Fill in empty days after the last day of the month to reach 35
         while (paddedValues.length < (monthIndex + 1) * 35) {
-            paddedValues.push({ date: "", count: 404 }); // empty dateData
+            paddedValues.push({ date: "", colorValue: 404, minsStreamed: -1, songCount: -1 }); // empty dateData
         }
     }
 

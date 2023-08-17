@@ -70,18 +70,18 @@ const CardOne = (props: Props) => {
             <Line
               type="monotone"
               dataKey="value"
-              stroke="#d8f9db"
-              strokeWidth={2.5}
-              strokeOpacity={0.8}
-              dot={{ fill: "#d8f9db", strokeWidth: 2, stroke: "#d8f9db" }}
-            />
-            <Line
-              type="monotone"
-              dataKey="cumValue"
               stroke="#3c4a3e"
               strokeWidth={2.5}
               strokeOpacity={0.8}
               dot={{ fill: "#3c4a3e", strokeWidth: 2, stroke: "#3c4a3e" }}
+            />
+            <Line
+              type="monotone"
+              dataKey="cumValue"
+              stroke="#d8f9db"
+              strokeWidth={2.5}
+              strokeOpacity={0.8}
+              dot={{ fill: "#d8f9db", strokeWidth: 2, stroke: "#d8f9db" }}
             />
             <XAxis
               dataKey="year"

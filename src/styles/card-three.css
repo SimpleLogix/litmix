@@ -6,12 +6,11 @@
 }
 
 .card-three-header {
-    display: flex;
+    align-self: flex-start;
     position: absolute;
-    width: 60%;
+    width: 64%;
     gap: 16px;
     top: 12px;
-    left: 23%;
     color: var(--dark);
 }
 
@@ -36,6 +35,9 @@
 .heatmap-breakdown {
     width: 40%;
     height: 100%;
+    margin-top: 12%;
+    display: flex;
+    align-items: flex-start;
 }
 
 /** ------ */
@@ -71,10 +73,11 @@
     width: 100%;
     height: 100%;
     border: 1px solid transparent;
+    cursor: pointer;
 }
 
-.heatmap-day:hover {
-    cursor: pointer;
+.heatmap-day:hover,
+.selected-day {
     border: 1px solid var(--forest);
     
 }
@@ -93,4 +96,32 @@
 .heatmap-row-header>span {
     font-size: 11.25px;
     text-decoration: none;
+}
+
+.card-three-header>img{
+    user-select: none;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.heatmap-breakdown>p{
+    margin: 0;
+}
+
+.heatmap-data-date{
+    font-size: 24px;
+    font-weight: bolder;
+}
+
+.heatmap-data-color{
+    font-size: 12px;
+    font-weight: 100;
+    font-style: italic;
+    margin-left: 4px;
+}
+
+.heatmap-breakdown>div>img{
+    width: 12px;
+    height: 12px ;
 }
