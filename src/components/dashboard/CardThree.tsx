@@ -23,6 +23,7 @@ const CardThree = ({ heatmapData }: Props) => {
     { start: `${year}-10-02`, end: `${year + 1}-01-01` },
   ];
 
+  //? Handlers
   const cellClickCallback = (
     date: string,
     colorValue: number,
@@ -43,22 +44,55 @@ const CardThree = ({ heatmapData }: Props) => {
     setYear(year + 1);
   };
 
+  const HeatDiff = () => (
+    <div className="center mins-super">
+      {selectedDate?.colorValue === 404 ? null : selectedDate?.colorValue >=
+        0.5 ? (
+        <img
+          className="heatmap-diff-img"
+          src={`${process.env.PUBLIC_URL}/assets/up.svg`}
+          alt=""
+        />
+      ) : (
+        <img
+          className="heatmap-diff-img"
+          src={`${process.env.PUBLIC_URL}/assets/down.svg`}
+          alt=""
+        />
+      )}
+      <p
+        className="heatmap-data-color"
+        style={{
+          color: `${
+            selectedDate?.colorValue === 404
+              ? "transparent"
+              : selectedDate?.colorValue >= 0.5
+              ? "#27ae60"
+              : "#c0392b"
+          }`,
+        }}
+      >
+        {calculateHeatDifference(selectedDate?.colorValue)}
+      </p>
+    </div>
+  );
+
   return (
-    <div className="card center column card-three">
-      <div className="card-three-header center">
-        <img
-          src={`${process.env.PUBLIC_URL}/assets/left.png`}
-          alt="<"
-          onClick={handleBackClick}
-        />
-        <div>{year}</div>
-        <img
-          src={`${process.env.PUBLIC_URL}/assets/right.png`}
-          alt=">"
-          onClick={handleForwardClick}
-        />
-      </div>
-      <div className="card-three-body center">
+    <div className="card center card-three">
+      <div className="heatmap-wrapper center">
+        <div className="card-three-header center">
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/left.png`}
+            alt="<"
+            onClick={handleBackClick}
+          />
+          <div>{year}</div>
+          <img
+            src={`${process.env.PUBLIC_URL}/assets/right.png`}
+            alt=">"
+            onClick={handleForwardClick}
+          />
+        </div>
         <div className="heatmap-grid center">
           {dateRanges.map((range) => {
             const filteredValues = filterHeatmapData(
@@ -76,39 +110,29 @@ const CardThree = ({ heatmapData }: Props) => {
             );
           })}
         </div>
-        <div className="heatmap-breakdown column">
-          <div className="center">
-            <p className="heatmap-data-date">
-              {formatDate(selectedDate?.date)}
-            </p>
-            {selectedDate?.colorValue ===
-            404 ? null : selectedDate?.colorValue >= 0.5 ? (
-              <img src={`${process.env.PUBLIC_URL}/assets/up.svg`} alt="" />
-            ) : (
-              <img src={`${process.env.PUBLIC_URL}/assets/down.svg`} alt="" />
-            )}
-          </div>
-          <div className="center">
-            <p className="heatmap-data-streamed">
+      </div>
+
+      <div className="heatmap-breakdown center column">
+        <p className="heatmap-data-date">{formatDate(selectedDate?.date)}</p>
+
+        <div className="heatmap-data-wrapper center column">
+          <div className="mins-super-wrapper">
+            <p className="bold-text">
               {selectedDate?.minsStreamed.toLocaleString()}
             </p>
-            <div
-              className="heatmap-data-color"
-              style={{
-                color: `${
-                  selectedDate?.colorValue === 404
-                    ? "transparent"
-                    : selectedDate?.colorValue >= 0.5
-                    ? "green"
-                    : "red"
-                }`,
-              }}
-            >
-              {calculateHeatDifference(selectedDate?.colorValue)}
-            </div>
+            <p className="thin-text">mins</p>
+            <HeatDiff />
           </div>
 
-          <p className="heatmap-data-song-count">{selectedDate?.songCount}</p>
+          <div>
+            <p className="bold-text">{selectedDate?.songCount}</p>
+            <p className="thin-text">plays</p>
+          </div>
+
+          <div>
+            <p className="bold-text">{selectedDate?.songCount / 2}</p>
+            <p className="thin-text">unique</p>
+          </div>
         </div>
       </div>
     </div>
@@ -124,6 +148,6 @@ const formatDate = (date: string): string => {
 
 const calculateHeatDifference = (colorValue: number): string => {
   if (colorValue === 404) return "404";
-  const diff = (colorValue * 100 - 50).toFixed(1);
-  return parseFloat(diff) >= 0 ? `+${diff}%` : `${diff}%`;
+  const diff = Math.abs(colorValue * 100 - 50).toFixed(1);
+  return parseFloat(diff) >= 0 ? `${diff}%` : `${diff}%`;
 };

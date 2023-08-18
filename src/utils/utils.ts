@@ -42,7 +42,7 @@ export function createDateValues(): heatmapDataType {
         const day = String(date.getUTCDate()).padStart(2, '0');
         const colorValue = Math.random();
         const songCount = Math.floor(colorValue * 100);
-        const minsStreamed = Math.floor(Math.random() * 100000);
+        const minsStreamed = Math.floor(Math.random() * 100);
 
         let yearMap = sample.get(year);
         if (!yearMap) {
