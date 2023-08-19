@@ -24,6 +24,8 @@ const CalendarHeatMap = ({
   const months = getMonths(startDate);
   const paddedValues = padMonthData(values, startDate);
 
+  
+
   // builds a row of 3 months based on the given monthValues
   const MonthHeatMap = ({ monthValues }: { monthValues: HeatmapData[] }) => (
     <div className="heatmap">

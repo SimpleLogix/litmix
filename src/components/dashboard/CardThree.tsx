@@ -16,6 +16,9 @@ const CardThree = ({ heatmapData }: Props) => {
   const [selectedDate, setSelectedDate] = useState<HeatmapData>(
     heatmapData.get("2016")?.get("01")?.get("01")!
   );
+
+  //? Heatmap is just a sigle row of 3 months
+  //? so we need to build 4 rows of 3 months each
   const dateRanges = [
     { start: `${year}-01-02`, end: `${year}-04-01` },
     { start: `${year}-04-02`, end: `${year}-07-01` },
@@ -124,15 +127,19 @@ const CardThree = ({ heatmapData }: Props) => {
             <HeatDiff />
           </div>
 
-          <div>
+          <div className="center column">
             <p className="bold-text">{selectedDate?.songCount}</p>
             <p className="thin-text">plays</p>
           </div>
 
-          <div>
+          <div className="center column">
             <p className="bold-text">{selectedDate?.songCount / 2}</p>
             <p className="thin-text">unique</p>
           </div>
+
+          <div className="heatmap-divider"></div>
+
+          <p className="heatmap-data-top-song thin-text">Shut up my mom's calling</p>
         </div>
       </div>
     </div>
