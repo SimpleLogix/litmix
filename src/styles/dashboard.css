@@ -66,8 +66,6 @@
     background-color: rgba(65, 67, 75, 0.5);
 }
 
-.dashboard-header-delete-button>img{}
-
 .dashboard-body {
     height: 100%;
     width: 100%;
@@ -76,6 +74,7 @@
     grid-template-columns: repeat(3, 33.334%);
     grid-template-rows: repeat(2, 50%);
     gap: 16px;
+
 }
 
 .card{
@@ -87,16 +86,8 @@
 .card-two,
 .card-background{
     background-size: cover;
-    background-position: 0;
     background-repeat: no-repeat;
-}
-
-.card-five {
-    position: relative;
-}
-
-.card-five>.content {
-    position: relative;
+    background-position: center;
 }
 
 .card-background {
@@ -108,4 +99,3 @@
     border-radius: 36px;
     filter: blur(3px); 
 }
-

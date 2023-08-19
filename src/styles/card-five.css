@@ -1,0 +1,77 @@
+.card-five {
+    position: relative;
+}
+
+.card-five>.content {
+    height: 100%;
+    width: 100%;
+    position: relative;
+    justify-content: space-between;
+}
+
+.arrow-button-container,
+.arrow-button-container-right {
+    width: 48px;
+    height: 100%;
+    cursor: pointer;
+}
+
+.arrow-button-container:hover,
+.arrow-button-container-right:hover {
+    background-color: var(--bg-opaque);
+}
+
+.arrow-button-container {
+    padding-left: 2px;
+    border-radius: 36px 0 0 36px;
+}
+
+.arrow-button-container-right {
+    padding-right: 2px;
+    border-radius: 0 36px 36px 0;
+}
+
+.artist-data {
+    width: 100%;
+    padding-bottom: 36px;
+    align-self: flex-end;
+    align-items: flex-start;
+    justify-content: flex-start;
+}
+
+.artist-data>p,
+.artist-data>div>p {
+    margin: 0
+}
+
+.artist-data>div {
+    gap: 8px;
+}
+
+.artist-name {
+    color: var(--light);
+    letter-spacing: 0.8px;
+    font-size: 32px;
+}
+
+.top-artist-track {
+    font-style: italic;
+}
+
+.star {
+    width: 16px;
+}
+
+.artist-mins-streamed,
+.artist-play-count,
+.artist-discovered {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.artist-mins-streamed>span,
+.artist-play-count>span,
+.artist-discovered>span {
+    font-weight: 100;
+    font-style: italic;
+}
