@@ -1,52 +1,32 @@
 import React, { useState } from "react";
 import "../../styles/card-five.css";
+import { TopArtistsData } from "../../utils/globals";
 
-type Props = {};
+type Props = {
+  topArtistsData: TopArtistsData[];
+};
 
-interface displayedData {
-  artistImg: string;
-  name: string;
-  minsStreamed: number;
-  playCount: number;
-  topTrack: string;
-  discovered: string;
-}
-
-const data: displayedData[] = [
-  {
-    artistImg: "dae.jpg",
-    name: "Dae Zhen",
-    minsStreamed: 1337,
-    playCount: 420,
-    topTrack: "Lately (Drugs)",
-    discovered: "Aug 19, 2023",
-  },
-  {
-    artistImg: "zervas.jpg",
-    name: "Arizona Zervas",
-    minsStreamed: 2005,
-    playCount: 999,
-    topTrack: "Roxanne",
-    discovered: "Aug 19, 2023",
-  },
-];
-
-const CardFive = (props: Props) => {
+const CardFive = ({ topArtistsData }: Props) => {
   const [artistIdx, setArtistIdx] = useState<number>(0);
-  const [selectedArtist, setSelectedArtist] = useState<displayedData>(
-    data[artistIdx]
+  const [selectedArtist, setSelectedArtist] = useState<TopArtistsData>(
+    topArtistsData[artistIdx]
   );
 
   const handleBackClick = () => {
-    const newIdx = artistIdx === 0 ? data.length - 1 : artistIdx - 1;
-    setSelectedArtist(data[newIdx]);
+    const newIdx = artistIdx === 0 ? topArtistsData.length - 1 : artistIdx - 1;
+    setSelectedArtist(topArtistsData[newIdx]);
     setArtistIdx(newIdx);
   };
 
   const handleForwardClick = () => {
-    const newIdx = artistIdx === data.length - 1 ? 0 : artistIdx + 1;
-    setSelectedArtist(data[newIdx]);
+    const newIdx = artistIdx === topArtistsData.length - 1 ? 0 : artistIdx + 1;
+    setSelectedArtist(topArtistsData[newIdx]);
     setArtistIdx(newIdx);
+  };
+
+  const handleDotClick = (e: number) => {
+    setSelectedArtist(topArtistsData[e]);
+    setArtistIdx(e);
   };
 
   return (
@@ -66,8 +46,8 @@ const CardFive = (props: Props) => {
           <img src={`${process.env.PUBLIC_URL}/assets/back.svg`} alt="" />
         </div>
 
-        <div className="artist-data center column">
-          <p className="bold-text outlined-text artist-name">
+        <div className="artist-data center column outlined-text">
+          <p className="bold-text artist-name">
             {selectedArtist.name}
           </p>
 
@@ -98,6 +78,15 @@ const CardFive = (props: Props) => {
         >
           <img src={`${process.env.PUBLIC_URL}/assets/forward.svg`} alt="" />
         </div>
+      </div>
+
+      <div className="page-dots center">
+        {topArtistsData.map((_, i) => (
+          <div
+            className={`page-dot ${i === artistIdx ? "selected-dot" : ""}`}
+            onClick={() => handleDotClick(i)}
+          ></div>
+        ))}
       </div>
     </div>
   );

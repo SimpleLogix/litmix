@@ -9,6 +9,7 @@
     --forest: #3c4a3e;
     --forest-opaque: rgba(60, 74, 62, 0.65);
     --mint: #d8f9db;
+    --mint-opaque: rgba(216, 249, 219, 0.5);
 }
 
 * {
@@ -62,8 +63,8 @@ html {
 
 .outlined-text {
     text-shadow:
-        -1px -1px 0 #000,
-        1px -1px 0 #000,
-        -1px 1px 0 #000,
-        1px 1px 0 #000;
+        -0.5px -0.5px 0 #000,
+        0.5px -0.5px 0 #000,
+        -0.5px 0.5px 0 #000,
+        0.5px 0.5px 0 #000;
 }

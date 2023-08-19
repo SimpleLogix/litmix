@@ -75,3 +75,24 @@
     font-weight: 100;
     font-style: italic;
 }
+
+.page-dots{
+    position: absolute;
+    bottom: 0;
+    width: 72%;
+    height: 24px;
+    gap: 8px;
+}
+
+.page-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--bg-opaque);
+    cursor: pointer;
+    outline: 1px solid var(--mint)
+}
+
+.selected-dot{
+    background-color: var(--mint-opaque);
+}

@@ -3,7 +3,15 @@ export interface HeatmapData {
     songCount: number; // The total number of songs played on that date
     minsStreamed: number; // The total milliseconds streamed on that date
     colorValue: number; // A percentage used for determining the color (e.g., 0 to 100)
+}
 
+export interface TopArtistsData {
+    artistImg: string;
+    name: string;
+    minsStreamed: number;
+    playCount: number;
+    topTrack: string;
+    discovered: string;
 }
 
 // raw data type of heat map
