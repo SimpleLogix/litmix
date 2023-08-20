@@ -183,3 +183,8 @@
     border: 1px solid var(--forest-opaque);
     margin: 16px 0;
 }
+
+.card-three-header>div{
+    font-size: 18px;
+    color: var(--dark);
+}

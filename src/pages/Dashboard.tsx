@@ -7,23 +7,22 @@ import CardThree from "../components/dashboard/CardThree";
 import CardFour from "../components/dashboard/CardFour";
 import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
-import { TopArtistsData, heatmapDataType } from "../utils/globals";
+import { Data, TopArtistsData, heatmapDataType } from "../utils/globals";
 
 type Props = {
-  heatmapData: heatmapDataType;
-  topArtistsData: TopArtistsData[];
+  data: Data;
 };
 
-const Dashboard = ({ heatmapData, topArtistsData }: Props) => {
+const Dashboard = ({ data }: Props) => {
   return (
     <div className="dashboard-root column">
-      <Header title="Statistics" action="Upload"></Header>
+      <Header title="" action="Upload"></Header>
       <div className="dashboard-body">
         <CardOne />
-        <CardTwo />
-        <CardThree heatmapData={heatmapData} />
+        <CardTwo hourlyData={data.hourlyData} />
+        <CardThree heatmapData={data.heatmapData} />
         <CardFour />
-        <CardFive topArtistsData={topArtistsData} />
+        <CardFive topArtistsData={data.topArtistsData} />
         <CardSix />
       </div>
     </div>

@@ -14,6 +14,20 @@ export interface TopArtistsData {
     discovered: string;
 }
 
+export interface HourlyData {
+    hour: string;
+    percent: number;
+    songCount: number;
+    minsStreamed: number;
+    idx: number;
+  }
+
+  export interface Data {
+    heatmapData: heatmapDataType;
+    topArtistsData: TopArtistsData[];
+    hourlyData: HourlyData[];
+  }
+
 // raw data type of heat map
 // {'2016' : {
 //      '01' : {
