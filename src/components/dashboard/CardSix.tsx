@@ -1,18 +1,20 @@
 import React, { useState } from "react";
 import "../../styles/card-six.css";
+import { WeekdayData } from "../../utils/globals";
 
-type Props = {};
+type Props = {
+  weekdayData: WeekdayData[];
+};
 
-const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
+//* Card
 const DayOfWeek = ({
   day,
   isActive,
   handleDayClick,
 }: {
-  day: weekdayData;
+  day: WeekdayData;
   isActive: boolean;
-  handleDayClick: (day: weekdayData) => void;
+  handleDayClick: (day: WeekdayData) => void;
 }) => (
   <div
     className={`center weekday-box ${isActive ? "active-weekday" : ""}`}
@@ -22,30 +24,10 @@ const DayOfWeek = ({
   </div>
 );
 
-interface weekdayData {
-  day: string;
-  percent: number;
-  mostActive: string;
-}
+const CardSix = ({ weekdayData }: Props) => {
+  const [selectedDay, setSelectedDay] = useState<WeekdayData>(weekdayData[3]);
 
-const generateWeekdayData = (): weekdayData[] => {
-  const data: weekdayData[] = [];
-  for (let i = 0; i < 7; i++) {
-    data.push({
-      day: weekdays[i],
-      percent: Math.floor(Math.random() * 100),
-      mostActive: `${Math.floor(Math.random() * 12)}pm`,
-    });
-  }
-  return data;
-};
-
-const weekdayData = generateWeekdayData();
-
-const CardSix = (props: Props) => {
-  const [selectedDay, setSelectedDay] = useState<weekdayData>(weekdayData[3]);
-
-  const handleDayClick = (day: weekdayData) => {
+  const handleDayClick = (day: WeekdayData) => {
     setSelectedDay(day);
   };
 
@@ -67,7 +49,7 @@ const CardSix = (props: Props) => {
           <div className="thin-text weekdays-data-time">
             {selectedDay.mostActive}
           </div>
-          <div>Most Active</div>
+          <div className="mint">Most Active</div>
         </div>
       </div>
     </div>

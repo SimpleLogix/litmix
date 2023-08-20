@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./styles/app.css";
 import SideFrame from "./components/SideFrame";
-import { createDateValues } from "./utils/utils";
+import { createDateValues, generateWeekdayData } from "./utils/utils";
 import Dashboard from "./pages/Dashboard";
 import Discover from "./pages/Discover";
 import { Data, HourlyData, TopArtistsData } from "./utils/globals";
@@ -12,6 +12,7 @@ function App() {
   //? Fetch data
   // ? USing dummy data for now
   const heatmapData = createDateValues();
+  const weekdayData = generateWeekdayData();
 
   const topArtistsData: TopArtistsData[] = [
     {
@@ -94,6 +95,7 @@ function App() {
     heatmapData,
     topArtistsData,
     hourlyData,
+    weekdayData,
   };
 
   return (
@@ -103,13 +105,7 @@ function App() {
       <div className="border"></div>
 
       <div className="main-frame center">
-        {page === "Dashboard" ? (
-          <Dashboard
-            data={data}
-          />
-        ) : (
-          <Discover />
-        )}
+        {page === "Dashboard" ? <Dashboard data={data} /> : <Discover />}
       </div>
     </div>
   );

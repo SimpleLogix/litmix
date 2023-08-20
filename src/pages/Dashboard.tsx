@@ -7,7 +7,7 @@ import CardThree from "../components/dashboard/CardThree";
 import CardFour from "../components/dashboard/CardFour";
 import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
-import { Data, TopArtistsData, heatmapDataType } from "../utils/globals";
+import { Data } from "../utils/globals";
 
 type Props = {
   data: Data;
@@ -23,7 +23,7 @@ const Dashboard = ({ data }: Props) => {
         <CardThree heatmapData={data.heatmapData} />
         <CardFour />
         <CardFive topArtistsData={data.topArtistsData} />
-        <CardSix />
+        <CardSix weekdayData={data.weekdayData}/>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { ColorMap, HeatmapData, MONTHS, heatmapDataType } from "./globals";
+import { ColorMap, HeatmapData, MONTHS, WeekdayData, heatmapDataType, weekdays } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -32,6 +32,7 @@ export const getColor = (num: number) => {
     return color || ColorMap[0];
 }
 
+//* generator
 export function createDateValues(): heatmapDataType {
     const sample: heatmapDataType = new Map();
     let yearD = 2006;
@@ -64,7 +65,18 @@ export function createDateValues(): heatmapDataType {
     return sample;
 }
 
-
+//* generator
+export const generateWeekdayData = (): WeekdayData[] => {
+    const data: WeekdayData[] = [];
+    for (let i = 0; i < 7; i++) {
+        data.push({
+            day: weekdays[i],
+            percent: Math.floor(Math.random() * 100),
+            mostActive: `${Math.floor(Math.random() * 12)}pm`,
+        });
+    }
+    return data;
+};
 
 // filter heatmap data based on month range
 export const filterHeatmapData = (values: heatmapDataType, startDate: Date): HeatmapData[] => {

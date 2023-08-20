@@ -22,10 +22,17 @@ export interface HourlyData {
     idx: number;
   }
 
+export interface WeekdayData {
+    day: string;
+    percent: number;
+    mostActive: string;
+  }
+
   export interface Data {
     heatmapData: heatmapDataType;
     topArtistsData: TopArtistsData[];
     hourlyData: HourlyData[];
+    weekdayData: WeekdayData[];
   }
 
 // raw data type of heat map
@@ -34,6 +41,9 @@ export interface HourlyData {
 //          '01' : 0.5
 // }}
 export type heatmapDataType = Map<string, Map<string, Map<string, HeatmapData>>>;
+
+export const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
 
 export const MONTHS: Record<number, string> = {
     0: 'Jan',

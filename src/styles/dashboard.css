@@ -77,14 +77,15 @@
 
 }
 
-.card{
+.card {
     width: 100%;
     height: 100%;
     border-radius: 36px;
+    box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
 }
 
 .card-two,
-.card-background{
+.card-background {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -97,5 +98,5 @@
     width: 100%;
     height: 100%;
     border-radius: 36px;
-    filter: blur(3px); 
+    filter: blur(3px);
 }
