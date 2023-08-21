@@ -1,6 +1,6 @@
 :root {
     --dark: #1e1e1e;
-    --light: #dcdcdd;
+    --light: #dfe4ea;
     --light-opaque: rgba(220, 220, 221, 0.5);
     --green: #1db954;
     --green-opaque: rgba(29, 185, 84, 0.65);
@@ -13,6 +13,8 @@
     --mint-opaque: rgba(216, 249, 219, 0.5);
 
     --empty: #b2bec3;
+
+    --grey-gradient: linear-gradient(-65deg, #2c2c2c 0%, #1e1e1e 100%);
 
     --size: 50px;
 
@@ -59,7 +61,7 @@ html {
     max-width: 324px;
     justify-content: flex-start;
     position: relative;
-    
+
 }
 
 .main-frame {
@@ -73,4 +75,9 @@ html {
         0.5px -0.5px 0 #000,
         -0.5px 0.5px 0 #000,
         0.5px 0.5px 0 #000;
+}
+
+.hidden {
+    display: none;
+    backdrop-filter: blur(0px);
 }

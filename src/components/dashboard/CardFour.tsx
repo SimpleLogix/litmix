@@ -19,12 +19,12 @@ const GENRES = [
 ];
 
 const COLORS = [
-  "#103515",
-  "#004f00",
-  "#00710f",
-  "#009433",
+  "#007D2A",
+  "#039F38",
   "#1db954",
-  "#39ca63",
+  "#3DC46B",
+  "#66D58C",
+  "#88E6AA",
 ];
 
 const CardFour = (props: Props) => {
@@ -49,7 +49,7 @@ const CardFour = (props: Props) => {
           <PieChart>
             <Pie
               data={GENRES}
-              innerRadius={"60%"}
+              innerRadius={"54%"}
               outerRadius={"72%"}
               paddingAngle={8}
               dataKey="value"

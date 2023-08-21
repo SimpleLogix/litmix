@@ -25,6 +25,7 @@
     cursor: pointer;
     box-shadow: rgba(0, 0, 0, 0.15) 0px 3px 3px 0px;
     background: linear-gradient(-25deg, var(--mint-opaque), var(--green-opaque)) 10% 10% no-repeat padding-box, var(--bg) 10% 10% no-repeat padding-box;
+    transition: padding 0.2s ease-in;
 }
 
 .weekday-box:hover {
@@ -57,5 +58,7 @@
 }
 
 .active-weekday{
-    border: 2px dashed var(--light);
+    background-color: black;
+    border: 2.5px solid white;
+    padding: 12px
 }

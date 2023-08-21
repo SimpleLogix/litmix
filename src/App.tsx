@@ -107,6 +107,8 @@ function App() {
       <div className="main-frame center">
         {page === "Dashboard" ? <Dashboard data={data} /> : <Discover />}
       </div>
+
+      
     </div>
   );
 }
