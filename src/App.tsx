@@ -5,6 +5,7 @@ import { createDateValues, generateWeekdayData } from "./utils/utils";
 import Dashboard from "./pages/Dashboard";
 import Discover from "./pages/Discover";
 import { Data, HourlyData, TopArtistsData } from "./utils/globals";
+import './styles/animations.css'
 
 function App() {
   const [page, setPage] = useState("Dashboard");

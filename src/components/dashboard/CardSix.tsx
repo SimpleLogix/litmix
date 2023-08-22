@@ -36,6 +36,7 @@ const CardSix = ({ weekdayData }: Props) => {
       <div className="weekdays-row center">
         {weekdayData.map((day) => (
           <DayOfWeek
+            key={`day ${day.day}`}
             day={day}
             isActive={day === selectedDay}
             handleDayClick={handleDayClick}

@@ -8,15 +8,25 @@ import CardThree from "../components/dashboard/CardThree";
 import CardFour from "../components/dashboard/CardFour";
 import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
-import { Data } from "../utils/globals";
+import { Data, UserFile } from "../utils/globals";
 import UploadBox from "../components/UploadBox";
+import { close } from "fs";
 
 type Props = {
   data: Data;
 };
 
 const Dashboard = ({ data }: Props) => {
+  //? states
+  // upload box
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  // uplaod state inside the box
+  //* these states are outside in order to be reset when user clicks outside the upload box
+  const [uploadState, setUploadState] = useState<
+    "preupload" | "uploading" | "processing" | "success" | "failure"
+  >("preupload");
+  const [file, setFile] = useState<UserFile | null>(null);
+  const [progress, setProgress] = useState(0);
 
   const handleUploadOpen = () => {
     setIsUploadOpen(!isUploadOpen);
@@ -24,18 +34,31 @@ const Dashboard = ({ data }: Props) => {
 
   const handleRootClick = () => {
     if (isUploadOpen) {
-      setIsUploadOpen(false);
+      closeUploadCallback();
     }
   };
 
   const closeUploadCallback = () => {
-    setIsUploadOpen(false);
+    if (uploadState !== "success" && uploadState !== "processing") {
+      setIsUploadOpen(false);
+      setFile(null);
+      setUploadState("preupload");
+      setProgress(0);
+    }
   };
 
   return (
     <div className="dashboard-root column" onClick={handleRootClick}>
       <div className={`upload-root center ${isUploadOpen ? "" : "hidden"}`}>
-        <UploadBox closeUploadCallback={closeUploadCallback} />
+        <UploadBox
+          closeUploadCallback={closeUploadCallback}
+          file={file}
+          setFile={setFile}
+          uploadState={uploadState}
+          setUploadState={setUploadState}
+          progress={progress}
+          setProgress={setProgress}
+        />
       </div>
       <Header
         title=""

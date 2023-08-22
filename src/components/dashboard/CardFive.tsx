@@ -47,9 +47,7 @@ const CardFive = ({ topArtistsData }: Props) => {
         </div>
 
         <div className="artist-data center column outlined-text">
-          <p className="bold-text artist-name">
-            {selectedArtist.name}
-          </p>
+          <p className="bold-text artist-name">{selectedArtist.name}</p>
 
           <p className="artist-mins-streamed">
             {selectedArtist.minsStreamed} <span>mins</span>
@@ -84,6 +82,7 @@ const CardFive = ({ topArtistsData }: Props) => {
         {topArtistsData.map((_, i) => (
           <div
             className={`page-dot ${i === artistIdx ? "selected-dot" : ""}`}
+            key={`dot ${i}`}
             onClick={() => handleDotClick(i)}
           ></div>
         ))}
