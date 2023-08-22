@@ -39,7 +39,11 @@ const Dashboard = ({ data }: Props) => {
   };
 
   const closeUploadCallback = () => {
-    if (uploadState !== "success" && uploadState !== "processing") {
+    if (
+      uploadState !== "success" &&
+      uploadState !== "processing" &&
+      uploadState !== "failure"
+    ) {
       setIsUploadOpen(false);
       setFile(null);
       setUploadState("preupload");

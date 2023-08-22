@@ -1,10 +1,4 @@
-import React, {
-  ChangeEvent,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
 import { UserFile } from "../utils/globals";
 
 type Props = {
@@ -80,7 +74,16 @@ const UploadBox = ({
     </div>
   );
 
-  const UploadSuccess = () => <div className="refresh-button">Refresh</div>;
+  const UploadSuccess = () => (
+    <div
+      className="refresh-button"
+      onClick={() => {
+        window.location.reload();
+      }}
+    >
+      Refresh
+    </div>
+  );
 
   //? use Effect
   useEffect(() => {
@@ -126,7 +129,11 @@ const UploadBox = ({
       <div className="left center">
         <img
           src={`${process.env.PUBLIC_URL}/assets/${
-            uploadState === "success" ? "check" : "import"
+            uploadState === "success"
+              ? "check"
+              : uploadState === "failure"
+              ? "retry"
+              : "import"
           }.svg`}
           alt=""
           className={`${uploadState === "processing" ? "breathing" : ""}`}
@@ -139,10 +146,13 @@ const UploadBox = ({
             <h2 className="fade-in-top">Upload a File</h2>
           )}
           {uploadState === "processing" && (
-            <h2 className="fade-in-top">Processing your File</h2>
+            <h2 className="fade-in-top">Processing...</h2>
           )}
           {uploadState === "success" && (
             <h2 className="fade-in-top">Upload Successful!</h2>
+          )}
+          {uploadState === "failure" && (
+            <h2 className="fade-in-top">Upload Failed!</h2>
           )}
 
           {(uploadState === "preupload" || uploadState === "uploading") && (
@@ -150,10 +160,9 @@ const UploadBox = ({
               Select a file to upload from your computer
             </p>
           )}
-
           {uploadState === "processing" && (
             <p className="fade-in">
-              Just give us a moment to process your file
+              Give us a moment while we process your file and analyze your data
             </p>
           )}
           {uploadState === "success" && (
@@ -162,11 +171,17 @@ const UploadBox = ({
               your data.
             </p>
           )}
+          {uploadState === "failure" && (
+            <p className="fade-in">
+              Your file was not processed successfully. Please try again.
+            </p>
+          )}
         </div>
         {uploadState === "preupload" && <PreUpload />}
         {uploadState === "uploading" && <UploadSelection />}
         {uploadState === "processing" && <ProgressBar />}
         {uploadState === "success" && <UploadSuccess />}
+        {uploadState === "failure" && <UploadSelection />}
       </div>
 
       <div className="upload-box-close-wrapper">

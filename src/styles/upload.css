@@ -68,6 +68,8 @@
 
 .file-name{
   text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 0.95em;
 }
 
 .upload-selection-root>img {
@@ -106,7 +108,7 @@ input[type="file"] {
 .progress-container {
   width: 100%;
   height: 8px;
-  background-color: #f0f0f0;
+  background-color: var(--light-opaque);
   border-radius: 8px;
   overflow: hidden;
 }
@@ -114,7 +116,7 @@ input[type="file"] {
 .progress-bar {
   height: 100%;
   width: 0;
-  background-color: #4caf50;
+  background-color: var(--green-opaque);
   transition: width 3s linear; /* 3-second linear transition for smooth animation */
 }
 
@@ -127,4 +129,13 @@ input[type="file"] {
 
 .refresh-button{
   align-self: flex-end;
+  user-select: none;
+  cursor: pointer;
+  /* background-color: var(--green-opaque);
+  padding: 8px 12px;
+  border-radius: 4px; */
+}
+
+.refresh-button:hover{
+  opacity: 0.8;
 }

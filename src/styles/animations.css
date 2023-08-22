@@ -52,5 +52,5 @@
 
 
 .breathing {
-    animation: breathe 2s 0.5s infinite ease-in-out;
+    animation: breathe 2s 0.25s infinite ease-in;
   }
