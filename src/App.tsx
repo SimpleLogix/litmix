@@ -8,7 +8,6 @@ import {
   Data,
   HourlyData,
   TopArtistsData,
-  YearlyData,
   YearlyDataType,
 } from "./utils/globals";
 import "./styles/animations.css";

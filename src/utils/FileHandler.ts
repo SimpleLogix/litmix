@@ -1,6 +1,5 @@
 import JSZip from 'jszip';
-import { Stats, EMPTY_STATS } from './Stats';
-import EMPTY_DATA, { Data, HeatmapData, HourlyData, MONTHS, YearlyData, YearlyDataType, heatmapDataType } from './globals';
+import EMPTY_DATA, { DAYS, Data, HeatmapData, HourlyData, MONTHS, WeekdayData, WeekdayDataType, heatmapDataType } from './globals';
 
 type StreamingHistory = {
     // Define the fields based on the example JSON provided
@@ -9,12 +8,21 @@ type StreamingHistory = {
     master_metadata_track_name: string;
 };
 
-
 const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void) => {
     // Initial structure for our heatmap
     let heatmap: heatmapDataType = new Map();
     let hourlyData: Record<string, HourlyData> = {};
-    let yearlyData: YearlyDataType = {};
+
+    let totalMsStreamed = 0;
+    const daysData: Record<string, Record<string, any>> = {
+        'Mon': {
+            'msStreamed': 0,
+            'time': {
+                '0am': 0,
+            }
+        }
+
+    }
 
     // Check file format
     if (file.name === "my_spotify_data.zip") {
@@ -27,24 +35,18 @@ const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void) => {
                 let promises = Object.entries(zip.files).map(async ([relativePath, zipEntry]) => {
                     if (relativePath.includes("Streaming_History_Audio")) {
                         let content = await zip.file(relativePath)!.async('string');
-                        let json = JSON.parse(content) as StreamingHistory[];
-
-                        let totalMsStreamed = 0;
-                        let totalDays = 0;
-                        let cumSum = 0;
-
-                        for (let i = 0; i < 24; i++) {
-                            const hourLabel = i < 12 ? `${i}am` : i === 12 ? `12pm` : `${i - 12}pm`;
-                            hourlyData[hourLabel] = { hour: hourLabel, percent: 0, songCount: 0, msStreamed: 0 };
-                        }
+                        let streamHistory = JSON.parse(content) as StreamingHistory[];
 
                         // Iterate through the streaming history
-                        json.forEach((record, idx) => {
+                        streamHistory.forEach((record, idx) => {
                             // Extract the date parts
                             const date = new Date(record.ts);
                             const year = date.getFullYear().toString();
                             const month = (date.getMonth() + 1).toString().padStart(2, '0');
                             const day = date.getDate().toString().padStart(2, '0');
+                            const hour = date.getHours();
+                            const hourLabel = hour < 12 ? `${hour}am` : hour === 12 ? `12pm` : `${hour - 12}pm`;
+                            const dayOfWeek = DAYS[date.getDay()];
 
                             // Get or initialize structure
                             const yearMap = heatmap.get(year) || new Map();
@@ -65,82 +67,37 @@ const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void) => {
                             yearMap.set(month, monthMap);
                             heatmap.set(year, yearMap);
 
-                            // Extract the hour part
-                            const hour = date.getHours();
-                            const hourLabel = hour < 12 ? `${hour}am` : hour === 12 ? `12pm` : `${hour - 12}pm`;
+                            if (!hourlyData[hourLabel]) {
+                                hourlyData[hourLabel] = { hour: hourLabel, songCount: 0, msStreamed: 0, percent: 0 };
+                            }
 
                             // Increment the stats for this hour
                             hourlyData[hourLabel].songCount++;
                             hourlyData[hourLabel].msStreamed += record.ms_played;
 
-                            // Increment total ms streamed
-                            totalMsStreamed += record.ms_played;
-                            totalDays++;
-
-
-                        });
-                        // Calculate average ms streamed per day
-                        let avgMsStreamedPerDay = totalMsStreamed / totalDays;
-
-                        // Now, iterate through the heatmap to calculate top track and percentage difference
-                        heatmap.forEach((yearMap, year) => {
-                            // Calculate the total stream time for the year
-                            let streamTimeForYear = 0;
-                            yearMap.forEach(monthMap => {
-                                monthMap.forEach((dayData, day) => {
-                                    // Find the top track for the day
-                                    let topTrackName = '';
-                                    let topTrackCount = 0;
-                                    for (const [trackName, count] of Object.entries(dayData.tracks!)) {
-                                        if (count > topTrackCount) {
-                                            topTrackCount = count;
-                                            topTrackName = trackName;
-                                        }
+                            // Update the day of the week data
+                            if (!daysData[dayOfWeek]) {
+                                daysData[dayOfWeek] = {
+                                    'msStreamed': 0,
+                                    'time': {
+                                        '0am': 0,
                                     }
-
-                                    // Set the top track
-                                    dayData.topTrack = topTrackName;
-                                    dayData.topTrackCount = topTrackCount;
-
-                                    // Calculate the percentage difference
-                                    dayData.colorValue = ((dayData.msStreamed - avgMsStreamedPerDay) / avgMsStreamedPerDay);
-
-                                    // Update the day data
-                                    monthMap.set(day, dayData);
-
-                                    // sum stream time for year
-                                    streamTimeForYear += dayData.msStreamed;
-                                });
-                            });
-
-                            // Update the cumulative sum
-                            cumSum += streamTimeForYear;
-                            console.log(cumSum, `|${year}|`)
-
-                            yearlyData[year] = {
-                                year: year,
-                                streamTime: streamTimeForYear,
-                                cumSum: cumSum
-                            };
-
-                            //! last left off somewhere here trying to figure out if the heatmap is working properly.
-
-                            //! seems like everything is except how im calculating the values and cum sum
-
+                                }
+                            }
+                            if (!daysData[dayOfWeek].time[hourLabel]) {
+                                daysData[dayOfWeek].time[hourLabel] = 0;
+                            }
+                            daysData[dayOfWeek].msStreamed += record.ms_played;
+                            daysData[dayOfWeek].time[hourLabel] = (daysData[dayOfWeek].time[hourLabel] || 0) + record.ms_played;
+                            totalMsStreamed+=record.ms_played;
                         });
-
-                        // iterate over hourly data to find % diff from avg
-                        for (const hourLabel in hourlyData) {
-                            hourlyData[hourLabel].percent = (hourlyData[hourLabel].msStreamed / totalMsStreamed) * 100;
-                        }
                     }
                 });
-
                 // Wait for all data to be gathered
                 await Promise.all(promises);
 
                 // Call back the heatmap
-                callBack({ heatmapData: heatmap, topArtistsData: [], hourlyData: hourlyData, weekdayData: [], yearlyData: yearlyData });
+                callBack({ heatmapData: heatmap, topArtistsData: [], hourlyData: hourlyData, weekdayData: convertToWeekdayDataType(daysData, totalMsStreamed), yearlyData: {} });
             }
         };
         reader.readAsArrayBuffer(file);
@@ -150,14 +107,30 @@ const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void) => {
     }
 };
 
+//* note that this is not the full stats. some other analysis is requried to derive top and avg
+//* later in the stats.ts file
+const convertToWeekdayDataType = (daysData: Record<string, Record<string, any>>, totalMsStreamed: number): WeekdayDataType => {
+    let weekdayData: WeekdayDataType = {};
+    for (const [day, data] of Object.entries(daysData)) {
+        // calculate the % of total ms streamed
+        const msStreamed = data.msStreamed / totalMsStreamed;
 
-
+        weekdayData[day] = {
+            day: day,
+            percent: msStreamed,
+            mostActive: Object.entries(data.time as Record<string, number>).reduce(
+                (a: [string, number], b: [string, number]) => (a[1] > b[1] ? a : b)
+            )[0]
+        }
+    }
+    return weekdayData;
+}
 
 // fetch data from local storage
-const checkExistingData = (): Stats => {
+const checkExistingData = (): Data => {
     return localStorage.getItem("data")
         ? JSON.parse(localStorage.getItem("data")!)
-        : EMPTY_STATS;
+        : EMPTY_DATA;
 };
 
 export { handleUploadedFile, checkExistingData }

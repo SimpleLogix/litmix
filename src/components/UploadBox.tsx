@@ -1,6 +1,7 @@
 import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
 import EMPTY_DATA, { UserFile } from "../utils/globals";
 import { handleUploadedFile } from "../utils/FileHandler";
+import { analyzeUserData } from "../utils/Stats";
 
 type Props = {
   closeUploadCallback: () => void;
@@ -142,7 +143,8 @@ const UploadBox = ({
       if (data) {
         //! save data here !
         setFile({ name: file.name, stats: data, file: file.file });
-        console.log(data.yearlyData);
+        analyzeUserData(data);
+        console.log(data);
       } else {
         setUploadState("failure");
       }

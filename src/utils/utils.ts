@@ -1,4 +1,4 @@
-import { ColorMap, HeatmapData, MONTHS, WeekdayData, heatmapDataType, weekdays } from "./globals";
+import { ColorMap, DAYS, HeatmapData, MONTHS, WeekdayData, WeekdayDataType, heatmapDataType, weekdays } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -68,15 +68,17 @@ export function createDateValues(): heatmapDataType {
 }
 
 //* generator
-export const generateWeekdayData = (): WeekdayData[] => {
-    const data: WeekdayData[] = [];
+export const generateWeekdayData = (): WeekdayDataType => {
+    const data: WeekdayDataType = {};
+
     for (let i = 0; i < 7; i++) {
-        data.push({
-            day: weekdays[i],
+        data[DAYS[i]] = {
+            day: DAYS[i],
             percent: Math.floor(Math.random() * 100),
             mostActive: `${Math.floor(Math.random() * 12)}pm`,
-        });
+        };
     }
+
     return data;
 };
 

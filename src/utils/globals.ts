@@ -30,6 +30,8 @@ export interface WeekdayData {
   mostActive: string;
 }
 
+export type WeekdayDataType = Record<string, WeekdayData>
+
 export type YearlyDataType = Record<string, YearlyData>
 
 export interface YearlyData { year: string, streamTime: number, cumSum: number }
@@ -38,7 +40,7 @@ export interface Data {
   heatmapData: heatmapDataType;
   topArtistsData: TopArtistsData[];
   hourlyData: Record<string, HourlyData>;
-  weekdayData: WeekdayData[];
+  weekdayData: WeekdayDataType;
   yearlyData: YearlyDataType;
 }
 
@@ -52,7 +54,7 @@ const EMPTY_DATA: Data = {
   heatmapData: new Map(),
   topArtistsData: [],
   hourlyData: {},
-  weekdayData: [],
+  weekdayData: {},
   yearlyData: {},
 }
 
@@ -81,6 +83,16 @@ export const MONTHS: Record<number, string> = {
   9: 'Oct',
   10: 'Nov',
   11: 'Dec',
+}
+
+export const DAYS: Record<number, string> = { 
+  0: 'Sun',
+  1: 'Mon',
+  2: 'Tue',
+  3: 'Wed',
+  4: 'Thu',
+  5: 'Fri',
+  6: 'Sat',
 }
 
 export const ColorMap: Record<number, string> = {

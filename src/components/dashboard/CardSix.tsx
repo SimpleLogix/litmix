@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import "../../styles/card-six.css";
-import { WeekdayData } from "../../utils/globals";
+import { WeekdayData, WeekdayDataType } from "../../utils/globals";
 
 type Props = {
-  weekdayData: WeekdayData[];
+  weekdayData: WeekdayDataType;
 };
 
 //* Card
@@ -25,7 +25,7 @@ const DayOfWeek = ({
 );
 
 const CardSix = ({ weekdayData }: Props) => {
-  const [selectedDay, setSelectedDay] = useState<WeekdayData>(weekdayData[3]);
+  const [selectedDay, setSelectedDay] = useState<WeekdayData>(weekdayData["Wed"]);
 
   const handleDayClick = (day: WeekdayData) => {
     setSelectedDay(day);
@@ -34,7 +34,7 @@ const CardSix = ({ weekdayData }: Props) => {
   return (
     <div className="card center column card-six">
       <div className="weekdays-row center">
-        {weekdayData.map((day) => (
+        {Object.values(weekdayData).map((day) => (
           <DayOfWeek
             key={`day ${day.day}`}
             day={day}
