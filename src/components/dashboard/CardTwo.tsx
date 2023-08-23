@@ -6,12 +6,11 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   XAxis,
-  YAxis,
 } from "recharts";
 import { HourlyData } from "../../utils/globals";
 
 type Props = {
-  hourlyData: HourlyData[];
+  hourlyData: Record<string, HourlyData>;
 };
 
 const CustomBarShape = (props: any) => {
@@ -20,16 +19,16 @@ const CustomBarShape = (props: any) => {
 };
 
 const CardTwo = ({ hourlyData }: Props) => {
-  const dataAM = hourlyData.slice(0, 12);
-  const dataPM = hourlyData.slice(12, 24);
+  const hourlyDataArray = Object.values(hourlyData);
+  const dataAM = hourlyDataArray.slice(0, 12);
+  const dataPM = hourlyDataArray.slice(12, 24);
 
-  const [dataIDX, setDataIDX] = useState<number>(0);
   const [isPM, setIsPM] = useState<boolean>(true);
   const [tooltip, setTooltip] = useState<HourlyData>(dataPM[0]);
 
   const handleArrowClick = () => {
     setIsPM(!isPM);
-    setTooltip(isPM ? dataAM[dataIDX] : dataPM[dataIDX]);
+    setTooltip(isPM ? dataAM[0] : dataPM[0]);
   };
 
   return (
@@ -51,7 +50,7 @@ const CardTwo = ({ hourlyData }: Props) => {
 
       <div className="hourly-data-wrapper center">
         <div>
-          {tooltip.minsStreamed} <span>hrs</span>
+          {tooltip.msStreamed} <span>hrs</span>
         </div>
         <div>
           {tooltip.songCount} <span>Songs</span>
@@ -63,7 +62,7 @@ const CardTwo = ({ hourlyData }: Props) => {
           <CartesianGrid vertical={false} />
           <XAxis dataKey="hour" />
           <Bar
-            dataKey="minsStreamed"
+            dataKey="msStreamed"
             fill="var(--empty)"
             shape={(props) => (
               <CustomBarShape
@@ -74,7 +73,6 @@ const CardTwo = ({ hourlyData }: Props) => {
               />
             )}
             onMouseEnter={(e: any) => {
-              setDataIDX(e.idx);
               setTooltip(e);
             }}
             onMouseLeave={() => {}}
@@ -85,4 +83,4 @@ const CardTwo = ({ hourlyData }: Props) => {
   );
 };
 
-export default CardTwo
+export default CardTwo;

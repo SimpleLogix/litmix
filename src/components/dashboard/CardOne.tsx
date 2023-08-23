@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../../styles/card-one.css";
 import {
   ResponsiveContainer,
@@ -10,66 +10,66 @@ import {
   Tooltip,
 } from "recharts";
 import { stringifyNum } from "../../utils/utils";
+import { YearlyData, YearlyDataType } from "../../utils/globals";
 
-type Props = {};
+type Props = {
+  yearlyData: YearlyDataType;
+};
 
-interface displayedData {
-  year: string;
-  value: number;
-  cumValue: number;
-}
-
-const SP_DATA: displayedData[] = [
-  { year: "2017", value: 200, cumValue: 200 },
-  { year: "2018", value: 300, cumValue: 500 },
-  { year: "2019", value: 400, cumValue: 900 },
-  { year: "2020", value: 550, cumValue: 1450 },
-  { year: "2021", value: 700, cumValue: 2150 },
-  { year: "2022", value: 1800, cumValue: 2950 },
-];
-
-const CardOne = (props: Props) => {
-  const [displayedData, setDisplayedData] = useState<displayedData>(
-    SP_DATA[SP_DATA.length - 1]
-  );
+const CardOne = ({ yearlyData }: Props) => {
+  // Extract the keys and sort them (assuming they are in a format that can be sorted as strings)
+  const sortedYears = Object.keys(yearlyData).sort();
+  // Get the last key
+  const lastYear = sortedYears[sortedYears.length - 1];
+  // Get the corresponding data object
+  const lastYearData = yearlyData[lastYear];
+  const [displayedData, setDisplayedData] = useState<YearlyData>(lastYearData);
 
   // rechartrs tooltip is not a react component,
   // so I made this janky workaround
   const CustomTooltip = ({ active, payload }: any) => {
-    useEffect(() => {
+    const displayedData = useMemo(() => {
       if (active && payload && payload.length) {
-        setDisplayedData(payload[0].payload);
+        return payload[0].payload;
       } else {
-        setDisplayedData(SP_DATA[SP_DATA.length - 1]);
+        return lastYearData;
       }
     }, [active, payload]);
-
-    return null;
+  
+  
+    return null; 
   };
+
+  // Convert the record to an array for use with the LineChart
+  const chartData = Object.entries(yearlyData).map(([year, data]) => ({
+    year,
+    streamTime: data.streamTime,
+    cumSum: data.cumSum,
+  }));
 
   return (
     <div className="card stream-time-card column">
       <h3>Total Stream Time</h3>
       <div className="card-one-displayed-data ">
         <p className="stream-year-total">
-          {stringifyNum(displayedData.value)}
+          {stringifyNum(displayedData.streamTime)}
           <span>
             {" "}
             mins <span>({displayedData.year})</span>
           </span>
         </p>
         <p className="stream-cum-total">
-          {stringifyNum(displayedData.cumValue)}
+          {stringifyNum(displayedData.cumSum)}
           <span> mins</span>
         </p>
       </div>
       <div className="stream-time-line-container center">
         <ResponsiveContainer width="90%" height="100%">
-          <LineChart data={SP_DATA}>
+          <LineChart data={chartData}>
             <CartesianGrid stroke="#ccc" vertical={false} />
             <Line
               type="monotone"
-              dataKey="value"
+              dataKey="streamTime"
               stroke="#3c4a3e"
               strokeWidth={2.5}
               strokeOpacity={0.8}
@@ -77,7 +77,7 @@ const CardOne = (props: Props) => {
             />
             <Line
               type="monotone"
-              dataKey="cumValue"
+              dataKey="cumSum"
               stroke="#d8f9db"
               strokeWidth={2.5}
               strokeOpacity={0.8}

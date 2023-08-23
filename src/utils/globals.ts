@@ -1,14 +1,17 @@
 export interface HeatmapData {
   date: string; // The date on which the music was played
   songCount: number; // The total number of songs played on that date
-  minsStreamed: number; // The total milliseconds streamed on that date
+  msStreamed: number; // The total milliseconds streamed on that date
   colorValue: number; // A percentage used for determining the color (e.g., 0 to 100)
+  topTrack: string;
+  topTrackCount: number;
+  tracks?: Record<string, number>;
 }
 
 export interface TopArtistsData {
   artistImg: string;
   name: string;
-  minsStreamed: number;
+  msStreamed: number;
   playCount: number;
   topTrack: string;
   discovered: string;
@@ -18,8 +21,7 @@ export interface HourlyData {
   hour: string;
   percent: number;
   songCount: number;
-  minsStreamed: number;
-  idx: number;
+  msStreamed: number;
 }
 
 export interface WeekdayData {
@@ -28,16 +30,33 @@ export interface WeekdayData {
   mostActive: string;
 }
 
+export type YearlyDataType = Record<string, YearlyData>
+
+export interface YearlyData { year: string, streamTime: number, cumSum: number }
+
 export interface Data {
   heatmapData: heatmapDataType;
   topArtistsData: TopArtistsData[];
-  hourlyData: HourlyData[];
+  hourlyData: Record<string, HourlyData>;
   weekdayData: WeekdayData[];
+  yearlyData: YearlyDataType;
 }
 
 export interface UserFile {
   name: string;
+  file: File;
+  stats: Data;
 }
+
+const EMPTY_DATA: Data = {
+  heatmapData: new Map(),
+  topArtistsData: [],
+  hourlyData: {},
+  weekdayData: [],
+  yearlyData: {},
+}
+
+export default EMPTY_DATA;
 
 // raw data type of heat map
 // {'2016' : {

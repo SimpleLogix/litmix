@@ -1,5 +1,6 @@
 import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
-import { UserFile } from "../utils/globals";
+import EMPTY_DATA, { UserFile } from "../utils/globals";
+import { handleUploadedFile } from "../utils/FileHandler";
 
 type Props = {
   closeUploadCallback: () => void;
@@ -91,25 +92,42 @@ const UploadBox = ({
     if (uploadState === "processing") {
       const interval = setInterval(() => {
         setProgress((prevProgress) =>
-          prevProgress >= 100 ? 100 : prevProgress + 1
+          prevProgress >= 100 ? 100 : prevProgress + 2
         );
-      }, 30); // Adjust the interval for smoother/faster animation
+      }, 24); // Adjust the interval for smoother/faster animation
       if (progress === 100) {
-        setUploadState("success");
-        setProgress(0);
       }
       return () => clearInterval(interval);
     }
   }, [setProgress, uploadState, progress, setUploadState]);
 
+  // reset upload state when progress reaches 100
+  useEffect(() => {
+    if (progress === 100) {
+      if (file?.stats === EMPTY_DATA) {
+        setUploadState("failure");
+      } else {
+        setUploadState("success");
+      }
+      setProgress(0);
+    }
+  }, [file?.stats, progress, setProgress, setUploadState, uploadState]);
+
   //? handlers
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setUploadState("uploading");
-      setFile({ name: file.name });
+    const target = event.target as HTMLInputElement;
+    // grab the file uploaded from input element
+    if (target.files && target.files.length > 0) {
+      const file = target.files[0];
+      if (file) {
+        setUploadState("uploading");
+        setFile({
+          name: file.name,
+          stats: EMPTY_DATA,
+          file: file,
+        });
+      }
     }
-    event.target.value = "";
   };
 
   const removeFile = () => {
@@ -119,6 +137,16 @@ const UploadBox = ({
 
   const uploadFile = (file: UserFile) => {
     setUploadState("processing");
+    // get data from file handler
+    handleUploadedFile(file?.file!, (data) => {
+      if (data) {
+        //! save data here !
+        setFile({ name: file.name, stats: data, file: file.file });
+        console.log(data.yearlyData);
+      } else {
+        setUploadState("failure");
+      }
+    });
   };
 
   return (

@@ -43,7 +43,9 @@ export function createDateValues(): heatmapDataType {
         const day = String(date.getUTCDate()).padStart(2, '0');
         const colorValue = Math.random();
         const songCount = Math.floor(colorValue * 100);
-        const minsStreamed = Math.floor(Math.random() * 100);
+        const msStreamed = Math.floor(Math.random() * 100);
+        const topTrack = "Shut Up my mom's Calling";
+        const topTrackCount = Math.floor(Math.random() * 100);
 
         let yearMap = sample.get(year);
         if (!yearMap) {
@@ -57,7 +59,7 @@ export function createDateValues(): heatmapDataType {
             yearMap.set(month, monthMap);
         }
 
-        const heatmapData: HeatmapData = { date: `${year}-${month}-${day}`, songCount, minsStreamed, colorValue };
+        const heatmapData: HeatmapData = { date: `${year}-${month}-${day}`, songCount, msStreamed, colorValue, topTrack, topTrackCount };
         monthMap.set(day, heatmapData);
 
         date.setUTCDate(date.getUTCDate() + 1);
@@ -104,7 +106,7 @@ export const padMonthData = (values: HeatmapData[], startDate: Date) => {
 
         // Fill in empty days before the first day of the month
         for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
-            paddedValues.push({ date: "", colorValue: 404, minsStreamed: -1, songCount: -1 }); // empty dateData
+            paddedValues.push({ date: "", colorValue: 404, msStreamed: -1, songCount: -1, topTrack: "", topTrackCount: -1 }); // empty dateData
         }
 
         // Fill in the actual data for the month
@@ -115,7 +117,7 @@ export const padMonthData = (values: HeatmapData[], startDate: Date) => {
 
         // Fill in empty days after the last day of the month to reach 35
         while (paddedValues.length < (monthIndex + 1) * 35) {
-            paddedValues.push({ date: "", colorValue: 404, minsStreamed: -1, songCount: -1 }); // empty dateData
+            paddedValues.push({ date: "", colorValue: 404, msStreamed: -1, songCount: -1, topTrack: "", topTrackCount: -1 }); // empty dateData
         }
     }
 

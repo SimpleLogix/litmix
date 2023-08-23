@@ -10,7 +10,9 @@ type Props = {
     date: string,
     colorValue: number,
     msStreamed: number,
-    songCount: number
+    songCount: number,
+    topTrack: string,
+    topTrackCount: number,
   ) => void;
   selectedDate: HeatmapData;
 };
@@ -23,8 +25,6 @@ const CalendarHeatMap = ({
 }: Props) => {
   const months = getMonths(startDate);
   const paddedValues = padMonthData(values, startDate);
-
-  
 
   // builds a row of 3 months based on the given monthValues
   const MonthHeatMap = ({ monthValues }: { monthValues: HeatmapData[] }) => (
@@ -42,8 +42,10 @@ const CalendarHeatMap = ({
             cellClickCallback(
               data.date,
               data.colorValue,
-              data.minsStreamed,
-              data.songCount
+              data.msStreamed,
+              data.songCount,
+              data.topTrack,
+              data.topTrackCount,
             )
           }
         ></div>

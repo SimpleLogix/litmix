@@ -30,11 +30,13 @@ const CardThree = ({ heatmapData }: Props) => {
   const cellClickCallback = (
     date: string,
     colorValue: number,
-    minsStreamed: number,
-    songCount: number
+    msStreamed: number,
+    songCount: number,
+    topTrack: string,
+    topTrackCount: number,
   ) => {
     if (colorValue === 404) return;
-    setSelectedDate({ date, colorValue, minsStreamed, songCount });
+    setSelectedDate({ date, colorValue, msStreamed, songCount, topTrack, topTrackCount });
   };
 
   const handleBackClick = () => {
@@ -121,7 +123,7 @@ const CardThree = ({ heatmapData }: Props) => {
         <div className="heatmap-data-wrapper center column">
           <div className="mins-super-wrapper">
             <p className="bold-text">
-              {selectedDate?.minsStreamed.toLocaleString()}
+              {selectedDate?.msStreamed.toLocaleString()}
             </p>
             <p className="thin-text">mins</p>
             <HeatDiff />
@@ -139,7 +141,9 @@ const CardThree = ({ heatmapData }: Props) => {
 
           <div className="heatmap-divider"></div>
 
-          <p className="heatmap-data-top-song thin-text">Shut up my mom's calling</p>
+          <p className="heatmap-data-top-song thin-text">
+            {selectedDate.topTrack}
+          </p>
         </div>
       </div>
     </div>

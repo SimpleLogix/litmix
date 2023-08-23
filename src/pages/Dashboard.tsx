@@ -10,7 +10,6 @@ import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
 import { Data, UserFile } from "../utils/globals";
 import UploadBox from "../components/UploadBox";
-import { close } from "fs";
 
 type Props = {
   data: Data;
@@ -39,11 +38,7 @@ const Dashboard = ({ data }: Props) => {
   };
 
   const closeUploadCallback = () => {
-    if (
-      uploadState !== "success" &&
-      uploadState !== "processing" &&
-      uploadState !== "failure"
-    ) {
+    if (uploadState !== "success" && uploadState !== "processing") {
       setIsUploadOpen(false);
       setFile(null);
       setUploadState("preupload");
@@ -70,7 +65,7 @@ const Dashboard = ({ data }: Props) => {
         uploadOpenCallback={handleUploadOpen}
       ></Header>
       <div className="dashboard-body">
-        <CardOne />
+        <CardOne yearlyData={data.yearlyData} />
         <CardTwo hourlyData={data.hourlyData} />
         <CardThree heatmapData={data.heatmapData} />
         <CardFour />

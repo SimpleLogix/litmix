@@ -50,7 +50,7 @@ const CardFive = ({ topArtistsData }: Props) => {
           <p className="bold-text artist-name">{selectedArtist.name}</p>
 
           <p className="artist-mins-streamed">
-            {selectedArtist.minsStreamed} <span>mins</span>
+            {selectedArtist.msStreamed} <span>mins</span>
           </p>
           <p className="artist-play-count">
             {selectedArtist.playCount} <span>plays</span>
