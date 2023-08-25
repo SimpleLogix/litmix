@@ -25,7 +25,9 @@ const DayOfWeek = ({
 );
 
 const CardSix = ({ weekdayData }: Props) => {
-  const [selectedDay, setSelectedDay] = useState<WeekdayData>(weekdayData["Wed"]);
+  const [selectedDay, setSelectedDay] = useState<WeekdayData>(
+    weekdayData["Wed"]
+  );
 
   const handleDayClick = (day: WeekdayData) => {
     setSelectedDay(day);
@@ -44,7 +46,9 @@ const CardSix = ({ weekdayData }: Props) => {
         ))}
       </div>
       <div className="weekdays-data-wrapper center">
-        <div className="weekdays-percent bold-text">{selectedDay.percent}%</div>
+        <div className="weekdays-percent bold-text">
+          {(selectedDay.percent * 100).toFixed(1)}%
+        </div>
         <div className="weekdays-data-border"></div>
         <div className="weekdays-data center column">
           <div className="thin-text weekdays-data-time">

@@ -34,7 +34,7 @@ const CardFive = ({ topArtistsData }: Props) => {
       <div
         className="card-background"
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/assets/${selectedArtist.artistImg})`,
+          backgroundImage: `url(${process.env.PUBLIC_URL}/assets/${selectedArtist.img})`,
         }}
       ></div>
 

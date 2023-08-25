@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/dashboard.css";
 import "../styles/upload.css";
 import Header from "../components/Header";
@@ -8,7 +8,7 @@ import CardThree from "../components/dashboard/CardThree";
 import CardFour from "../components/dashboard/CardFour";
 import CardFive from "../components/dashboard/CardFive";
 import CardSix from "../components/dashboard/CardSix";
-import { Data, UserFile } from "../utils/globals";
+import { Data, UserFile, hourlyDataDummy } from "../utils/globals";
 import UploadBox from "../components/UploadBox";
 
 type Props = {
@@ -38,13 +38,24 @@ const Dashboard = ({ data }: Props) => {
   };
 
   const closeUploadCallback = () => {
-    if (uploadState !== "success" && uploadState !== "processing") {
+    if (
+      uploadState !== "success" &&
+      uploadState !== "processing" 
+      // data.hourlyData !== hourlyDataDummy // no data uploaded
+    ) {
       setIsUploadOpen(false);
       setFile(null);
       setUploadState("preupload");
       setProgress(0);
     }
   };
+
+  //! turn this off
+  // useEffect(() => {
+  //   if (data.hourlyData === hourlyDataDummy) {
+  //     setIsUploadOpen(true);
+  //   }
+  // }, [data.hourlyData]);
 
   return (
     <div className="dashboard-root column" onClick={handleRootClick}>
@@ -67,7 +78,7 @@ const Dashboard = ({ data }: Props) => {
       <div className="dashboard-body">
         <CardOne yearlyData={data.yearlyData} />
         <CardTwo hourlyData={data.hourlyData} />
-        <CardThree heatmapData={data.heatmapData} />
+        <CardThree heatmapData={data.heatmapData} years={data.years} />
         <CardFour />
         <CardFive topArtistsData={data.topArtistsData} />
         <CardSix weekdayData={data.weekdayData} />

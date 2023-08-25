@@ -8,14 +8,18 @@ export interface HeatmapData {
   tracks?: Record<string, number>;
 }
 
-export interface TopArtistsData {
-  artistImg: string;
+export interface TopStatData {
+  img: string;
   name: string;
   msStreamed: number;
   playCount: number;
-  topTrack: string;
+  topTrack?: string;
   discovered: string;
 }
+
+export interface TopArtistsData extends TopStatData { }
+export interface TopTracksData extends TopStatData { }
+export interface TopAlbumsData extends TopStatData { }
 
 export interface HourlyData {
   hour: string;
@@ -30,6 +34,7 @@ export interface WeekdayData {
   mostActive: string;
 }
 
+
 export type WeekdayDataType = Record<string, WeekdayData>
 
 export type YearlyDataType = Record<string, YearlyData>
@@ -39,9 +44,12 @@ export interface YearlyData { year: string, streamTime: number, cumSum: number }
 export interface Data {
   heatmapData: heatmapDataType;
   topArtistsData: TopArtistsData[];
+  topTracksData: TopTracksData[];
+  topAlbumsData: TopAlbumsData[];
   hourlyData: Record<string, HourlyData>;
   weekdayData: WeekdayDataType;
   yearlyData: YearlyDataType;
+  years: string[] // years that have data
 }
 
 export interface UserFile {
@@ -51,11 +59,14 @@ export interface UserFile {
 }
 
 const EMPTY_DATA: Data = {
-  heatmapData: new Map(),
+  heatmapData: {},
   topArtistsData: [],
+  topTracksData: [],
+  topAlbumsData: [],
   hourlyData: {},
   weekdayData: {},
   yearlyData: {},
+  years: [],
 }
 
 export default EMPTY_DATA;
@@ -65,7 +76,7 @@ export default EMPTY_DATA;
 //      '01' : {
 //          '01' : 0.5
 // }}
-export type heatmapDataType = Map<string, Map<string, Map<string, HeatmapData>>>;
+export type heatmapDataType = Record<string, Record<string, Record<string, HeatmapData>>>;
 
 export const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
@@ -85,7 +96,7 @@ export const MONTHS: Record<number, string> = {
   11: 'Dec',
 }
 
-export const DAYS: Record<number, string> = { 
+export const DAYS: Record<number, string> = {
   0: 'Sun',
   1: 'Mon',
   2: 'Tue',
@@ -97,16 +108,101 @@ export const DAYS: Record<number, string> = {
 
 export const ColorMap: Record<number, string> = {
 
-  0: "#fff",
-  0.1: "#c5f4d1",
-  0.2: "#b2efc7",
-  0.3: "#9eeabc",
-  0.4: "#8be5b2",
-  0.5: "#78e0a8",
-  0.6: "#64dba0",
-  0.7: "#51d095",
-  0.8: "#3ec58b",
-  0.9: "#2bbf81",
-  1: "#18ba77",
+  0: "#fefdfb",
+  1: "#c5f4d1",
+  2: "#b2efc7",
+  3: "#9eeabc",
+  4: "#8be5b2",
+  5: "#18ba77",
+  6: "#64dba0",
+  7: "#51d095",
+  8: "#3ec58b",
+  9: "#2bbf81",
+  10: "#18ba77",
   404: "transparent",
+};
+
+//* DUMMY DATA
+
+export const topArtistsDummy: TopArtistsData[] = [
+  {
+    img: "dae.jpg",
+    name: "Dae Zhen",
+    msStreamed: 1337,
+    playCount: 420,
+    topTrack: "Lately (Drugs)",
+    discovered: "Aug 19, 2023",
+  },
+  {
+    img: "zervas.jpg",
+    name: "Arizona Zervas",
+    msStreamed: 2005,
+    playCount: 999,
+    topTrack: "Roxanne",
+    discovered: "Aug 19, 2023",
+  },
+  {
+    img: "drake.jpg",
+    name: "Drake",
+    msStreamed: 2005,
+    playCount: 999,
+    topTrack: "Hotline Bling",
+    discovered: "Aug 19, 2023",
+  },
+];
+
+export const hourlyDataDummy: Record<string, HourlyData> = {
+  "12am": {
+    hour: "12am",
+    percent: 0.1,
+    songCount: 1,
+    msStreamed: 10,
+  },
+  "1am": {
+    hour: "1am",
+    percent: 0.2,
+    songCount: 2,
+    msStreamed: 20,
+  },
+  "2am": {
+    hour: "2am",
+    percent: 0.3,
+    songCount: 3,
+    msStreamed: 30,
+  },
+  "3am": {
+    hour: "3am",
+    percent: 0.4,
+    songCount: 4,
+    msStreamed: 40,
+  },
+  "4am": { hour: "4am", percent: 0.5, songCount: 5, msStreamed: 50 },
+  "5am": { hour: "5am", percent: 0.6, songCount: 6, msStreamed: 60 },
+  "6am": { hour: "6am", percent: 0.7, songCount: 7, msStreamed: 70 },
+  "7am": { hour: "7am", percent: 0.8, songCount: 8, msStreamed: 80 },
+  "8am": { hour: "8am", percent: 0.9, songCount: 9, msStreamed: 90 },
+  "9am": { hour: "9am", percent: 0.1, songCount: 1, msStreamed: 10 },
+  "10am": { hour: "10am", percent: 0.2, songCount: 2, msStreamed: 20 },
+  "11am": { hour: "11am", percent: 0.3, songCount: 3, msStreamed: 30 },
+  "12pm": { hour: "12pm", percent: 0.4, songCount: 4, msStreamed: 40 },
+  "1pm": { hour: "1pm", percent: 0.5, songCount: 5, msStreamed: 50 },
+  "2pm": { hour: "2pm", percent: 0.6, songCount: 6, msStreamed: 60 },
+  "3pm": { hour: "3pm", percent: 0.7, songCount: 7, msStreamed: 70 },
+  "4pm": { hour: "4pm", percent: 0.8, songCount: 8, msStreamed: 80 },
+  "5pm": { hour: "5pm", percent: 0.9, songCount: 9, msStreamed: 90 },
+  "6pm": { hour: "6pm", percent: 0.1, songCount: 1, msStreamed: 10 },
+  "7pm": { hour: "7pm", percent: 0.2, songCount: 2, msStreamed: 20 },
+  "8pm": { hour: "8pm", percent: 0.3, songCount: 3, msStreamed: 70 },
+  "9pm": { hour: "9pm", percent: 0.4, songCount: 4, msStreamed: 40 },
+  "10pm": { hour: "10pm", percent: 0.5, songCount: 5, msStreamed: 50 },
+  "11pm": { hour: "11pm", percent: 0.6, songCount: 6, msStreamed: 60 },
+};
+
+export const yearlyDataDummy: YearlyDataType = {
+  "2017": { year: "2017", streamTime: 200, cumSum: 200 },
+  "2018": { year: "2018", streamTime: 300, cumSum: 500 },
+  "2019": { year: "2019", streamTime: 400, cumSum: 900 },
+  "2020": { year: "2020", streamTime: 550, cumSum: 1450 },
+  "2021": { year: "2021", streamTime: 700, cumSum: 2150 },
+  "2022": { year: "2022", streamTime: 1800, cumSum: 2950 },
 };

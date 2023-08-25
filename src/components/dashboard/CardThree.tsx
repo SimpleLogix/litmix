@@ -1,30 +1,19 @@
 import React, { useState } from "react";
 import "../../styles/card-three.css";
 import CalendarHeatMap from "../../components/CalendarHeatMap";
-import { filterHeatmapData } from "../../utils/utils";
 import { HeatmapData, MONTHS, heatmapDataType } from "../../utils/globals";
 
 type Props = {
   heatmapData: heatmapDataType;
+  years: string[];
 };
 
-const rangeMin = 2006;
-const rangeMax = new Date().getFullYear();
-
-const CardThree = ({ heatmapData }: Props) => {
-  const [year, setYear] = useState<number>(2016);
+const CardThree = ({ heatmapData, years }: Props) => {
+  //? States
+  const [yearIndex, setYearIndex] = useState<number>(years.length - 1);
   const [selectedDate, setSelectedDate] = useState<HeatmapData>(
-    heatmapData.get("2016")?.get("01")?.get("01")!
+    heatmapData["2021"]["01"]["01"] //TODO_1: change this to  random non-padded date
   );
-
-  //? Heatmap is just a sigle row of 3 months
-  //? so we need to build 4 rows of 3 months each
-  const dateRanges = [
-    { start: `${year}-01-02`, end: `${year}-04-01` },
-    { start: `${year}-04-02`, end: `${year}-07-01` },
-    { start: `${year}-08-02`, end: `${year}-10-01` },
-    { start: `${year}-10-02`, end: `${year + 1}-01-01` },
-  ];
 
   //? Handlers
   const cellClickCallback = (
@@ -33,20 +22,27 @@ const CardThree = ({ heatmapData }: Props) => {
     msStreamed: number,
     songCount: number,
     topTrack: string,
-    topTrackCount: number,
+    topTrackCount: number
   ) => {
     if (colorValue === 404) return;
-    setSelectedDate({ date, colorValue, msStreamed, songCount, topTrack, topTrackCount });
+    setSelectedDate({
+      date,
+      colorValue,
+      msStreamed,
+      songCount,
+      topTrack,
+      topTrackCount,
+    });
   };
 
   const handleBackClick = () => {
-    if (year === rangeMin) return;
-    setYear(year - 1);
+    const prevIndex = yearIndex - 1 < 0 ? years.length - 1 : yearIndex - 1;
+    setYearIndex(prevIndex);
   };
 
   const handleForwardClick = () => {
-    if (year === rangeMax) return;
-    setYear(year + 1);
+    const nextIndex = yearIndex + 1 === years.length ? 0 : yearIndex + 1;
+    setYearIndex(nextIndex);
   };
 
   const HeatDiff = () => (
@@ -91,40 +87,29 @@ const CardThree = ({ heatmapData }: Props) => {
             alt="<"
             onClick={handleBackClick}
           />
-          <div>{year}</div>
+          <div>{years[yearIndex]}</div>
           <img
             src={`${process.env.PUBLIC_URL}/assets/right.png`}
             alt=">"
             onClick={handleForwardClick}
           />
         </div>
-        <div className="heatmap-grid center">
-          {dateRanges.map((range) => {
-            const filteredValues = filterHeatmapData(
-              heatmapData,
-              new Date(range.start)
-            );
-            return (
-              <CalendarHeatMap
-                key={"heatmap-" + range.start}
-                startDate={new Date(range.start)}
-                values={filteredValues}
-                cellClickCallback={cellClickCallback}
-                selectedDate={selectedDate}
-              />
-            );
-          })}
+        <div className="heatmap-wrapper center">
+          <CalendarHeatMap
+            cellClickCallback={cellClickCallback}
+            selectedDate={selectedDate}
+            heatmap={heatmapData[years[yearIndex]]}
+            year={years[yearIndex]}
+          />
         </div>
       </div>
 
       <div className="heatmap-breakdown center column">
-        <p className="heatmap-data-date">{formatDate(selectedDate?.date)}</p>
+        <p className="heatmap-data-date"> {formatDate(selectedDate?.date)}</p>
 
         <div className="heatmap-data-wrapper center column">
           <div className="mins-super-wrapper">
-            <p className="bold-text">
-              {selectedDate?.msStreamed.toLocaleString()}
-            </p>
+            <p className="bold-text">{msToHours(selectedDate?.msStreamed)}</p>
             <p className="thin-text">mins</p>
             <HeatDiff />
           </div>
@@ -136,6 +121,7 @@ const CardThree = ({ heatmapData }: Props) => {
 
           <div className="center column">
             <p className="bold-text">{selectedDate?.songCount / 2}</p>
+            {/* //TODO-  */}
             <p className="thin-text">unique</p>
           </div>
 
@@ -162,3 +148,5 @@ const calculateHeatDifference = (colorValue: number): string => {
   const diff = Math.abs(colorValue * 100 - 50).toFixed(1);
   return parseFloat(diff) >= 0 ? `${diff}%` : `${diff}%`;
 };
+
+const msToHours = (ms: number): number => Math.floor(ms / 60000);

@@ -1,4 +1,4 @@
-import { ColorMap, DAYS, HeatmapData, MONTHS, WeekdayData, WeekdayDataType, heatmapDataType, weekdays } from "./globals";
+import EMPTY_DATA, { ColorMap, DAYS, Data, HeatmapData, MONTHS, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -28,13 +28,13 @@ export const getMonths = (startDate: Date) => {
 
 // takes a number and returns a color
 export const getColor = (num: number) => {
-    const color = ColorMap[Math.floor(num * 10) / 10];
-    return color || ColorMap[0];
+    const color = ColorMap[Math.floor(num*10)];
+    return color || ColorMap[404];
 }
 
 //* generator
 export function createDateValues(): heatmapDataType {
-    const sample: heatmapDataType = new Map();
+    const sample: heatmapDataType = {};
     let yearD = 2006;
     let date = new Date(yearD, 0, 1);
     for (let i = 0; i < 365 * 18; i++) {
@@ -47,20 +47,20 @@ export function createDateValues(): heatmapDataType {
         const topTrack = "Shut Up my mom's Calling";
         const topTrackCount = Math.floor(Math.random() * 100);
 
-        let yearMap = sample.get(year);
+        let yearMap = sample[year];
         if (!yearMap) {
-            yearMap = new Map();
-            sample.set(year, yearMap);
+            yearMap = {};
+            sample[year] = yearMap;
         }
 
-        let monthMap = yearMap.get(month);
+        let monthMap = yearMap[month];
         if (!monthMap) {
-            monthMap = new Map();
-            yearMap.set(month, monthMap);
+            monthMap = {};
+            yearMap[month] = monthMap;
         }
 
         const heatmapData: HeatmapData = { date: `${year}-${month}-${day}`, songCount, msStreamed, colorValue, topTrack, topTrackCount };
-        monthMap.set(day, heatmapData);
+        monthMap[day] = heatmapData;
 
         date.setUTCDate(date.getUTCDate() + 1);
     }
@@ -82,46 +82,53 @@ export const generateWeekdayData = (): WeekdayDataType => {
     return data;
 };
 
-// filter heatmap data based on month range
-export const filterHeatmapData = (values: heatmapDataType, startDate: Date): HeatmapData[] => {
-    return Array.from(values.keys())
-        .filter((year) => year === startDate.getFullYear().toString())
-        .flatMap((year) => {
-            const endDate = startDate.getMonth() + 3;
-            return Array.from(values.get(year)?.keys() || [])
-                .filter((month) => parseInt(month) >= (startDate.getMonth() + 1) && parseInt(month) <= (endDate))
-                .flatMap((month) => Array.from(values.get(year)?.get(month)?.values() || []));
-        });
+//* generator
+export const generateData = (): Data => {
+    const data = { ...EMPTY_DATA };
+    data.heatmapData = createDateValues();
+    data.weekdayData = generateWeekdayData();
+    data.hourlyData = hourlyDataDummy;
+    data.yearlyData = yearlyDataDummy;
+    data.topArtistsData = topArtistsDummy;
+    data.years = ["2016", "2018", "2019", "2020", "2023"]
+    return data
+}
+
+const emptyHeatmapData: HeatmapData = {
+    date: '',
+    songCount: -1,
+    msStreamed: -1,
+    colorValue: 404,
+    topTrack: '',
+    topTrackCount: -1,
 };
 
 
 // pad up the non - existent days
-export const padMonthData = (values: HeatmapData[], startDate: Date) => {
-    const paddedValues: HeatmapData[] = [];
-    const startingMonth = startDate.getMonth(); // Start with the provided month
-    let dayIndex = 0;
+export const padHeatmapData = (year: number, month: number, data: Record<string, HeatmapData>): HeatmapData[] => {
+    const paddedData: HeatmapData[] = [];
 
-    for (let monthIndex = 0; monthIndex < 3; monthIndex++) {
-        const month = (startingMonth + monthIndex) % 12;
-        const firstDayOfMonth = new Date(startDate.getFullYear(), month, 1);
-        const lastDayOfMonth = new Date(startDate.getFullYear(), month + 1, 0);
+    // Find the day of the week that the month starts on (0 is Sunday, 6 is Saturday)
+    const firstDayOfMonth = new Date(year, month - 1, 1).getDay();
 
-        // Fill in empty days before the first day of the month
-        for (let i = 0; i < firstDayOfMonth.getDay(); i++) {
-            paddedValues.push({ date: "", colorValue: 404, msStreamed: -1, songCount: -1, topTrack: "", topTrackCount: -1 }); // empty dateData
-        }
-
-        // Fill in the actual data for the month
-        for (let day = 1; day <= lastDayOfMonth.getDate(); day++) {
-            paddedValues.push(values[dayIndex] || { date: "", count: 404 });
-            dayIndex++;
-        }
-
-        // Fill in empty days after the last day of the month to reach 35
-        while (paddedValues.length < (monthIndex + 1) * 35) {
-            paddedValues.push({ date: "", colorValue: 404, msStreamed: -1, songCount: -1, topTrack: "", topTrackCount: -1 }); // empty dateData
-        }
+    // Pad the beginning of the month with empty data
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        paddedData.push(emptyHeatmapData);
     }
 
-    return paddedValues;
-};
+    // Go through each day of the month and add the existing data or the empty data if not exist
+    for (let day = 1; day <= 31; day++) {
+        const key = day.toString().padStart(2, '0');
+        paddedData.push(data[key] || emptyHeatmapData);
+    }
+
+    // Pad the remaining days to reach 35 records
+    while (paddedData.length < 35) {
+        paddedData.push(emptyHeatmapData);
+    }
+
+    return paddedData;
+}
+
+
+

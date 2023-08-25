@@ -1,6 +1,6 @@
 import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
 import EMPTY_DATA, { UserFile } from "../utils/globals";
-import { handleUploadedFile } from "../utils/FileHandler";
+import { handleUploadedFile, saveData } from "../utils/FileHandler";
 import { analyzeUserData } from "../utils/Stats";
 
 type Props = {
@@ -141,9 +141,9 @@ const UploadBox = ({
     // get data from file handler
     handleUploadedFile(file?.file!, (data) => {
       if (data) {
-        //! save data here !
+        analyzeUserData(data); // update yearlyData stats
         setFile({ name: file.name, stats: data, file: file.file });
-        analyzeUserData(data);
+        saveData(data);
         console.log(data);
       } else {
         setUploadState("failure");

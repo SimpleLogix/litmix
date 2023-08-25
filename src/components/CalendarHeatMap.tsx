@@ -1,70 +1,96 @@
 import React from "react";
-import { getColor, getMonths, padMonthData } from "../utils/utils";
-import { HeatmapData } from "../utils/globals";
+import { getColor, getMonths, padHeatmapData } from "../utils/utils";
+import { HeatmapData, MONTHS, heatmapDataType } from "../utils/globals";
 
 // data for the selected day in the selected year
 type Props = {
-  startDate: Date;
-  values: HeatmapData[];
+  heatmap: Record<string, Record<string, HeatmapData>>;
   cellClickCallback: (
     date: string,
     colorValue: number,
     msStreamed: number,
     songCount: number,
     topTrack: string,
-    topTrackCount: number,
+    topTrackCount: number
   ) => void;
   selectedDate: HeatmapData;
+  year: string;
 };
 
 const CalendarHeatMap = ({
-  startDate,
-  values,
+  heatmap,
   cellClickCallback,
   selectedDate,
+  year,
 }: Props) => {
-  const months = getMonths(startDate);
-  const paddedValues = padMonthData(values, startDate);
-
   // builds a row of 3 months based on the given monthValues
-  const MonthHeatMap = ({ monthValues }: { monthValues: HeatmapData[] }) => (
-    <div className="heatmap">
-      {monthValues.map((data, i) => (
-        <div
-          className={`heatmap-day ${
-            selectedDate.date === data.date && data.colorValue !== 404
-              ? "selected-day"
-              : ""
-          }`}
-          style={{ backgroundColor: getColor(data.colorValue) }}
-          key={`${months[0]}-${i}`}
-          onClick={() =>
-            cellClickCallback(
-              data.date,
-              data.colorValue,
-              data.msStreamed,
-              data.songCount,
-              data.topTrack,
-              data.topTrackCount,
-            )
-          }
-        ></div>
-      ))}
-    </div>
-  );
+  // const MonthHeatMap = ({
+  //   monthValues,
+  // }: {
+  //   monthValues: Record<string, Record<string, HeatmapData>>;
+  // }) => (
+  //   <div className="heatmap">
+  //     {monthValues.map((data, i) => (
+  //       <div
+  //         className={`heatmap-day ${
+  //           selectedDate.date === data.date && data.colorValue !== 404
+  //             ? "selected-day"
+  //             : ""
+  //         }`}
+  //         style={{ backgroundColor: getColor(data.colorValue) }}
+  //         key={`${months[0]}-${i}-${data.date}`}
+  //         onClick={() =>
+  //           cellClickCallback(
+  //             data.date,
+  //             data.colorValue,
+  //             data.msStreamed,
+  //             data.songCount,
+  //             data.topTrack,
+  //             data.topTrackCount
+  //           )
+  //         }
+  //       ></div>
+  //     ))}
+  //   </div>
+  // );
 
   return (
-    <div className="heatmap-row-wrapper">
-      <div className="heatmap-row-header">
-        <span>{months[0]}</span>
-        <span>{months[1]}</span>
-        <span>{months[2]}</span>
-      </div>
-      <div className="heatmap-row">
-        <MonthHeatMap monthValues={paddedValues.slice(0, 35)} />
-        <MonthHeatMap monthValues={paddedValues.slice(35, 70)} />
-        <MonthHeatMap monthValues={paddedValues.slice(70, 105)} />
-      </div>
+    <div className="heatmap-row-wrapper heatmap-grid">
+      {Object.entries(heatmap)
+        .sort(([a], [b]) => Number(a) - Number(b))
+        .map(([month, monthData]) => (
+          <div key={month}>
+            <div className="heatmap-row-header">
+              <span>{MONTHS[parseInt(month) - 1]}</span>
+            </div>
+            <div className="heatmap">
+              {padHeatmapData(parseInt(year), parseInt(month), monthData).map(
+                (dayData: HeatmapData, index: number) => (
+                  <div
+                    className={`heatmap-day ${
+                      selectedDate.date === dayData.date &&
+                      dayData.colorValue !== 404
+                        ? "selected-day"
+                        : ""
+                    }`}
+                    style={{ backgroundColor: getColor(dayData.colorValue) }}
+                    key={index}
+                    onClick={() =>
+                      cellClickCallback(
+                        dayData.date,
+                        dayData.colorValue,
+                        dayData.msStreamed,
+                        dayData.songCount,
+                        dayData.topTrack,
+                        dayData.topTrackCount
+                      )
+                    }
+                  ></div>
+                )
+              )}
+            </div>
+          </div>
+        ))}
     </div>
   );
 };

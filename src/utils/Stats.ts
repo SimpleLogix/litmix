@@ -1,31 +1,39 @@
-import { DAYS, Data, heatmapDataType } from "./globals";
+import { Data } from "./globals";
 
+/// Takes a Data object and analyzes the data to add additional fields
 export const analyzeUserData = (data: Data) => {
-
-
 
     // average ms streamed per day
     let totalMsStreamed = 0;
     let totalDays = 0;
+    let minMsStreamed = Number.MAX_SAFE_INTEGER;
+    let maxMsStreamed = Number.MIN_SAFE_INTEGER;
 
-    data.heatmapData.forEach((yearMap, year) => {
-        yearMap.forEach((monthMap, month) => {
-            monthMap.forEach((dayData, day) => {
+    for (const year in data.heatmapData) {
+        const yearMap = data.heatmapData[year];
+        for (const month in yearMap) {
+            const monthMap = yearMap[month];
+            for (const day in monthMap) {
+                const dayData = monthMap[day];
                 totalMsStreamed += dayData.msStreamed;
                 totalDays++;
-            });
-        });
-    });
+                minMsStreamed = Math.min(minMsStreamed, dayData.msStreamed);
+                maxMsStreamed = Math.max(maxMsStreamed, dayData.msStreamed);
+            }
+        }
+    }
 
     const avgMsStreamedPerDay = totalMsStreamed / totalDays;
 
 
 
-    // iterate through heatmap to calculate top track and percentage difference
-    data.heatmapData.forEach((yearMap, year) => {
+    for (const year in data.heatmapData) {
         let yearMsStreamed = 0;
-        yearMap.forEach((monthMap, month) => {
-            monthMap.forEach((dayData, day) => {
+        const yearMap = data.heatmapData[year];
+        for (const month in yearMap) {
+            const monthMap = yearMap[month];
+            for (const day in monthMap) {
+                const dayData = monthMap[day];
 
                 // Find the top track for the day
                 let topTrackName = '';
@@ -42,18 +50,19 @@ export const analyzeUserData = (data: Data) => {
                 dayData.topTrackCount = topTrackCount;
 
                 // Calculate the percentage difference
-                dayData.colorValue = ((dayData.msStreamed - avgMsStreamedPerDay) / avgMsStreamedPerDay);
+                dayData.colorValue = ((dayData.msStreamed - minMsStreamed) / (maxMsStreamed - minMsStreamed));
 
                 // Update the day data
-                monthMap.set(day, dayData);
+                monthMap[day] = dayData;
 
-                //update values for yearly data
+                // Update values for yearly data
                 yearMsStreamed += dayData.msStreamed;
-            });
-        });
+            }
+        }
         // Update the cumulative sum
         data.yearlyData[year] = { year: year, streamTime: yearMsStreamed, cumSum: 0 };
-    });
+    }
+
 
     // calculate cumulative sum
     let yearlyArray = Object.values(data.yearlyData);
