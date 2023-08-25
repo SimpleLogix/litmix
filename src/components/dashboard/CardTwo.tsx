@@ -8,6 +8,7 @@ import {
   XAxis,
 } from "recharts";
 import { HourlyData } from "../../utils/globals";
+import { msToHours } from "../../utils/utils";
 
 type Props = {
   hourlyData: Record<string, HourlyData>;
@@ -19,9 +20,36 @@ const CustomBarShape = (props: any) => {
 };
 
 const CardTwo = ({ hourlyData }: Props) => {
-  const hourlyDataArray = Object.values(hourlyData);
-  const dataAM = hourlyDataArray.slice(0, 12);
-  const dataPM = hourlyDataArray.slice(12, 24);
+  const dataAM: HourlyData[] = [];
+  const dataPM: HourlyData[] = [];
+
+  // sort entries and separate into AM and PM
+  Object.entries(hourlyData)
+    .sort(([a], [b]) => {
+      const isPMA = a.toLowerCase().endsWith("pm");
+      const isPMB = b.toLowerCase().endsWith("pm");
+      const hourA = parseInt(a.substring(0, a.length - 2), 10);
+      const hourB = parseInt(b.substring(0, b.length - 2), 10);
+
+      if (isPMA && hourA === 12) return -1;
+      if (isPMB && hourB === 12) return 1;
+
+      return hourA + (isPMA ? 12 : 0) - (hourB + (isPMB ? 12 : 0));
+    })
+    .forEach(([hour, value]) => {
+      const hourlyDataEntry: HourlyData = {
+        hour,
+        percent: value.percent,
+        songCount: value.songCount,
+        msStreamed: value.msStreamed,
+      };
+
+      if (hour.toLowerCase().endsWith("am")) {
+        dataAM.push(hourlyDataEntry);
+      } else if (hour.toLowerCase().endsWith("pm")) {
+        dataPM.push(hourlyDataEntry);
+      }
+    });
 
   const [isPM, setIsPM] = useState<boolean>(true);
   const [tooltip, setTooltip] = useState<HourlyData>(dataPM[0]);
@@ -50,14 +78,14 @@ const CardTwo = ({ hourlyData }: Props) => {
 
       <div className="hourly-data-wrapper center">
         <div>
-          {tooltip.msStreamed} <span>hrs</span>
+          {msToHours(tooltip.msStreamed).toFixed(1)} <span>hrs</span>
         </div>
         <div>
           {tooltip.songCount} <span>Songs</span>
         </div>
       </div>
 
-      <ResponsiveContainer width={"88%"} height="84%">
+      <ResponsiveContainer width={"88%"} height="64%">
         <BarChart data={isPM ? dataPM : dataAM}>
           <CartesianGrid vertical={false} />
           <XAxis dataKey="hour" />

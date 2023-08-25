@@ -108,17 +108,17 @@ export const DAYS: Record<number, string> = {
 
 export const ColorMap: Record<number, string> = {
 
-  0: "#fefdfb",
-  1: "#c5f4d1",
-  2: "#b2efc7",
-  3: "#9eeabc",
-  4: "#8be5b2",
-  5: "#18ba77",
-  6: "#64dba0",
-  7: "#51d095",
-  8: "#3ec58b",
-  9: "#2bbf81",
-  10: "#18ba77",
+  0: "#c5f4d1",
+  1: "#b2efc7",
+  2: "#9eeabc",
+  3: "#8be5b2",
+  4: "#18ba77",
+  5: "#64dba0",
+  6: "#51d095",
+  7: "#3ec58b",
+  8: "#2bbf81",
+  9: "#18ba77",
+  10: "#05b46d",
   404: "transparent",
 };
 
