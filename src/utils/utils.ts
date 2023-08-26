@@ -5,7 +5,7 @@ import EMPTY_DATA, { ColorMap, DAYS, Data, HeatmapData, MONTHS, WeekdayDataType,
 // 123,456 => 123k 
 export const stringifyNum = (num: number) => {
     const suffix = num < 1000 ? '' : num < 1000000 ? 'k' : 'm';
-    const divisor = num < 1000 ? 1 : num < 1000000 ? 100 : 1000000;
+    const divisor = num < 1000 ? 1 : num < 1000000 ? 1000 : 1000000;
     let result = (num / divisor).toFixed(1);
 
     if (result.endsWith('.0')) {
@@ -14,17 +14,6 @@ export const stringifyNum = (num: number) => {
 
     return result + suffix;
 }
-//  takes start date and returns the next 3 months
-export const getMonths = (startDate: Date) => {
-    const months: string[] = [];
-    for (let i = 0; i < 3; i++) {
-        const newDate = new Date(Date.UTC(startDate.getUTCFullYear(), startDate.getUTCMonth() + i));
-        const monthIdx = newDate.getUTCMonth();
-        months.push(MONTHS[monthIdx]!);
-    }
-    return months;
-};
-
 
 // takes a number and returns a color
 export const getColor = (num: number) => {
@@ -136,4 +125,8 @@ export const padHeatmapData = (year: number, month: number, data: Record<string,
 
 export const msToHours = (ms: number) => {
     return ms / 1000 / 60 / 60;
+}
+
+export const msToMins = (ms: number) => {
+    return ms / 1000 / 60;
 }

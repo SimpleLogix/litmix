@@ -14,8 +14,7 @@ function App() {
   //? fetch data from storage if it exists
   // localStorage.clear()
   const data: Data = checkExistingData();
-  console.log(data.heatmapData);
-  console.log("dummy:", createDateValues())
+  console.log(data.yearlyData);
 
   return (
     <div className="app">

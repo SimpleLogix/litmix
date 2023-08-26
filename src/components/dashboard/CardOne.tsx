@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import "../../styles/card-one.css";
 import {
   ResponsiveContainer,
@@ -8,8 +8,9 @@ import {
   XAxis,
   YAxis,
   Tooltip,
+  ReferenceArea,
 } from "recharts";
-import { stringifyNum } from "../../utils/utils";
+import { msToHours, msToMins, stringifyNum } from "../../utils/utils";
 import { YearlyData, YearlyDataType } from "../../utils/globals";
 
 type Props = {
@@ -23,21 +24,26 @@ const CardOne = ({ yearlyData }: Props) => {
   const lastYear = sortedYears[sortedYears.length - 1];
   // Get the corresponding data object
   const lastYearData = yearlyData[lastYear];
+  //? states
   const [displayedData, setDisplayedData] = useState<YearlyData>(lastYearData);
 
   // rechartrs tooltip is not a react component,
   // so I made this janky workaround
   const CustomTooltip = ({ active, payload }: any) => {
-    const displayedData = useMemo(() => {
+    useEffect(() => {
       if (active && payload && payload.length) {
-        return payload[0].payload;
+        const newPayload = payload[0].payload as YearlyData;
+        if (newPayload.year !== displayedData.year) {
+          setDisplayedData(newPayload);
+        }
       } else {
-        return lastYearData;
+        if (displayedData.year !== lastYearData.year) {
+          setDisplayedData(lastYearData);
+        }
       }
     }, [active, payload]);
-  
-  
-    return null; 
+
+    return null;
   };
 
   // Convert the record to an array for use with the LineChart
@@ -51,16 +57,16 @@ const CardOne = ({ yearlyData }: Props) => {
     <div className="card stream-time-card column">
       <h3>Total Stream Time</h3>
       <div className="card-one-displayed-data ">
+        <p className="stream-cum-total">
+          {stringifyNum(msToMins(displayedData.cumSum))}
+          <span> mins</span>
+        </p>
         <p className="stream-year-total">
-          {stringifyNum(displayedData.streamTime)}
+          {stringifyNum(msToMins(displayedData.streamTime))}
           <span>
             {" "}
             mins <span>({displayedData.year})</span>
           </span>
-        </p>
-        <p className="stream-cum-total">
-          {stringifyNum(displayedData.cumSum)}
-          <span> mins</span>
         </p>
       </div>
       <div className="stream-time-line-container center">

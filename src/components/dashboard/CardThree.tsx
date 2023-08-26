@@ -10,9 +10,9 @@ type Props = {
 
 const CardThree = ({ heatmapData, years }: Props) => {
   //? States
-  const [yearIndex, setYearIndex] = useState<number>(years.length - 1);
+  const [yearIndex, setYearIndex] = useState<number>(years.length - 2); //2nd to last
   const [selectedDate, setSelectedDate] = useState<HeatmapData>(
-    heatmapData["2021"]["01"]["01"] //TODO_1: change this to  random non-padded date
+    heatmapData[years[yearIndex]]["01"]["01"] //TODO_1: change this to  random non-padded date
   );
 
   //? Handlers

@@ -1,5 +1,5 @@
 import React from "react";
-import { getColor, getMonths, padHeatmapData } from "../utils/utils";
+import { getColor, padHeatmapData } from "../utils/utils";
 import { HeatmapData, MONTHS, heatmapDataType } from "../utils/globals";
 
 // data for the selected day in the selected year
