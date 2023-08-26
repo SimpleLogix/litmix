@@ -1,7 +1,7 @@
 import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
 import EMPTY_DATA, { UserFile } from "../utils/globals";
-import { handleUploadedFile, saveData } from "../utils/FileHandler";
-import { analyzeUserData } from "../utils/Stats";
+import { handleUploadedFile } from "../utils/FileHandler";
+import { saveData } from "../utils/utils";
 
 type Props = {
   closeUploadCallback: () => void;
@@ -89,7 +89,6 @@ const UploadBox = ({
 
   //? use Effect
   useEffect(() => {
-    ///! Add file processing here... this is ran when uploadState changes to processing
     if (uploadState === "processing") {
       const interval = setInterval(() => {
         setProgress((prevProgress) =>
@@ -141,10 +140,8 @@ const UploadBox = ({
     // get data from file handler
     handleUploadedFile(file?.file!, (data) => {
       if (data) {
-        analyzeUserData(data); // update yearlyData stats
         setFile({ name: file.name, stats: data, file: file.file });
         saveData(data);
-        console.log(data);
       } else {
         setUploadState("failure");
       }

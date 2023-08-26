@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/card-one.css";
 import {
   ResponsiveContainer,
@@ -8,9 +8,8 @@ import {
   XAxis,
   YAxis,
   Tooltip,
-  ReferenceArea,
 } from "recharts";
-import { msToHours, msToMins, stringifyNum } from "../../utils/utils";
+import { msToMins, stringifyNum } from "../../utils/utils";
 import { YearlyData, YearlyDataType } from "../../utils/globals";
 
 type Props = {

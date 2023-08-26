@@ -8,11 +8,12 @@ type Props = {
 };
 
 const handleDelete = async () => {
+  const x = await requestToken();
+  console.log(x);
   if (window.confirm("Are you sure you want to delete your data?")) {
-    // localStorage.clear();
-    // window.location.reload();
-    const x = await requestToken();
-    console.log(x)
+     localStorage.clear();
+     window.location.reload();
+
   }
 };
 

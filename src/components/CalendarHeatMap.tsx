@@ -1,6 +1,6 @@
 import React from "react";
 import { getColor, padHeatmapData } from "../utils/utils";
-import { HeatmapData, MONTHS, heatmapDataType } from "../utils/globals";
+import { HeatmapData, MONTHS } from "../utils/globals";
 
 // data for the selected day in the selected year
 type Props = {
@@ -23,37 +23,6 @@ const CalendarHeatMap = ({
   selectedDate,
   year,
 }: Props) => {
-  // builds a row of 3 months based on the given monthValues
-  // const MonthHeatMap = ({
-  //   monthValues,
-  // }: {
-  //   monthValues: Record<string, Record<string, HeatmapData>>;
-  // }) => (
-  //   <div className="heatmap">
-  //     {monthValues.map((data, i) => (
-  //       <div
-  //         className={`heatmap-day ${
-  //           selectedDate.date === data.date && data.colorValue !== 404
-  //             ? "selected-day"
-  //             : ""
-  //         }`}
-  //         style={{ backgroundColor: getColor(data.colorValue) }}
-  //         key={`${months[0]}-${i}-${data.date}`}
-  //         onClick={() =>
-  //           cellClickCallback(
-  //             data.date,
-  //             data.colorValue,
-  //             data.msStreamed,
-  //             data.songCount,
-  //             data.topTrack,
-  //             data.topTrackCount
-  //           )
-  //         }
-  //       ></div>
-  //     ))}
-  //   </div>
-  // );
-
   return (
     <div className="heatmap-row-wrapper heatmap-grid">
       {Object.entries(heatmap)

@@ -40,8 +40,8 @@ const Dashboard = ({ data }: Props) => {
   const closeUploadCallback = () => {
     if (
       uploadState !== "success" &&
-      uploadState !== "processing" 
-      // data.hourlyData !== hourlyDataDummy // no data uploaded
+      uploadState !== "processing" &&
+      data.hourlyData !== hourlyDataDummy
     ) {
       setIsUploadOpen(false);
       setFile(null);
@@ -51,11 +51,11 @@ const Dashboard = ({ data }: Props) => {
   };
 
   //! turn this off
-  // useEffect(() => {
-  //   if (data.hourlyData === hourlyDataDummy) {
-  //     setIsUploadOpen(true);
-  //   }
-  // }, [data.hourlyData]);
+  useEffect(() => {
+    if (data.hourlyData === hourlyDataDummy) {
+      setIsUploadOpen(true);
+    }
+  }, [data.hourlyData]);
 
   return (
     <div className="dashboard-root column" onClick={handleRootClick}>

@@ -1,4 +1,4 @@
-import EMPTY_DATA, { ColorMap, DAYS, Data, HeatmapData, MONTHS, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy } from "./globals";
+import EMPTY_DATA, { ColorMap, DAYS, Data, HeatmapData, TopStatData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -19,6 +19,11 @@ export const stringifyNum = (num: number) => {
 export const getColor = (num: number) => {
     const color = ColorMap[Math.floor(num*10)];
     return color || ColorMap[404];
+}
+
+// sorts string array of years in ascending order
+export const sortYears = (years: string[]): string[] => {
+    return years.sort((a, b) => parseInt(a) - parseInt(b));
 }
 
 //* generator
@@ -129,4 +134,51 @@ export const msToHours = (ms: number) => {
 
 export const msToMins = (ms: number) => {
     return ms / 1000 / 60;
+}
+
+// Record<string, Record<string, any>> -> WeekdayDataType
+export const convertToWeekdayDataType = (daysData: Record<string, Record<string, any>>, totalMsStreamed: number): WeekdayDataType => {
+    let weekdayData: WeekdayDataType = {};
+    for (const [day, data] of Object.entries(daysData)) {
+        // calculate the % of total ms streamed
+        const msStreamed = data.msStreamed / totalMsStreamed;
+
+        weekdayData[day] = {
+            day: day,
+            percent: msStreamed,
+            mostActive: Object.entries(data.time as Record<string, number>).reduce(
+                (a: [string, number], b: [string, number]) => (a[1] > b[1] ? a : b)
+            )[0]
+        }
+    }
+    return weekdayData;
+}
+
+
+export const convertToTopStatData = (count: Record<string, Record<string, any>>): TopStatData[] => {
+    return Object.entries(count)
+        .sort((a, b) => b[1].playCount - a[1].playCount)
+        .slice(0, 20)
+        .map(([name, data]) => ({
+            img: '',
+            name: name,
+            msStreamed: 0,
+            playCount: data.playCount,
+            topTrack: '',
+            discovered: '',
+        }));
+};
+
+
+//* Data
+// fetch data from local storage
+export const checkExistingData = (): Data => {
+    return localStorage.getItem("data")
+        ? JSON.parse(localStorage.getItem("data")!) as Data
+        : generateData();
+};
+
+
+export const saveData = (data: Data) => {
+    localStorage.setItem("data", JSON.stringify(data));
 }

@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
-import EMPTY_DATA, { DAYS, Data, HeatmapData, HourlyData, MONTHS, TopArtistsData, TopStatData, WeekdayData, WeekdayDataType, heatmapDataType } from './globals';
-import { generateData } from './utils';
+import EMPTY_DATA, { DAYS, Data, HeatmapData, HourlyData, heatmapDataType } from './globals';
+import { convertToTopStatData, convertToWeekdayDataType, sortYears } from './utils';
 
 type StreamingHistory = {
     // Define the fields based on the example JSON provided
@@ -16,6 +16,9 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     let heatmap: heatmapDataType = {};
     let hourlyData: Record<string, HourlyData> = {};
     let years: string[] = [];
+    const artistCount: Record<string, Record<string, any>> = {}
+    const trackCount: Record<string, Record<string, any>> = {}
+    const albumCount: Record<string, Record<string, any>> = {}
 
     // raw data taken from file before being proccessed
     let totalMsStreamed = 0;
@@ -26,11 +29,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                 '0am': 0,
             }
         }
-
     }
-    const artistCount: Record<string, Record<string, any>> = {}
-    const trackCount: Record<string, Record<string, any>> = {}
-    const albumCount: Record<string, Record<string, any>> = {}
 
     // Check file format
     if (file.name === "my_spotify_data.zip") {
@@ -140,8 +139,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                 // Wait for all data to be gathered
                 await Promise.all(promises);
 
-                // Call back the data
-                callBack({
+                const userData = {
                     heatmapData: heatmap,
                     topArtistsData: convertToTopStatData(artistCount),
                     topTracksData: convertToTopStatData(trackCount),
@@ -149,8 +147,12 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                     hourlyData: hourlyData,
                     weekdayData: convertToWeekdayDataType(daysData, totalMsStreamed),
                     years: sortYears(years),
-                    yearlyData: {}, // calculated later in Stats after all data is made availble
-                });
+                    yearlyData: {},
+                };
+                analyzeUserData(userData); // update the yearly data
+
+                // Call back the data
+                callBack(userData);
             }
         };
         reader.readAsArrayBuffer(file);
@@ -160,51 +162,80 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     }
 };
 
-const sortYears = (years: string[]): string[] => {
-    return years.sort((a, b) => parseInt(a) - parseInt(b));
-}
+/// Takes a Data object and analyzes the data to add additional fields
+// specificallt the yearlyData and colorValue fields in the heatmap
+const analyzeUserData = (data: Data) => {
 
-const convertToTopStatData = (count: Record<string, Record<string, any>>): TopStatData[] => {
-    return Object.entries(count)
-        .sort((a, b) => b[1].playCount - a[1].playCount)
-        .slice(0, 20)
-        .map(([name, data]) => ({
-            img: '',
-            name: name,
-            msStreamed: 0,
-            playCount: data.playCount,
-            topTrack: '',
-            discovered: '',
-        }));
-};
+    // average ms streamed per day
+    let totalMsStreamed = 0;
+    let totalDays = 0;
+    let minMsStreamed = Number.MAX_SAFE_INTEGER;
+    let maxMsStreamed = Number.MIN_SAFE_INTEGER;
 
-//* note that this is not the full stats. some other analysis is requried to derive top and avg
-//* later in the stats.ts file
-const convertToWeekdayDataType = (daysData: Record<string, Record<string, any>>, totalMsStreamed: number): WeekdayDataType => {
-    let weekdayData: WeekdayDataType = {};
-    for (const [day, data] of Object.entries(daysData)) {
-        // calculate the % of total ms streamed
-        const msStreamed = data.msStreamed / totalMsStreamed;
-
-        weekdayData[day] = {
-            day: day,
-            percent: msStreamed,
-            mostActive: Object.entries(data.time as Record<string, number>).reduce(
-                (a: [string, number], b: [string, number]) => (a[1] > b[1] ? a : b)
-            )[0]
+    for (const year in data.heatmapData) {
+        const yearMap = data.heatmapData[year];
+        for (const month in yearMap) {
+            const monthMap = yearMap[month];
+            for (const day in monthMap) {
+                const dayData = monthMap[day];
+                totalMsStreamed += dayData.msStreamed;
+                totalDays++;
+                minMsStreamed = Math.min(minMsStreamed, dayData.msStreamed);
+                maxMsStreamed = Math.max(maxMsStreamed, dayData.msStreamed);
+            }
         }
     }
-    return weekdayData;
-}
 
-// fetch data from local storage
-export const checkExistingData = (): Data => {
-    return localStorage.getItem("data")
-        ? JSON.parse(localStorage.getItem("data")!) as Data
-        : generateData();
-};
+    const avgMsStreamedPerDay = totalMsStreamed / totalDays;
 
 
-export const saveData = (data: Data) => {
-    localStorage.setItem("data", JSON.stringify(data));
+    for (const year in data.heatmapData) {
+        let yearMsStreamed = 0;
+        const yearMap = data.heatmapData[year];
+        for (const month in yearMap) {
+            const monthMap = yearMap[month];
+            for (const day in monthMap) {
+                const dayData = monthMap[day];
+
+                // Find the top track for the day
+                let topTrackName = '';
+                let topTrackCount = 0;
+                for (const [trackName, count] of Object.entries(dayData.tracks!)) {
+                    if (count > topTrackCount) {
+                        topTrackCount = count;
+                        topTrackName = trackName;
+                    }
+                }
+
+                // Set the top track
+                dayData.topTrack = topTrackName;
+                dayData.topTrackCount = topTrackCount;
+
+                // Calculate the percentage difference
+                dayData.colorValue = ((dayData.msStreamed - minMsStreamed) / (maxMsStreamed - minMsStreamed));
+
+                // Update the day data
+                monthMap[day] = dayData;
+
+                // Update values for yearly data
+                yearMsStreamed += dayData.msStreamed;
+            }
+        }
+        // Update the cumulative sum
+        data.yearlyData[year] = { year: year, streamTime: yearMsStreamed, cumSum: 0 };
+    }
+
+
+    // calculate cumulative sum
+    let yearlyArray = Object.values(data.yearlyData);
+    yearlyArray.sort((a, b) => parseInt(a.year) - parseInt(b.year)); // sort by year
+    let cumSum = 0;
+    yearlyArray.forEach(yearData => {
+        cumSum += yearData.streamTime;
+        yearData.cumSum = cumSum;
+    });
+
+    yearlyArray.forEach(yearData => {
+        data.yearlyData[yearData.year] = yearData;
+    });
 }

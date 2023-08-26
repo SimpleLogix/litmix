@@ -5,8 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Discover from "./pages/Discover";
 import { Data } from "./utils/globals";
 import "./styles/animations.css";
-import { checkExistingData } from "./utils/FileHandler";
-import { createDateValues } from "./utils/utils";
+import { checkExistingData } from "./utils/utils";
 
 function App() {
   const [page, setPage] = useState("Dashboard");
@@ -14,7 +13,6 @@ function App() {
   //? fetch data from storage if it exists
   // localStorage.clear()
   const data: Data = checkExistingData();
-  console.log(data.yearlyData);
 
   return (
     <div className="app">
