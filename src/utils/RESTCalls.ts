@@ -1,3 +1,5 @@
+
+// Call firebase function to retrieve sensitive data
 export const requestToken = async () => {
     try {
         const response = await fetch('https://us-central1-lit-mix.cloudfunctions.net/myFunction');
