@@ -1,5 +1,5 @@
 import React, { ChangeEvent, SetStateAction, useEffect, useRef } from "react";
-import EMPTY_DATA, { UserFile } from "../utils/globals";
+import { EMPTY_DATA, UserFile } from "../utils/globals";
 import { handleUploadedFile } from "../utils/FileHandler";
 import { saveData } from "../utils/utils";
 

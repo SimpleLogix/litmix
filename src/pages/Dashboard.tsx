@@ -80,7 +80,7 @@ const Dashboard = ({ data }: Props) => {
         <CardTwo hourlyData={data.hourlyData} />
         <CardThree heatmapData={data.heatmapData} years={data.years} />
         <CardFour />
-        <CardFive topArtistsData={data.topArtistsData} />
+        <CardFive topArtistsData={Object.values(data.topArtistsData)} />
         <CardSix weekdayData={data.weekdayData} />
       </div>
     </div>

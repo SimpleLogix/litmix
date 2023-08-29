@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import "../../styles/card-five.css";
-import { TopArtistsData } from "../../utils/globals";
+import { Artist } from "../../utils/globals";
 
 type Props = {
-  topArtistsData: TopArtistsData[];
+  topArtistsData: Artist[];
 };
 
 const CardFive = ({ topArtistsData }: Props) => {
   const [artistIdx, setArtistIdx] = useState<number>(0);
-  const [selectedArtist, setSelectedArtist] = useState<TopArtistsData>(
+  const [selectedArtist, setSelectedArtist] = useState<Artist>(
     topArtistsData[artistIdx]
   );
 
@@ -34,7 +34,7 @@ const CardFive = ({ topArtistsData }: Props) => {
       <div
         className="card-background"
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/assets/${selectedArtist.img})`,
+          backgroundImage: `url(${process.env.PUBLIC_URL}/assets/${selectedArtist.image})`,
         }}
       ></div>
 

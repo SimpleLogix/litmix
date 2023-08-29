@@ -1,3 +1,17 @@
+export interface Data {
+  heatmapData: heatmapDataType;
+  topArtistsData: Record<string, Artist>;
+  topTracksData: Record<string, Track>; // id -> track data
+  hourlyData: Record<string, HourlyData>;
+  weekdayData: WeekdayDataType;
+  yearlyData: YearlyDataType;
+  years: string[] // years that have data
+  displayName: string;
+  username: string;
+  profileImage: string;
+  genres: Record<string, number>;
+}
+
 export interface HeatmapData {
   date: string; // The date on which the music was played
   songCount: number; // The total number of songs played on that date
@@ -8,18 +22,21 @@ export interface HeatmapData {
   tracks?: Record<string, number>;
 }
 
-export interface TopStatData {
-  img: string;
+
+export interface TopStat {
+  id: string;
   name: string;
-  msStreamed: number;
+  artistName: string;
+  image: string;
   playCount: number;
-  topTrack?: string;
+  msStreamed: number;
   discovered: string;
+  genres: string[];
+  topTrack?: string;
 }
 
-export interface TopArtistsData extends TopStatData { }
-export interface TopTracksData extends TopStatData { }
-export interface TopAlbumsData extends TopStatData { }
+export interface Track extends TopStat { }
+export interface Artist extends TopStat { }
 
 export interface HourlyData {
   hour: string;
@@ -41,16 +58,7 @@ export type YearlyDataType = Record<string, YearlyData>
 
 export interface YearlyData { year: string, streamTime: number, cumSum: number }
 
-export interface Data {
-  heatmapData: heatmapDataType;
-  topArtistsData: TopArtistsData[];
-  topTracksData: TopTracksData[];
-  topAlbumsData: TopAlbumsData[];
-  hourlyData: Record<string, HourlyData>;
-  weekdayData: WeekdayDataType;
-  yearlyData: YearlyDataType;
-  years: string[] // years that have data
-}
+
 
 export interface UserFile {
   name: string;
@@ -58,18 +66,27 @@ export interface UserFile {
   stats: Data;
 }
 
-const EMPTY_DATA: Data = {
+export const EMPTY_DATA: Data = {
   heatmapData: {},
-  topArtistsData: [],
-  topTracksData: [],
-  topAlbumsData: [],
+  topArtistsData: {},
+  topTracksData: {},
   hourlyData: {},
   weekdayData: {},
   yearlyData: {},
   years: [],
+  displayName: "",
+  username: "",
+  profileImage: "",
+  genres: {},
 }
 
-export default EMPTY_DATA;
+export interface SpotifyArtistData {
+  name: string;
+  image: string;
+  genres: string[];
+  id: string;
+}
+
 
 // raw data type of heat map
 // {'2016' : {
@@ -79,7 +96,6 @@ export default EMPTY_DATA;
 export type heatmapDataType = Record<string, Record<string, Record<string, HeatmapData>>>;
 
 export const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 
 export const MONTHS: Record<number, string> = {
   0: 'Jan',
@@ -124,32 +140,41 @@ export const ColorMap: Record<number, string> = {
 
 //* DUMMY DATA
 
-export const topArtistsDummy: TopArtistsData[] = [
-  {
-    img: "dae.jpg",
+export const topArtistsDummy: Record<string, Artist> = {
+  "Dae Zhen": {
+    image: "dae.jpg",
+    id: "dae",
     name: "Dae Zhen",
+    artistName: "Dae Zhen",
+    genres: [],
     msStreamed: 1337,
     playCount: 420,
     topTrack: "Lately (Drugs)",
     discovered: "Aug 19, 2023",
   },
-  {
-    img: "zervas.jpg",
+  "Arizona Zervas": {
+    image: "zervas.jpg",
+    id: "zervas",
     name: "Arizona Zervas",
+    artistName: "Arizona Zervas",
+    genres: [],
     msStreamed: 2005,
     playCount: 999,
     topTrack: "Roxanne",
     discovered: "Aug 19, 2023",
   },
-  {
-    img: "drake.jpg",
+  "Drake": {
+    image: "drake.jpg",
+    id: "drake",
     name: "Drake",
+    artistName: "Drake",
+    genres: [],
     msStreamed: 2005,
     playCount: 999,
     topTrack: "Hotline Bling",
     discovered: "Aug 19, 2023",
   },
-];
+};
 
 export const hourlyDataDummy: Record<string, HourlyData> = {
   "12am": {

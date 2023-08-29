@@ -1,4 +1,4 @@
-import EMPTY_DATA, { ColorMap, DAYS, Data, HeatmapData, TopStatData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy } from "./globals";
+import { EMPTY_DATA, ColorMap, DAYS, Data, HeatmapData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy, SpotifyArtistData, Track } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -17,7 +17,7 @@ export const stringifyNum = (num: number) => {
 
 // takes a number and returns a color
 export const getColor = (num: number) => {
-    const color = ColorMap[Math.floor(num*10)];
+    const color = ColorMap[Math.floor(num * 10)];
     return color || ColorMap[404];
 }
 
@@ -136,6 +136,10 @@ export const msToMins = (ms: number) => {
     return ms / 1000 / 60;
 }
 
+export const uriToID = (uri: string): string => {
+    return uri.split(':')[2];
+}
+
 // Record<string, Record<string, any>> -> WeekdayDataType
 export const convertToWeekdayDataType = (daysData: Record<string, Record<string, any>>, totalMsStreamed: number): WeekdayDataType => {
     let weekdayData: WeekdayDataType = {};
@@ -154,22 +158,6 @@ export const convertToWeekdayDataType = (daysData: Record<string, Record<string,
     return weekdayData;
 }
 
-
-export const convertToTopStatData = (count: Record<string, Record<string, any>>): TopStatData[] => {
-    return Object.entries(count)
-        .sort((a, b) => b[1].playCount - a[1].playCount)
-        .slice(0, 20)
-        .map(([name, data]) => ({
-            img: '',
-            name: name,
-            msStreamed: 0,
-            playCount: data.playCount,
-            topTrack: '',
-            discovered: '',
-        }));
-};
-
-
 //* Data
 // fetch data from local storage
 export const checkExistingData = (): Data => {
@@ -181,4 +169,22 @@ export const checkExistingData = (): Data => {
 
 export const saveData = (data: Data) => {
     localStorage.setItem("data", JSON.stringify(data));
+}
+
+export const calculateGenreBreakdown = (spotifyArtistData: Record<string, SpotifyArtistData>, userTrackData: Track[]) => {
+    for (const userTrack of userTrackData) {
+        for (const spotifyArtistId in spotifyArtistData) {
+            const spotifyArtist = spotifyArtistData[spotifyArtistId];
+            if (userTrack.name === spotifyArtist.name) { //! this is a bad way to do this
+                console.log(spotifyArtist.genres, spotifyArtist.name)
+                break;
+            }
+        }
+    }
+}
+
+export const getTopTracks = (tracks: Record<string, Track>): Record<string, Track> => {
+    const trackEntries = Object.entries(tracks);
+    const sortedTracks = trackEntries.sort((a, b) => b[1].msStreamed - a[1].msStreamed).slice(0, 100);
+    return Object.fromEntries(sortedTracks);
 }

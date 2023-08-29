@@ -1,13 +1,28 @@
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 import * as cors from 'cors';
+import * as bodyParser from 'body-parser';
 
+interface ArtistData {
+  id: string;
+  name: string;
+  image: string;
+  genres: string[];
+}
+
+interface TrackData {
+  id: string;
+  name: string;
+  artistID: string;
+  image: string;
+}
+
+// initlize app
 const app = express();
-
-// Automatically allow cross-origin requests
+app.use(bodyParser.json());
 app.use(cors({ origin: true }));
 
-app.get('/', async (req, res) => {
+app.post('/', async (req, res) => {
   const config = functions.config().spotify;
   if (!config || !config.client_id || !config.client_secret) {
     res.status(500).send("Spotify config missing");
@@ -19,17 +34,19 @@ app.get('/', async (req, res) => {
   const base64Credentials = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
 
   // Retrieve the 'query params
-  const artistIDs = typeof req.query.artists === 'string' ? req.query.artists : "";
-  const username = typeof req.query.username === 'string' ? req.query.username : "";
-  const artistGenreIDs = typeof req.query.artistGenres === 'string' ? req.query.artistGenres : "";
+  const trackIDs: string[] = req.body.trackIDs || "";
+  const username = req.body.username || "";
 
   // data to be returned
-  const artistImages: Record<string, string> = {}; // id -> image url
-  const genres: Record<string, string[]> = {}; // id -> genres[]
+  // const artistGenres: Record<string, Record<string, string>> = {}; // id -> image url
   let displayName = "";
   let profileImage = "";
+  const trackData: Record<string, TrackData> = {}; //id -> track data 
 
-  if (artistIDs.length > 0) {
+  // map of artist ids to artist names / genres
+  const artistIDs: Record<string, ArtistData> = {}
+
+  if (trackIDs.length > 0) {
     try {
       // Get access token
       const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
@@ -43,52 +60,63 @@ app.get('/', async (req, res) => {
 
       const tokenData = await tokenResponse.json();
       const accessToken = tokenData.access_token;
-      // const apiHeader = {
-      //   'Authorization': `Bearer ${accessToken}`
-      // }
-
-
-      //? make the Spotify API request with the obtained token
-      const spotifyArtistsResponse = await fetch(`https://api.spotify.com/v1/artists?ids=${artistIDs}`, {
+      const header = {
         headers: {
           'Authorization': `Bearer ${accessToken}`
         }
-      });
-
-      // parse the response as JSON
-      const spotifyData = await spotifyArtistsResponse.json();
-      const artists: any[] = spotifyData.artists;
-      for (const artist of artists) {
-        artistImages[artist.id] = artist.images[0].url;
       }
 
-
       //? make request for user data
-      const UserDataResponse = await fetch(`https://api.spotify.com/v1/users/${username}`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
-        }
-      });
-
-      // parse the response 
+      const UserDataResponse = await fetch(`https://api.spotify.com/v1/users/${username}`, header);
+      // parse user data
       const UserData = await UserDataResponse.json();
       displayName = UserData.display_name;
-      profileImage = UserData.images[0].url;
+      profileImage = UserData.images[0].url || "";
 
 
-      //? make request for genres
-      //TODO - change to list, check value, and then separate with '%2C' or build a url
-      const artistGenreData = await fetch(`https://api.spotify.com/v1/artists?ids=${artistGenreIDs}`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`
+      //? make request for track data
+      const trackIDsChunks = []; // serparate track ids into chunks of 50
+      for (let i = 0; i < trackIDs.length; i += 50) {
+        const chunk = trackIDs.slice(i, i + 50);
+        trackIDsChunks.push(chunk.join('%2C'));
+      }
+
+      // iterate over chunks and make requests
+      for (const chunk of trackIDsChunks) {
+        const chunkRes = await fetch(`https://api.spotify.com/v1/tracks?market=US&ids=${chunk}`, header);
+        const chunkJson = await chunkRes.json();
+        const chunkTracks: any[] = chunkJson.tracks || [];
+        for (const track of chunkTracks) {
+          if (track && track.artists && track.artists.length > 0) {
+            const artist = track.artists[0];
+            trackData[track.id] = {
+              id: track.id,
+              name: track.name,
+              artistID: artist.id,
+              image: track.album.images[0].url || ""
+            }
+            artistIDs[artist.id] = {
+              name: artist.name,
+              id: artist.id,
+              image: "",
+              genres: [] // will be filled in later
+            };
+          } else {
+            console.warn('Invalid track or artist data', track);
+          }
         }
-      });
+      }
 
-      // parse the response
-      const artistGenreResponse = await artistGenreData.json();
-      const artistsResults: any[] = artistGenreResponse.tracks;
-      for (const artist of artistsResults) {
-        genres[artist.id] = artist.genres;
+      //? make request for missing artist data
+      const artistIDsString = Object.keys(artistIDs).join('%2C');
+      const artistRes = await fetch(`https://api.spotify.com/v1/artists?ids=${artistIDsString}`, header);
+      const artistData = await artistRes.json();
+      const artists: any[] = artistData.artists;
+
+      // parse artist data
+      for (const artist of artists) {
+        artistIDs[artist.id].image = artist.images[0].url || "";
+        artistIDs[artist.id].genres = artist.genres;
       }
 
     } catch (error) {
@@ -98,11 +126,12 @@ app.get('/', async (req, res) => {
     }
   }
 
+  // return the data
   res.json({
-    artists: artistImages,
-    genres: genres,
     displayName: displayName,
-    profileImage: profileImage
+    profileImage: profileImage,
+    artistData: artistIDs,
+    trackData: trackData
   });
 });
 

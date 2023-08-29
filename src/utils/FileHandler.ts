@@ -1,14 +1,17 @@
 import JSZip from 'jszip';
-import EMPTY_DATA, { DAYS, Data, HeatmapData, HourlyData, heatmapDataType } from './globals';
-import { convertToTopStatData, convertToWeekdayDataType, sortYears } from './utils';
+import { EMPTY_DATA, DAYS, Data, HeatmapData, HourlyData, heatmapDataType, Track, Artist } from './globals';
+import { convertToWeekdayDataType, getTopTracks, sortYears, uriToID } from './utils';
+import { requestSpotifyData } from './RESTCalls';
 
 type StreamingHistory = {
-    // Define the fields based on the example JSON provided
+    // Define the fields based on Spotfy Data 
+    username: string;
     ts: string;
     ms_played: number;
     master_metadata_track_name: string;
     master_metadata_album_artist_name: string;
     master_metadata_album_album_name: string;
+    spotify_track_uri: string;
 };
 
 export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void) => {
@@ -16,9 +19,9 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     let heatmap: heatmapDataType = {};
     let hourlyData: Record<string, HourlyData> = {};
     let years: string[] = [];
-    const artistCount: Record<string, Record<string, any>> = {}
-    const trackCount: Record<string, Record<string, any>> = {}
-    const albumCount: Record<string, Record<string, any>> = {}
+    const userNameCount: Record<string, number> = {}
+    const trackCount: Record<string, Track> = {};
+    const artistCount: Record<string, Artist> = {}
 
     // raw data taken from file before being proccessed
     let totalMsStreamed = 0;
@@ -46,91 +49,107 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
 
                         // Iterate through the streaming history
                         streamHistory.forEach((record, idx) => {
-                            // Extract the date parts
-                            const date = new Date(record.ts);
-                            const year = date.getFullYear().toString();
-                            const month = (date.getMonth() + 1).toString().padStart(2, '0');
-                            const day = date.getDate().toString().padStart(2, '0');
-                            const hour = date.getHours();
-                            const hourLabel = hour < 12 ? `${hour}am` : hour === 12 ? `12pm` : `${hour - 12}pm`;
-                            const dayOfWeek = DAYS[date.getDay()];
+                            if (record.spotify_track_uri) {
+                                const trackID = uriToID(record.spotify_track_uri);
+                                // Extract the date parts
+                                const date = new Date(record.ts);
+                                const year = date.getFullYear().toString();
+                                const month = (date.getMonth() + 1).toString().padStart(2, '0');
+                                const day = date.getDate().toString().padStart(2, '0');
+                                const hour = date.getHours();
+                                const hourLabel = hour < 12 ? `${hour}am` : hour === 12 ? `12pm` : `${hour - 12}pm`;
+                                const dayOfWeek = DAYS[date.getDay()];
 
-                            // Get or initialize structure
-                            const yearObj = heatmap[year] || (heatmap[year] = {});
-                            const monthObj = yearObj[month] || (yearObj[month] = {});
-                            const dayData: HeatmapData = monthObj[day] || { date: `${year}-${month}-${day}`, songCount: 0, msStreamed: 0, topTrack: '', tracks: {} };
+                                // Get or initialize structure
+                                const yearObj = heatmap[year] || (heatmap[year] = {});
+                                const monthObj = yearObj[month] || (yearObj[month] = {});
+                                const dayData: HeatmapData = monthObj[day] || { date: `${year}-${month}-${day}`, songCount: 0, msStreamed: 0, topTrack: '', tracks: {} };
 
 
-                            // track info
-                            dayData.tracks![record.master_metadata_track_name] = (dayData.tracks![record.master_metadata_track_name] || 0) + 1;
+                                // track info
+                                dayData.tracks![record.master_metadata_track_name] = (dayData.tracks![record.master_metadata_track_name] || 0) + 1;
 
-                            // Increment the stats
-                            dayData.date = `${year}-${month}-${day}`;
-                            dayData.songCount++;
-                            dayData.msStreamed += record.ms_played;
-                            //TODO- find true % diff from avg ms per day
+                                // Increment the stats
+                                dayData.date = `${year}-${month}-${day}`;
+                                dayData.songCount++;
+                                dayData.msStreamed += record.ms_played;
+                                //TODO- find true % diff from avg ms per day
 
-                            // Update the objects
-                            monthObj[day] = dayData;
-                            yearObj[month] = monthObj;
-                            heatmap[year] = yearObj;
+                                // Update the objects
+                                monthObj[day] = dayData;
+                                yearObj[month] = monthObj;
+                                heatmap[year] = yearObj;
 
-                            if (!hourlyData[hourLabel]) {
-                                hourlyData[hourLabel] = { hour: hourLabel, songCount: 0, msStreamed: 0, percent: 0 };
-                            }
+                                if (!hourlyData[hourLabel]) {
+                                    hourlyData[hourLabel] = { hour: hourLabel, songCount: 0, msStreamed: 0, percent: 0 };
+                                }
 
-                            // Increment the stats for this hour
-                            hourlyData[hourLabel].songCount++;
-                            hourlyData[hourLabel].msStreamed += record.ms_played;
+                                // Increment the stats for this hour
+                                hourlyData[hourLabel].songCount++;
+                                hourlyData[hourLabel].msStreamed += record.ms_played;
 
-                            // Update the day of the week data
-                            if (!daysData[dayOfWeek]) {
-                                daysData[dayOfWeek] = {
-                                    'msStreamed': 0,
-                                    'time': {
-                                        '0am': 0,
+                                // Update the day of the week data
+                                if (!daysData[dayOfWeek]) {
+                                    daysData[dayOfWeek] = {
+                                        'msStreamed': 0,
+                                        'time': {
+                                            '0am': 0,
+                                        }
                                     }
                                 }
-                            }
-                            if (!daysData[dayOfWeek].time[hourLabel]) {
-                                daysData[dayOfWeek].time[hourLabel] = 0;
-                            }
-                            daysData[dayOfWeek].msStreamed += record.ms_played;
-                            daysData[dayOfWeek].time[hourLabel] = (daysData[dayOfWeek].time[hourLabel] || 0) + record.ms_played;
-                            totalMsStreamed += record.ms_played;
-
-                            // check if track, artist, album exists
-                            if (!artistCount[record.master_metadata_album_artist_name]) {
-                                artistCount[record.master_metadata_album_artist_name] = {
-                                    'playCount': 0,
-                                    'trackCount': 0,
+                                if (!daysData[dayOfWeek].time[hourLabel]) {
+                                    daysData[dayOfWeek].time[hourLabel] = 0;
                                 }
-                            }
-                            if (!trackCount[record.master_metadata_track_name]) {
-                                trackCount[record.master_metadata_track_name] = {
-                                    'playCount': 0,
-                                    'msStreamed': 0,
-                                };
-                            }
-                            if (!albumCount[record.master_metadata_album_album_name]) {
-                                albumCount[record.master_metadata_album_album_name] = {
-                                    'playCount': 0,
-                                    'msStreamed': 0,
-                                };
-                            }
+                                daysData[dayOfWeek].msStreamed += record.ms_played;
+                                daysData[dayOfWeek].time[hourLabel] = (daysData[dayOfWeek].time[hourLabel] || 0) + record.ms_played;
+                                totalMsStreamed += record.ms_played;
 
-                            // update the top artists, tracks, and albums
-                            artistCount[record.master_metadata_album_artist_name]['playCount'] = (artistCount[record.master_metadata_album_artist_name]['playCount'] || 0) + 1;
+                                // check if track, artist, album exists
+                                if (!artistCount[record.master_metadata_album_artist_name]) {
+                                    artistCount[record.master_metadata_album_artist_name] = {
+                                        id: "",
+                                        name: record.master_metadata_album_artist_name,
+                                        artistName: record.master_metadata_album_artist_name,
+                                        image: "",
+                                        genres: [],
+                                        'playCount': 0,
+                                        'msStreamed': 0,
+                                        'discovered': record.ts,
+                                    }
+                                }
+                                if (!trackCount[trackID]) {
+                                    trackCount[trackID] = {
+                                        id: trackID,
+                                        name: record.master_metadata_track_name,
+                                        artistName: record.master_metadata_album_artist_name,
+                                        image: "",
+                                        genres: [],
+                                        'playCount': 0,
+                                        'msStreamed': 0,
+                                        'discovered': record.ts,
+                                    };
+                                }
 
-                            // TODO - track first time played
-                            // TODO - track msStreamed
-                            trackCount[record.master_metadata_track_name]['playCount'] = (trackCount[record.master_metadata_track_name]['playCount'] || 0) + 1;
+                                // update the top artists, tracks, and albums
+                                artistCount[record.master_metadata_album_artist_name]['playCount'] = (artistCount[record.master_metadata_album_artist_name]['playCount'] || 0) + 1;
+                                trackCount[trackID]['playCount'] += 1;
+                                trackCount[trackID]['msStreamed'] += record.ms_played;
 
-                            albumCount[record.master_metadata_album_album_name]['playCount'] = (albumCount[record.master_metadata_album_album_name]['playCount'] || 0) + 1;
+                                // check if discovered date is earlier than current
+                                if (record.ts < artistCount[record.master_metadata_album_artist_name]['discovered']) {
+                                    artistCount[record.master_metadata_album_artist_name]['discovered'] = record.ts;
+                                }
+                                if (record.ts < trackCount[trackID]['discovered']) {
+                                    trackCount[trackID]['discovered'] = record.ts;
+                                }
 
-                            // check if year exists
-                            if (!years.includes(year)) {
-                                years.push(year);
+                                // check if year exists
+                                if (!years.includes(year)) {
+                                    years.push(year);
+                                }
+
+                                // check if username exists
+                                userNameCount[record.username] = (userNameCount[record.username] || 0) + 1;
                             }
                         });
 
@@ -139,17 +158,23 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                 // Wait for all data to be gathered
                 await Promise.all(promises);
 
-                const userData = {
+                console.log()
+
+                const userData: Data = {
                     heatmapData: heatmap,
-                    topArtistsData: convertToTopStatData(artistCount),
-                    topTracksData: convertToTopStatData(trackCount),
-                    topAlbumsData: convertToTopStatData(albumCount),
+                    topArtistsData: artistCount,
+                    topTracksData: getTopTracks(trackCount), // will be updated in analyzeUserData
                     hourlyData: hourlyData,
                     weekdayData: convertToWeekdayDataType(daysData, totalMsStreamed),
                     years: sortYears(years),
-                    yearlyData: {},
+                    yearlyData: {}, // will be updated in analyzeUserData
+                    displayName: "",
+                    username: getUsername(userNameCount),
+                    profileImage: "",
+                    genres: {},
                 };
                 analyzeUserData(userData); // update the yearly data
+                requestSpotifyData(userData)
 
                 // Call back the data
                 callBack(userData);
@@ -167,8 +192,8 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
 const analyzeUserData = (data: Data) => {
 
     // average ms streamed per day
-    let totalMsStreamed = 0;
-    let totalDays = 0;
+    // let totalMsStreamed = 0;
+    // let totalDays = 0;
     let minMsStreamed = Number.MAX_SAFE_INTEGER;
     let maxMsStreamed = Number.MIN_SAFE_INTEGER;
 
@@ -178,15 +203,15 @@ const analyzeUserData = (data: Data) => {
             const monthMap = yearMap[month];
             for (const day in monthMap) {
                 const dayData = monthMap[day];
-                totalMsStreamed += dayData.msStreamed;
-                totalDays++;
+                // totalMsStreamed += dayData.msStreamed;
+                // totalDays++;
                 minMsStreamed = Math.min(minMsStreamed, dayData.msStreamed);
                 maxMsStreamed = Math.max(maxMsStreamed, dayData.msStreamed);
             }
         }
     }
 
-    const avgMsStreamedPerDay = totalMsStreamed / totalDays;
+    // const avgMsStreamedPerDay = totalMsStreamed / totalDays;
 
 
     for (const year in data.heatmapData) {
@@ -238,4 +263,9 @@ const analyzeUserData = (data: Data) => {
     yearlyArray.forEach(yearData => {
         data.yearlyData[yearData.year] = yearData;
     });
+}
+
+const getUsername = (usernames: Record<string, number>): string => {
+    // find the most common username
+    return Object.keys(usernames).reduce((a, b) => usernames[a] > usernames[b] ? a : b);
 }
