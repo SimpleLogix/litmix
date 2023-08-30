@@ -81,7 +81,7 @@ const CardTwo = ({ hourlyData }: Props) => {
           {msToHours(tooltip.msStreamed).toFixed(1)} <span>hrs</span>
         </div>
         <div>
-          {tooltip.songCount} <span>Songs</span>
+          {tooltip.songCount.toLocaleString()} <span>Songs</span>
         </div>
       </div>
 

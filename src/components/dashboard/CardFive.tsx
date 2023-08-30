@@ -31,9 +31,13 @@ const CardFive = ({ topArtistsData }: Props) => {
   };
 
   return (
-    <div className="card center card-five">
+    <div
+      className={`card center card-five ${
+        selectedArtist.image === "" ? "green-bg" : ""
+      }`}
+    >
       <div
-        className="card-background"
+        className={`card-background `}
         style={{
           backgroundImage: `url(${selectedArtist.image})`,
         }}

@@ -37,7 +37,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     const artistTrackCount: Record<string, Record<string, number>> = {}
 
     // Check file format
-    if (file.name === "my_spotify_data.zip") {
+    if (file.name.endsWith(".zip")) {
         let reader = new FileReader();
         reader.onload = async function (e) {
             if (e.target!.result) {

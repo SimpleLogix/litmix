@@ -16,8 +16,7 @@ interface SpotifyDataRes {
 export const requestSpotifyData = async (userData: Data) => {
     try {
         const trackIDs = Object.keys(userData.topTracksData);
-        const artistNames = Object.keys(userData.topArtistsData).sort((a, b) => userData.topArtistsData[b].msStreamed - userData.topArtistsData[a].msStreamed).slice(0, 6);
-        console.log(artistNames)
+        const artistNames = Object.keys(userData.topArtistsData).sort((a, b) => userData.topArtistsData[b].msStreamed - userData.topArtistsData[a].msStreamed).slice(0, 10);
         const payload = {
             username: userData.username,
             trackIDs: trackIDs,

@@ -2,6 +2,15 @@
     position: relative;
 }
 
+.green-bg{
+    background: linear-gradient(-20deg, var(--forest) 2%, var(--green));
+
+}
+
+.card-background {
+
+}
+
 .card-five>.content {
     height: 100%;
     width: 100%;
@@ -76,7 +85,7 @@
     font-style: italic;
 }
 
-.page-dots{
+.page-dots {
     position: absolute;
     bottom: 0;
     width: 72%;
@@ -84,7 +93,7 @@
     gap: 8px;
 }
 
-.page-dot{
+.page-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -93,6 +102,6 @@
     outline: 1px solid var(--mint)
 }
 
-.selected-dot{
+.selected-dot {
     background-color: var(--mint-opaque);
 }

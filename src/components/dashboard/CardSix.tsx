@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../../styles/card-six.css";
-import { WeekdayData, WeekdayDataType } from "../../utils/globals";
+import { WeekdayData, WeekdayDataType, weekdays } from "../../utils/globals";
 
 type Props = {
   weekdayData: WeekdayDataType;
@@ -36,11 +36,11 @@ const CardSix = ({ weekdayData }: Props) => {
   return (
     <div className="card center column card-six">
       <div className="weekdays-row center">
-        {Object.values(weekdayData).map((day) => (
+        {Object.values(weekdays).map((day) => (
           <DayOfWeek
-            key={`day ${day.day}`}
-            day={day}
-            isActive={day === selectedDay}
+            key={`day ${day}`}
+            day={weekdayData[day]}
+            isActive={day === selectedDay.day}
             handleDayClick={handleDayClick}
           />
         ))}

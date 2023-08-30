@@ -164,7 +164,6 @@ app.post('/', async (req, res) => {
     trackData: trackData,
     artistImages: artistImageUrls
   }
-  console.log("sending")
   res.json(resultData);
 });
 

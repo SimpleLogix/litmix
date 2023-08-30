@@ -10,9 +10,20 @@ type Props = {
 
 const CardThree = ({ heatmapData, years }: Props) => {
   //? States
-  const [yearIndex, setYearIndex] = useState<number>(years.length - 2); //2nd to last
+  const [yearIndex, setYearIndex] = useState<number>(years.length - 1); //last
+  const lastYearData = heatmapData[years[yearIndex]];
+  const sortedMonths = Object.keys(lastYearData).sort(
+    (a, b) => Number(a) - Number(b)
+  );
+  const lastMonth = sortedMonths[sortedMonths.length - 1];
+
+  const sortedDays = Object.keys(lastYearData[lastMonth]).sort(
+    (a, b) => Number(a) - Number(b)
+  );
+  const lastDay = sortedDays[sortedDays.length - 1];
+
   const [selectedDate, setSelectedDate] = useState<HeatmapData>(
-    heatmapData[years[yearIndex]]["01"]["01"] //TODO_1: change this to  random non-padded date
+    lastYearData[lastMonth][lastDay]
   );
 
   //? Handlers
