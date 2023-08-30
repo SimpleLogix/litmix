@@ -22,7 +22,6 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     const userNameCount: Record<string, number> = {}
     const trackCount: Record<string, Track> = {};
     const artistCount: Record<string, Artist> = {}
-    const earliestDate = new Date().toISOString().split('T')[0];
 
     // raw data taken from file before being proccessed
     let totalMsStreamed = 0;
