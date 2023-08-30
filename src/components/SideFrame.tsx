@@ -2,6 +2,9 @@ import React from "react";
 import "../styles/side.css";
 
 type Props = {
+  displayName: string;
+  joinDate: string;
+  imgUrl: string;
   page: string;
   setPage: (page: string) => void;
 };
@@ -16,7 +19,18 @@ const IconDiv = ({ iconName }: { iconName: string }) => (
   />
 );
 
-const SideFrame = ({ page, setPage }: Props) => {
+const UserIcon = ({ imgUrl }: { imgUrl: string }) => (
+  <div
+    className={`menu-icon icon`}
+    style={{
+      backgroundImage: `url(${
+        imgUrl ? imgUrl : `${process.env.PUBLIC_URL}/assets/user.png`
+      })`,
+    }}
+  />
+);
+
+const SideFrame = ({ page, setPage, displayName, joinDate, imgUrl }: Props) => {
   // Creates a menu item with the given name
   const MenuItem = ({ name }: { name: string }) => (
     <div
@@ -33,9 +47,9 @@ const SideFrame = ({ page, setPage }: Props) => {
   return (
     <div className="side-frame center column">
       <img src={`${process.env.PUBLIC_URL}/assets/logo.png`} alt="Litmix" />
-      <IconDiv iconName="user" />
-      <div className="username">SimpleLogic</div>
-      <div className="join-date">Aug. 11, 2023</div>
+      <UserIcon imgUrl={imgUrl} />
+      <div className="username">{displayName}</div>
+      <div className="join-date">{joinDate}</div>
       <MenuItem name="Dashboard" />
       <MenuItem name="Discover" />
       <div className="center column info">

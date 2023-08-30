@@ -16,7 +16,13 @@ function App() {
 
   return (
     <div className="app">
-      <SideFrame page={page} setPage={setPage}></SideFrame>
+      <SideFrame
+        page={page}
+        setPage={setPage}
+        displayName={data.displayName}
+        joinDate={data.joinDate}
+        imgUrl={data.profileImage}
+      ></SideFrame>
 
       <div className="border"></div>
 

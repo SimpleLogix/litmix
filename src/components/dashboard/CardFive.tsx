@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../../styles/card-five.css";
 import { Artist } from "../../utils/globals";
+import { convertDate, msToHours } from "../../utils/utils";
 
 type Props = {
   topArtistsData: Artist[];
@@ -34,7 +35,7 @@ const CardFive = ({ topArtistsData }: Props) => {
       <div
         className="card-background"
         style={{
-          backgroundImage: `url(${process.env.PUBLIC_URL}/assets/${selectedArtist.image})`,
+          backgroundImage: `url(${selectedArtist.image})`,
         }}
       ></div>
 
@@ -47,10 +48,14 @@ const CardFive = ({ topArtistsData }: Props) => {
         </div>
 
         <div className="artist-data center column outlined-text">
-          <p className="bold-text artist-name">{selectedArtist.name}</p>
+          <p className="bold-text artist-name">
+            {topArtistsData.indexOf(selectedArtist) + 1}
+            {". "}
+            {selectedArtist.name}
+          </p>
 
           <p className="artist-mins-streamed">
-            {selectedArtist.msStreamed} <span>mins</span>
+            {msToHours(selectedArtist.msStreamed).toFixed(0)} <span>hrs</span>
           </p>
           <p className="artist-play-count">
             {selectedArtist.playCount} <span>plays</span>
@@ -66,7 +71,8 @@ const CardFive = ({ topArtistsData }: Props) => {
           </div>
 
           <p className="artist-discovered">
-            <span className="">Discovered</span> {selectedArtist.discovered}
+            <span className="">Discovered</span>{" "}
+            {convertDate(selectedArtist.discovered)}
           </p>
         </div>
 

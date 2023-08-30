@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import { EMPTY_DATA, DAYS, Data, HeatmapData, HourlyData, heatmapDataType, Track, Artist } from './globals';
-import { convertToWeekdayDataType, getTopTracks, sortYears, uriToID } from './utils';
+import { convertToWeekdayDataType, getEarliestDate, getTopTracks, getUsername, sortYears, updateTopTrackForArtists, uriToID } from './utils';
 import { requestSpotifyData } from './RESTCalls';
 
 type StreamingHistory = {
@@ -22,6 +22,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
     const userNameCount: Record<string, number> = {}
     const trackCount: Record<string, Track> = {};
     const artistCount: Record<string, Artist> = {}
+    const earliestDate = new Date().toISOString().split('T')[0];
 
     // raw data taken from file before being proccessed
     let totalMsStreamed = 0;
@@ -33,6 +34,8 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
             }
         }
     }
+    // count for each track for each artist
+    const artistTrackCount: Record<string, Record<string, number>> = {}
 
     // Check file format
     if (file.name === "my_spotify_data.zip") {
@@ -73,7 +76,6 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                                 dayData.date = `${year}-${month}-${day}`;
                                 dayData.songCount++;
                                 dayData.msStreamed += record.ms_played;
-                                //TODO- find true % diff from avg ms per day
 
                                 // Update the objects
                                 monthObj[day] = dayData;
@@ -132,6 +134,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
 
                                 // update the top artists, tracks, and albums
                                 artistCount[record.master_metadata_album_artist_name]['playCount'] = (artistCount[record.master_metadata_album_artist_name]['playCount'] || 0) + 1;
+                                artistCount[record.master_metadata_album_artist_name]['msStreamed'] += record.ms_played;
                                 trackCount[trackID]['playCount'] += 1;
                                 trackCount[trackID]['msStreamed'] += record.ms_played;
 
@@ -142,6 +145,12 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                                 if (record.ts < trackCount[trackID]['discovered']) {
                                     trackCount[trackID]['discovered'] = record.ts;
                                 }
+
+                                // check if track exists for artist
+                                if (!artistTrackCount[record.master_metadata_album_artist_name]) {
+                                    artistTrackCount[record.master_metadata_album_artist_name] = {};
+                                }
+                                artistTrackCount[record.master_metadata_album_artist_name][record.master_metadata_track_name] = (artistTrackCount[record.master_metadata_album_artist_name][record.master_metadata_track_name] || 0) + 1;
 
                                 // check if year exists
                                 if (!years.includes(year)) {
@@ -158,7 +167,6 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                 // Wait for all data to be gathered
                 await Promise.all(promises);
 
-                console.log()
 
                 const userData: Data = {
                     heatmapData: heatmap,
@@ -169,12 +177,15 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                     years: sortYears(years),
                     yearlyData: {}, // will be updated in analyzeUserData
                     displayName: "",
+                    joinDate: getEarliestDate(heatmap, years),
                     username: getUsername(userNameCount),
                     profileImage: "",
                     genres: {},
                 };
+                // update the data
                 analyzeUserData(userData); // update the yearly data
-                requestSpotifyData(userData)
+                await requestSpotifyData(userData)
+                updateTopTrackForArtists(userData, artistTrackCount, artistCount)
 
                 // Call back the data
                 callBack(userData);
@@ -265,7 +276,3 @@ const analyzeUserData = (data: Data) => {
     });
 }
 
-const getUsername = (usernames: Record<string, number>): string => {
-    // find the most common username
-    return Object.keys(usernames).reduce((a, b) => usernames[a] > usernames[b] ? a : b);
-}

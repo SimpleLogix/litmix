@@ -69,7 +69,7 @@ const UploadBox = ({
 
   const ProgressBar = () => (
     <div className="progress-bar-wrapper column">
-      <div className="upload-progress">{`${progress}%`}</div>
+      <div className="upload-progress">{`${Math.floor(progress)}%`}</div>
       <div className="progress-container">
         <div className="progress-bar" style={{ width: `${progress}%` }} />
       </div>
@@ -92,12 +92,12 @@ const UploadBox = ({
     if (uploadState === "processing") {
       const interval = setInterval(() => {
         setProgress((prevProgress) =>
-          prevProgress >= 100 ? 100 : prevProgress + 2
+          prevProgress >= 99 ? 99 : prevProgress + 0.085
         );
-      }, 24); // Adjust the interval for smoother/faster animation
+      }, 240); // Adjust the interval for smoother/faster animation
       if (progress === 100) {
+        return () => clearInterval(interval);
       }
-      return () => clearInterval(interval);
     }
   }, [setProgress, uploadState, progress, setUploadState]);
 
@@ -142,6 +142,7 @@ const UploadBox = ({
       if (data) {
         setFile({ name: file.name, stats: data, file: file.file });
         saveData(data);
+        setUploadState("success");
       } else {
         setUploadState("failure");
       }

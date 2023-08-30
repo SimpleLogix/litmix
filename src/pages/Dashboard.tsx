@@ -79,8 +79,12 @@ const Dashboard = ({ data }: Props) => {
         <CardOne yearlyData={data.yearlyData} />
         <CardTwo hourlyData={data.hourlyData} />
         <CardThree heatmapData={data.heatmapData} years={data.years} />
-        <CardFour />
-        <CardFive topArtistsData={Object.values(data.topArtistsData)} />
+        <CardFour genresData={data.genres} />
+        <CardFive
+          topArtistsData={Object.values(data.topArtistsData)
+            .sort((a, b) => b.msStreamed - a.msStreamed)
+            .splice(0, 10)}
+        />
         <CardSix weekdayData={data.weekdayData} />
       </div>
     </div>

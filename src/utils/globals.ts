@@ -10,6 +10,7 @@ export interface Data {
   username: string;
   profileImage: string;
   genres: Record<string, number>;
+  joinDate: string;
 }
 
 export interface HeatmapData {
@@ -74,8 +75,9 @@ export const EMPTY_DATA: Data = {
   weekdayData: {},
   yearlyData: {},
   years: [],
-  displayName: "",
+  displayName: "Username",
   username: "",
+  joinDate: "Aug. 12, 2022",
   profileImage: "",
   genres: {},
 }
@@ -87,6 +89,12 @@ export interface SpotifyArtistData {
   id: string;
 }
 
+export interface SpotifyTrackData {
+  id: string;
+  name: string;
+  artistID: string;
+  image: string;
+}
 
 // raw data type of heat map
 // {'2016' : {
@@ -140,9 +148,19 @@ export const ColorMap: Record<number, string> = {
 
 //* DUMMY DATA
 
+export const GENRES: Record<string, number> = {
+  "Pop": 20,
+  "Hip Hop": 15,
+  "Rock": 10,
+  "Jazz": 5,
+  "Classical": 5,
+  "Electronic": 5
+}
+  ;
+
 export const topArtistsDummy: Record<string, Artist> = {
   "Dae Zhen": {
-    image: "dae.jpg",
+    image: "https://i.scdn.co/image/ab6761610000e5eb4293385d324db8558179afd9",
     id: "dae",
     name: "Dae Zhen",
     artistName: "Dae Zhen",
@@ -153,7 +171,7 @@ export const topArtistsDummy: Record<string, Artist> = {
     discovered: "Aug 19, 2023",
   },
   "Arizona Zervas": {
-    image: "zervas.jpg",
+    image: "https://i.scdn.co/image/ab6761610000e5eb4293385d324db8558179afd9",
     id: "zervas",
     name: "Arizona Zervas",
     artistName: "Arizona Zervas",
@@ -164,7 +182,7 @@ export const topArtistsDummy: Record<string, Artist> = {
     discovered: "Aug 19, 2023",
   },
   "Drake": {
-    image: "drake.jpg",
+    image: "https://i.scdn.co/image/ab6761610000e5eb4293385d324db8558179afd9",
     id: "drake",
     name: "Drake",
     artistName: "Drake",

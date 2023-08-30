@@ -2,21 +2,9 @@ import React, { useState } from "react";
 import "../../styles/card-four.css";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
-type Props = {};
-
-interface displayedData {
-  genre: string;
-  value: number;
-}
-
-const GENRES = [
-  { genre: "Pop", value: 20 },
-  { genre: "Hip Hop", value: 15 },
-  { genre: "Rock", value: 10 },
-  { genre: "Jazz", value: 5 },
-  { genre: "Classical", value: 5 },
-  { genre: "Electronic", value: 5 },
-];
+type Props = {
+  genresData: Record<string, number>;
+};
 
 const COLORS = [
   "#007D2A",
@@ -27,8 +15,9 @@ const COLORS = [
   "#88E6AA",
 ];
 
-const CardFour = (props: Props) => {
-  const [selectedGenre, setSelectedGenre] = useState<displayedData>(GENRES[0]);
+const CardFour = ({ genresData }: Props) => {
+  const genres = Object.keys(genresData).slice(0, 6);
+  const [selectedGenre, setSelectedGenre] = useState<string>(genres[0]);
 
   const handleMouseEnterCell = (data: any, index: number) => {
     setSelectedGenre(data);
@@ -40,29 +29,29 @@ const CardFour = (props: Props) => {
       <div className="pie-chart">
         <div className="genre-text-value center column">
           <div>
-            {selectedGenre.value}
+            {(genresData[selectedGenre]*100).toFixed(1)}
             <span>%</span>
           </div>
-          <div>{selectedGenre.genre}</div>
+          <div>{selectedGenre}</div>
         </div>
         <ResponsiveContainer width={"100%"} height={"100%"}>
           <PieChart>
             <Pie
-              data={GENRES}
+              data={formatGenreData(genresData).slice(0,6)}
               innerRadius={"54%"}
               outerRadius={"72%"}
-              paddingAngle={8}
+              paddingAngle={4}
               dataKey="value"
               stroke="#d8f9db"
             >
               <div className="genre-text-value">XXX</div>
-              {GENRES.map((entry, index) => (
+              {genres.map((entry, index) => (
                 <Cell
                   key={`cell-${index}`}
                   fill={COLORS[index % COLORS.length]}
                   cursor={"pointer"}
                   strokeWidth={`${
-                    entry.genre === selectedGenre.genre ? "0.72px" : "0.25px"
+                    entry === selectedGenre ? "0.72px" : "0.25px"
                   }`}
                   onMouseEnter={() => handleMouseEnterCell(entry, index)}
                 />
@@ -73,7 +62,7 @@ const CardFour = (props: Props) => {
       </div>
 
       <div className="genres-container center column">
-        {GENRES.map((genre, index) => (
+        {genres.map((genre, index) => (
           <div
             key={`genre-${index}`}
             className="center"
@@ -81,7 +70,7 @@ const CardFour = (props: Props) => {
           >
             <div
               className={`square ${
-                selectedGenre.genre === genre.genre ? "selected-square" : ""
+                selectedGenre === genre ? "selected-square" : ""
               }`}
               style={{
                 backgroundColor: COLORS[index % COLORS.length],
@@ -89,10 +78,10 @@ const CardFour = (props: Props) => {
             ></div>
             <div
               className={`genre-text ${
-                selectedGenre.genre === genre.genre ? "selected-genre-text" : ""
+                selectedGenre === genre ? "selected-genre-text" : ""
               }`}
             >
-              {genre.genre}
+              {genre}
             </div>
           </div>
         ))}
@@ -102,3 +91,14 @@ const CardFour = (props: Props) => {
 };
 
 export default CardFour;
+
+const formatGenreData = (
+  genresData: Record<string, number>
+): { genre: string; value: number }[] => {
+  const genres = Object.keys(genresData);
+  const data = genres.map((genre) => ({
+    genre,
+    value: genresData[genre],
+  }));
+  return data;
+};
