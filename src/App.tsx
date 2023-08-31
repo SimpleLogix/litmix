@@ -8,7 +8,7 @@ import "./styles/animations.css";
 import { checkExistingData } from "./utils/utils";
 
 function App() {
-  const [page, setPage] = useState("Dashboard");
+  const [page, setPage] = useState("Discover");
 
   //? fetch data from storage if it exists
   // localStorage.clear()

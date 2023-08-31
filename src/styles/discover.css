@@ -1,0 +1,39 @@
+.discover-root{
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.discover-top-border{
+    width: 100%;
+    height: 12%;
+    border: 1px solid red;
+}
+
+.discover-bottom-container{
+    display: flex;
+    height: 64%;
+    width: 100%;
+}
+
+/** Top Artists & Tracks */
+.top-artists-tracks{
+    display: flex;
+    height: 32%;
+    width: 100%;
+    border: 1px solid white;
+}
+
+/** Now Playing  */
+.now-playing{
+    width: 50%;
+    height: 100%;
+    border: 1px solid red
+}
+
+/** Playlist */
+.playlist-root{
+    width: 50%;
+    height: 100%;
+    border: 1px solid red;
+}
