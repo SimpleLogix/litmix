@@ -96,6 +96,9 @@ export interface SpotifyTrackData {
   image: string;
 }
 
+export const TOP_ARTISTS_NUM = 15;
+export const TOP_TRACKS_NUM = 25;
+
 // raw data type of heat map
 // {'2016' : {
 //      '01' : {

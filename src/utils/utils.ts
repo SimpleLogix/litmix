@@ -214,7 +214,7 @@ export const calculateGenreBreakdown = (spotifyArtistData: Record<string, Spotif
 
 export const getTopTracks = (tracks: Record<string, Track>): Record<string, Track> => {
     const trackEntries = Object.entries(tracks);
-    const sortedTracks = trackEntries.sort((a, b) => b[1].msStreamed - a[1].msStreamed).slice(0, 250);
+    const sortedTracks = trackEntries.sort((a, b) => b[1].msStreamed - a[1].msStreamed).slice(0, 25);
     return Object.fromEntries(sortedTracks);
 }
 
@@ -224,16 +224,21 @@ export const getUsername = (usernames: Record<string, number>): string => {
 }
 
 export const updateTopTrackForArtists = (userData: Data, artistTrackCount: Record<string, Record<string, number>>, artistCount: Record<string, Artist>) => {
-    const sortedArtists = Object.keys(artistCount).sort((a, b) => {
-        return artistCount[b].msStreamed - artistCount[a].msStreamed;
-    }).slice(0, 100);
-    for (const artist of sortedArtists) {
+    // Sort artists by msStreamed and take the top 15
+    const artistNames = Object.keys(userData.topArtistsData).slice(0, 15);
+    console.log(artistNames)
+    for (const artist of artistNames) {
+        // Sort tracks for each artist
         const sortedTracks = Object.keys(artistTrackCount[artist]).sort((a, b) => {
             return artistTrackCount[artist][b] - artistTrackCount[artist][a];
         });
+
+        // Update topTrack for each artist
         userData.topArtistsData[artist].topTrack = sortedTracks[0];
     }
-}
+
+};
+
 
 export const getEarliestDate = (heatmap: heatmapDataType, years: string[]): string => {
     // get earliest year

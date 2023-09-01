@@ -133,19 +133,32 @@ app.post('/', async (req, res) => {
         const artists: any[] = artistData.artists;
         // parse artist data
         for (const artist of artists) {
+          artistIDs[artist.id].name = artist.name;
+          artistIDs[artist.id].id = artist.id;
           artistIDs[artist.id].image = artist.images[0].url || "";
           artistIDs[artist.id].genres = artist.genres || [];
         }
-        
+
 
         //? make requests for artist images
         for (const artistName of artistNames) {
-          const artistRes = await fetch(`https://api.spotify.com/v1/search?q=${artistName.replace(' ', '+')}&type=artist&market=US&limit=1&offset=0`, header);
+          const artistRes = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(artistName)}&type=artist&limit=1&offset=0`, header);
           const artistData = await artistRes.json();
           const artists: any[] = artistData.artists.items;
           if (artists.length > 0) {
             const artist = artists[0];
             artistImageUrls[artist.name] = artist.images && artist.images.length > 0 ? artist.images[0].url : "";
+            if (!artistIDs[artist.name]) {
+              artistIDs[artist.name] = {
+                name: artist.name,
+                id: artist.id,
+                image: "",
+                genres: [] // will be filled in later
+              };
+            }
+            artistIDs[artist.name].image = artist.images && artist.images.length > 0 ? artist.images[0].url : "";
+            artistIDs[artist.name].id = artist.id || "";
+            artistIDs[artist.name].name = artist.name || "";
           }
         }
       }

@@ -59,9 +59,8 @@ html {
     height: 100vh;
     width: 33.34vw;
     max-width: 324px;
+    min-width: 16vw;
     justify-content: flex-start;
-    position: relative;
-
 }
 
 .main-frame {

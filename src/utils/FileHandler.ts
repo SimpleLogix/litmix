@@ -182,10 +182,10 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                     genres: {},
                 };
                 // update the data
-                analyzeUserData(userData); // update the yearly data
+                updateYearlyData(userData); // update the yearly data
+                sortTopArtists(userData.topArtistsData, userData)
                 await requestSpotifyData(userData)
                 updateTopTrackForArtists(userData, artistTrackCount, artistCount)
-
                 // Call back the data
                 callBack(userData);
             }
@@ -199,7 +199,7 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
 
 /// Takes a Data object and analyzes the data to add additional fields
 // specificallt the yearlyData and colorValue fields in the heatmap
-const analyzeUserData = (data: Data) => {
+const updateYearlyData = (data: Data) => {
 
     // average ms streamed per day
     // let totalMsStreamed = 0;
@@ -275,3 +275,14 @@ const analyzeUserData = (data: Data) => {
     });
 }
 
+const sortTopArtists = (artists: Record<string, Artist>, userData: Data) => {
+    // sort the artists by msStreamed before calling the spotify api
+    const sortedArtists = Object.keys(artists).sort((a, b) => {
+        return artists[b].msStreamed - artists[a].msStreamed;
+    }).slice(0, 15);
+    const top15ArtistsData: Record<string, Artist> = {};
+    for (const artist of sortedArtists) {
+        top15ArtistsData[artist] = userData.topArtistsData[artist];
+    }
+    userData.topArtistsData = top15ArtistsData;
+}

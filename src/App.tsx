@@ -27,7 +27,11 @@ function App() {
       <div className="border"></div>
 
       <div className="main-frame center">
-        {page === "Dashboard" ? <Dashboard data={data} /> : <Discover />}
+        {page === "Dashboard" ? (
+          <Dashboard data={data} />
+        ) : (
+          <Discover userData={data} />
+        )}
       </div>
     </div>
   );
