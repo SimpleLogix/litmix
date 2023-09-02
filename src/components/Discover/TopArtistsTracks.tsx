@@ -78,8 +78,8 @@ const TopArtistsTracks = ({ cards }: Props) => {
               alt=""
             />
 
-            <p>{item.name}</p>
-            {item.type === "track" && <p>{item.artistName}</p>}
+            <p className="top-item-name">{item.name}</p>
+            {item.type === "track" && <p className="top-item-artist">{item.artistName}</p>}
           </div>
         ))}
       </div>

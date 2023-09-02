@@ -34,6 +34,7 @@ export interface TopStat {
   discovered: string;
   genres: string[];
   topTrack?: string;
+  previewUrl?: string;
 }
 
 export interface Track extends TopStat { }

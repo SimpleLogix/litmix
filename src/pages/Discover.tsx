@@ -27,7 +27,7 @@ const Discover = ({ userData }: Props) => {
     <div className="discover-root column">
       <TopArtists cards={cards} />
       <div className="discover-bottom-container">
-        <NowPlaying />
+        <NowPlaying playlist={[]} />
         <Playlist />
       </div>
     </div>

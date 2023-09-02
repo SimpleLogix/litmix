@@ -18,9 +18,13 @@
     --ice: #c8d6e5;
     --ice-opaque: rgba(200, 214, 229, 0.5);
 
+    --fuel: #576574;
+    --fuel-opaque: rgba(87, 101, 116, 0.5);
+
     --empty: #b2bec3;
 
     --grey-gradient: linear-gradient(-65deg, #2c2c2c 0%, #1e1e1e 100%);
+    --ice-gradient: linear-gradient(-35deg, var(--empty) 20%, var(--ice));
 
     --size: 50px;
 
@@ -86,4 +90,3 @@ html {
     display: none;
     backdrop-filter: blur(0px);
 }
-

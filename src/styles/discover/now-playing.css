@@ -1,19 +1,93 @@
-.now-playing{
+.now-playing {
     justify-content: flex-start;
     align-items: flex-start;
     gap: 16px;
     margin-left: 36px;
 }
 
-.now-playing>h3{
+.now-playing>h3 {
     display: flex;
     margin-top: 24px;
 
 }
 
-.media-player{
+.media-player {
     width: 85%;
     height: 80%;
+    background: linear-gradient(-35deg, var(--empty) 20%, var(--ice));
     border: 1px solid var(--ice);
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 13px 27px -5px, rgba(0, 0, 0, 0.3) 0px 8px 16px -8px;
     border-radius: 8px;
+    position: relative;
+    color: var(--fuel);
 }
+
+.mp-refresh {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    top: 12px;
+    right: 12px;
+}
+
+.mp-refresh:hover {
+    transform: scale(1.1);
+}
+
+.mp-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+}
+
+.mp-track-name {
+    font-size: 16px;
+    font-weight: 600;
+    margin-top: 16px;
+    color: var(--bg2);
+    letter-spacing: 0.25px;
+}
+
+.scrub-bar{
+    position: relative;
+    width: 80%;
+    height: 8px;
+    background-color: var(--light-opaque);
+    margin-top: 48px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    border: 1px solid var(--green)
+}
+
+.scrub-bar-played{
+    width: 12%;
+    height: 100%;
+    background-color: var(--green);
+}
+
+.mp-controls {
+    width: 80%;
+    height: 15%;
+    justify-content: space-evenly;
+    margin-top: 16px;
+    position: relative;
+}
+
+.mp-control{
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.play{
+    width: 64px;
+    height: 64px;
+}
+
+/* .like,.add{
+    width: 18px;
+    height: 18px;
+} */

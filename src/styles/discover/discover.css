@@ -16,13 +16,13 @@
 
 /** Now Playing  */
 .now-playing {
-    width: 36%;
+    width: 30%;
     height: 100%;
 }
 
 /** Playlist */
 .playlist-root {
-    width: 48%;
+    width: 54%;
     height: 100%;
 }
 

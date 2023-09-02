@@ -8,7 +8,7 @@ const Playlist = (props: Props) => {
     <div className="playlist-root center column">
       <h3>Playlist</h3>
 
-      <div className="playlist-container center"></div>
+      <div className="playlist-container center column"></div>
     </div>
   );
 };
