@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/card-six.css";
+import "../../styles/cards/card-six.css";
 import { WeekdayData, WeekdayDataType, weekdays } from "../../utils/globals";
 
 type Props = {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/card-three.css";
+import "../../styles/cards/card-three.css";
 import CalendarHeatMap from "../../components/CalendarHeatMap";
 import { HeatmapData, MONTHS, heatmapDataType } from "../../utils/globals";
 

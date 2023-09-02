@@ -1,4 +1,5 @@
 import React from "react";
+import '../../styles/discover/top-artists-tracks.css'
 
 type Props = {
   cards: {
@@ -20,17 +21,40 @@ const TopArtistsTracks = ({ cards }: Props) => {
     Record<string, boolean>
   >(cards.reduce((acc, item) => ({ ...acc, [item.id]: false }), {}));
 
+  const [selectedOrder, setSelectedOrder] = React.useState<string[]>([]);
+  console.log(selectedOrder);
+
   const handleCardClick = (id: string) => {
-    setSelectedCards((prevSelected) => ({
-      ...prevSelected,
-      [id]: !prevSelected[id],
-    }));
+    setSelectedCards((prevSelected) => {
+      const newSelected = { ...prevSelected };
+      let newOrder = [...selectedOrder];
+
+      if (newSelected[id]) {
+        // Deselect
+        newSelected[id] = false;
+        newOrder = newOrder.filter((itemId) => itemId !== id);
+      } else {
+        // Select
+        newSelected[id] = true;
+        newOrder.push(id);
+
+        if (newOrder.length > 5) {
+          // Deselect the first selected item
+          const firstSelected = newOrder[0];
+          newSelected[firstSelected] = false;
+          newOrder = newOrder.slice(1);
+        }
+      }
+
+      setSelectedOrder(newOrder);
+      return newSelected;
+    });
   };
 
   return (
     <div className="top-artists-tracks column">
       <div className="center top-header">
-        <h2>Top Tracks & Artists</h2>
+        <h3>Top Tracks & Artists</h3>
         {/* <span> Top 50</span>
         <img src={`${process.env.PUBLIC_URL}/assets/info.svg`} alt="" /> */}
       </div>

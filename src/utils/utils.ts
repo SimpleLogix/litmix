@@ -77,6 +77,7 @@ export const generateWeekdayData = (): WeekdayDataType => {
 };
 
 //* generator
+// generates empty/dummy data for initial load
 export const generateData = (): Data => {
     const data = { ...EMPTY_DATA };
     data.genres = GENRES;
@@ -100,6 +101,7 @@ const emptyHeatmapData: HeatmapData = {
 
 
 // pad up the non - existent days
+// lines up the months according to where 1st day of month lands
 export const padHeatmapData = (year: number, month: number, data: Record<string, HeatmapData>): HeatmapData[] => {
     const paddedData: HeatmapData[] = [];
 
@@ -205,7 +207,7 @@ export const calculateGenreBreakdown = (spotifyArtistData: Record<string, Spotif
     });
 
     // find the % breakdowns
-    const scalar = 1.625
+    const scalar = 1.0
     const totalMsStreamed = Object.values(userData.genres).reduce((a, b) => a + b, 0);
     for (const [genre, msStreamed] of Object.entries(userData.genres)) {
         userData.genres[genre] = scalar * msStreamed / totalMsStreamed;

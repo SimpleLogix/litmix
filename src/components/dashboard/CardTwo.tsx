@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/card-two.css";
+import "../../styles/cards/card-two.css";
 import {
   Bar,
   BarChart,

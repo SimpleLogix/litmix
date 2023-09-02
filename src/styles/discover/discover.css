@@ -1,0 +1,55 @@
+.discover-root {
+    display: flex;
+    height: 100%;
+    width: 100%;
+}
+
+.discover-bottom-container {
+    display: flex;
+    height: 72%;
+    width: 100%;
+
+}
+
+/** Top Artists & Tracks */
+
+
+/** Now Playing  */
+.now-playing {
+    width: 36%;
+    height: 100%;
+}
+
+/** Playlist */
+.playlist-root {
+    width: 48%;
+    height: 100%;
+}
+
+
+
+/*! media */
+@media (max-width: 768px) {
+    .discover-root {
+        flex-direction: column;
+    }
+
+    .discover-bottom-container {
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .top-artists-tracks {
+        height: 50%;
+    }
+
+    .now-playing {
+        width: 100%;
+        height: 50%;
+    }
+
+    .playlist-root {
+        width: 100%;
+        height: 50%;
+    }
+}

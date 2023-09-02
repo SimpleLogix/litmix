@@ -1,0 +1,19 @@
+.now-playing{
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 16px;
+    margin-left: 36px;
+}
+
+.now-playing>h3{
+    display: flex;
+    margin-top: 24px;
+
+}
+
+.media-player{
+    width: 85%;
+    height: 80%;
+    border: 1px solid var(--ice);
+    border-radius: 8px;
+}

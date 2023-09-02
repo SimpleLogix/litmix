@@ -1,0 +1,17 @@
+.playlist-root {
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+.playlist-container {
+    width: 88%;
+    height: 80%;
+    border: 1px solid white;
+    border-radius: 8px;
+}
+
+.playlist-root>h3 {
+    display: flex;
+    margin-top: 24px;
+}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../../styles/card-one.css";
+import "../../styles/cards/card-one.css";
 import {
   ResponsiveContainer,
   LineChart,

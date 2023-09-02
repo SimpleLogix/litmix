@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/card-four.css";
+import "../../styles/cards/card-four.css";
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 
 type Props = {

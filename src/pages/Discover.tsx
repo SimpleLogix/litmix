@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/discover.css";
+import "../styles/discover/discover.css";
 import NowPlaying from "../components/Discover/NowPlaying";
 import Playlist from "../components/Discover/Playlist";
 import TopArtists from "../components/Discover/TopArtistsTracks";
@@ -23,16 +23,12 @@ const Discover = ({ userData }: Props) => {
   ];
   cards.sort(() => Math.random() - 0.5);
 
-
-
   return (
     <div className="discover-root column">
-      <TopArtists
-        cards={cards}
-      />
+      <TopArtists cards={cards} />
       <div className="discover-bottom-container">
-        <Playlist />
         <NowPlaying />
+        <Playlist />
       </div>
     </div>
   );

@@ -12,6 +12,12 @@
     --mint: #d8f9db;
     --mint-opaque: rgba(216, 249, 219, 0.5);
 
+    --aurora: #78e08f;
+    --aurora-opaque: rgba(120, 224, 143, 0.5);
+
+    --ice: #c8d6e5;
+    --ice-opaque: rgba(200, 214, 229, 0.5);
+
     --empty: #b2bec3;
 
     --grey-gradient: linear-gradient(-65deg, #2c2c2c 0%, #1e1e1e 100%);

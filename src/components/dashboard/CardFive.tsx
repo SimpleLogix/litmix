@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../../styles/card-five.css";
+import "../../styles/cards/card-five.css";
 import { Artist } from "../../utils/globals";
 import { convertDate, msToHours } from "../../utils/utils";
 
