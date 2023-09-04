@@ -1,7 +1,9 @@
 import React from "react";
-import '../../styles/discover/top-artists-tracks.css'
+import "../../styles/discover/top-artists-tracks.css";
+import { Data } from "../../utils/globals";
 
 type Props = {
+  userData: Data;
   cards: {
     type: string;
     id: string;
@@ -14,15 +16,23 @@ type Props = {
     genres: string[];
     topTrack?: string | undefined;
   }[];
+  seedsOrder: string[];
+  selectedCards: Record<string, boolean>;
+  setSelectedCards: React.Dispatch<
+    React.SetStateAction<Record<string, boolean>>
+  >;
 };
 
-const TopArtistsTracks = ({ cards }: Props) => {
-  const [selectedCards, setSelectedCards] = React.useState<
-    Record<string, boolean>
-  >(cards.reduce((acc, item) => ({ ...acc, [item.id]: false }), {}));
-
-  const [selectedOrder, setSelectedOrder] = React.useState<string[]>([]);
-  console.log(selectedOrder);
+const TopArtistsTracks = ({
+  userData,
+  cards,
+  selectedCards,
+  seedsOrder,
+  setSelectedCards,
+}: Props) => {
+  const [selectedOrder, setSelectedOrder] = React.useState<string[]>(
+    userData.seedsOrder
+  );
 
   const handleCardClick = (id: string) => {
     setSelectedCards((prevSelected) => {
@@ -79,7 +89,9 @@ const TopArtistsTracks = ({ cards }: Props) => {
             />
 
             <p className="top-item-name">{item.name}</p>
-            {item.type === "track" && <p className="top-item-artist">{item.artistName}</p>}
+            {item.type === "track" && (
+              <p className="top-item-artist">{item.artistName}</p>
+            )}
           </div>
         ))}
       </div>

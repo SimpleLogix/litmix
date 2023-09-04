@@ -11,6 +11,8 @@ export interface Data {
   profileImage: string;
   genres: Record<string, number>;
   joinDate: string;
+  recommendationSeeds: Record<string, string>[];
+  seedsOrder: string[];
 }
 
 export interface HeatmapData {
@@ -81,6 +83,8 @@ export const EMPTY_DATA: Data = {
   joinDate: "Aug. 12, 2022",
   profileImage: "",
   genres: {},
+  recommendationSeeds: [],
+  seedsOrder: [],
 }
 
 export interface SpotifyArtistData {

@@ -50,7 +50,7 @@
     letter-spacing: 0.25px;
 }
 
-.scrub-bar{
+.scrub-bar {
     position: relative;
     width: 80%;
     height: 8px;
@@ -61,7 +61,7 @@
     border: 1px solid var(--green)
 }
 
-.scrub-bar-played{
+.scrub-bar-played {
     width: 12%;
     height: 100%;
     background-color: var(--green);
@@ -71,20 +71,35 @@
     width: 80%;
     height: 15%;
     justify-content: space-evenly;
-    margin-top: 16px;
+    margin-top: 32px;
     position: relative;
 }
 
-.mp-control{
+.mp-control {
     width: 32px;
     height: 32px;
     padding: 4px;
     cursor: pointer;
+    opacity: 0.8;
 }
 
-.play{
+.play,
+.pause {
     width: 64px;
     height: 64px;
+}
+
+.play {
+    padding-left: 10px;
+}
+
+.play:hover,
+.pause:hover {
+    transform: scale(1.1);
+}
+
+.like {
+    transition: transform 0.3s ease-in-out;
 }
 
 /* .like,.add{

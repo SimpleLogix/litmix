@@ -180,6 +180,8 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
                     username: getUsername(userNameCount),
                     profileImage: "",
                     genres: {},
+                    recommendationSeeds: [],
+                    seedsOrder: [],
                 };
                 // update the data
                 updateYearlyData(userData); // update the yearly data

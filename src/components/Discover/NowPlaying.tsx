@@ -7,17 +7,27 @@ type Props = {
 };
 
 const refreshImg = `${process.env.PUBLIC_URL}/assets/refresh.svg`;
+const noAlbumImg = `${process.env.PUBLIC_URL}/assets/no-album.png`;
+const playImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/play.svg`;
+const pauseImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/pause.svg`;
+const likeImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/like.svg`;
+const likedImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/liked.svg`;
 
 const NowPlaying = (props: Props) => {
-
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLiked, setIsLiked] = useState(false);
   // TODO - add mdedia player functionality
 
   //? handlers
-  const handlePlay = () => {};
+  const handlePlay = () => {
+    setIsPlaying(!isPlaying);
+  };
   const handleNext = () => {};
   const handlePrev = () => {};
   const handleAdd = () => {};
-  const handleLike = () => {};
+  const handleLike = () => {
+    setIsLiked(!isLiked);
+  };
 
   return (
     <div className="now-playing center column">
@@ -26,11 +36,7 @@ const NowPlaying = (props: Props) => {
       <div className="media-player center column">
         <img className="mp-refresh" src={refreshImg} alt="" />
 
-        <img
-          className="mp-icon"
-          src={`${process.env.PUBLIC_URL}/assets/no-album.png`}
-          alt=""
-        />
+        <img className="mp-icon" src={noAlbumImg} alt="" />
         <div className="mp-track-name">Track Name</div>
         <div className="mp-artist-name">Artist Name</div>
 
@@ -52,8 +58,8 @@ const NowPlaying = (props: Props) => {
             onClick={handlePrev}
           />
           <img
-            className="mp-control play center"
-            src={`${process.env.PUBLIC_URL}/assets/mediaplayer/play.svg`}
+            className={`mp-control center ${isPlaying ? "pause" : "play"}`}
+            src={isPlaying ? pauseImg : playImg}
             alt=""
             onClick={handlePlay}
           />
@@ -64,8 +70,8 @@ const NowPlaying = (props: Props) => {
             onClick={handleNext}
           />
           <img
-            className="mp-control like"
-            src={`${process.env.PUBLIC_URL}/assets/mediaplayer/like.svg`}
+            className={`mp-control like ${isLiked ? "liked" : ""}`}
+            src={isLiked ? likedImg : likeImg}
             alt=""
             onClick={handleLike}
           />

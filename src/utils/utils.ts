@@ -239,6 +239,16 @@ export const updateTopTrackForArtists = (userData: Data, artistTrackCount: Recor
         userData.topArtistsData[artist].topTrack = sortedTracks[0];
     }
 
+    // update recommendationSeeds with top 3 tracks and 2 artists
+    const topTracks = Object.values(userData.topTracksData).slice(0, 3).map((track) => ({ track: track.id }));
+    const topArtists = Object.values(userData.topArtistsData).slice(0, 2).map((artist) => ({ artist: artist.id }));
+
+    const topTrackIDs = topTracks.map((track) => track.track);
+    const topArtistIDs = topArtists.map((artist) => artist.artist);
+
+    userData.recommendationSeeds = [...topTracks, ...topArtists];
+    userData.seedsOrder = [...topTrackIDs, ...topArtistIDs];
+    console.log(userData.seedsOrder)
 };
 
 

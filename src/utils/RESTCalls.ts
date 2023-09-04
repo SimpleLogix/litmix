@@ -17,7 +17,6 @@ export const requestSpotifyData = async (userData: Data) => {
     try {
         const trackIDs = Object.keys(userData.topTracksData);
         const artistNames = Object.keys(userData.topArtistsData).sort((a, b) => userData.topArtistsData[b].msStreamed - userData.topArtistsData[a].msStreamed).slice(0, TOP_ARTISTS_NUM);
-        console.log(artistNames)
         const payload = {
             username: userData.username,
             trackIDs: trackIDs,
@@ -36,7 +35,6 @@ export const requestSpotifyData = async (userData: Data) => {
         // update data
         const data: SpotifyDataRes = await response.json();
 
-        console.log(data.artistData)
 
         userData.displayName = data.displayName;
         userData.profileImage = data.profileImage;
@@ -60,7 +58,6 @@ export const requestSpotifyData = async (userData: Data) => {
                 top15Artists[artist.name] = artistData;
             }
         }
-        console.log(top15Artists)
     } catch (error) {
         console.error('Error:', error);
     }

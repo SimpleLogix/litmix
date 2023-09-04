@@ -33,10 +33,28 @@
 }
 
 @keyframes breathe {
-    0%, 100% { transform: scale(1) }
-    50% { transform: scale(1.25)}
+
+    0%,
+    100% {
+        transform: scale(1)
+    }
+
+    50% {
+        transform: scale(1.25)
+    }
 }
-  
+
+@keyframes liked {
+    0%,
+    100% {
+        transform: scale(1)
+    }
+
+    50% {
+        transform: scale(2)
+    }
+}
+
 
 .fade-in {
     animation: fadeIn 0.5s ease;
@@ -53,4 +71,9 @@
 
 .breathing {
     animation: breathe 2s 0.25s infinite ease-in;
-  }
+}
+
+.liked {
+    animation: breathe 0.32s ease-in-out;
+    
+}

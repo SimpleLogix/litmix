@@ -14,6 +14,34 @@ function App() {
   // localStorage.clear()
   const data: Data = checkExistingData();
 
+  //? convert top tracks / artists to cards to pass in Discover
+  const trackCards = Object.values(data.topTracksData).map((track) => ({
+    type: "track",
+    ...track,
+  }));
+  const artistCards = Object.values(data.topArtistsData).map((artist) => ({
+    type: "artist",
+    ...artist,
+  }));
+
+  let cards = [];
+  let trackIndex = 0;
+  let artistIndex = 0;
+
+  while (trackIndex < trackCards.length || artistIndex < artistCards.length) {
+    if (trackIndex < trackCards.length) {
+      cards.push(trackCards[trackIndex++]);
+    }
+    if (trackIndex < trackCards.length) {
+      cards.push(trackCards[trackIndex++]);
+    }
+    if (artistIndex < artistCards.length) {
+      cards.push(artistCards[artistIndex++]);
+    }
+  }
+
+  console.log("first render");
+
   return (
     <div className="app">
       <SideFrame
@@ -30,7 +58,7 @@ function App() {
         {page === "Dashboard" ? (
           <Dashboard data={data} />
         ) : (
-          <Discover userData={data} />
+          <Discover userData={data} cards={cards} />
         )}
       </div>
     </div>
