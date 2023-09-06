@@ -1,5 +1,19 @@
 export class MediaControls {
-    constructor(private media: HTMLMediaElement) { }
+    element: HTMLMediaElement;
+    private isLoading: boolean = false;
+
+    constructor(private media: HTMLMediaElement) {
+        this.element = media;
+        this.media.addEventListener('loadeddata', () => {
+            this.isLoading = false;
+        });
+        this.media.addEventListener('error', () => {
+            this.isLoading = false;
+        });
+        this.media.addEventListener('abort', () => {
+            this.isLoading = false;
+        });
+    }
 
     play() {
         this.media.play();
@@ -10,12 +24,20 @@ export class MediaControls {
     }
 
     setSource(url: string) {
+        if (this.isLoading) {
+            return;
+        }
+        this.isLoading = true;
         this.media.src = url;
-        this.media.load(); 
-      }
+        this.media.load();
+    }
+
+    getTime() {
+        return this.media.currentTime;
+    }
 
     on(event: string, callback: Function) {
         this.media.addEventListener(event, () => callback());
     }
-    
+
 }

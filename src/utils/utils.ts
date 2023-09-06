@@ -1,4 +1,4 @@
-import { EMPTY_DATA, ColorMap, DAYS, Data, HeatmapData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy, SpotifyArtistData, Track, MONTHS, GENRES, Artist, Card } from "./globals";
+import { EMPTY_DATA, ColorMap, DAYS, Data, HeatmapData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy, SpotifyArtistData, Track, MONTHS, GENRES, Artist, Card, recsDummy } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -86,7 +86,8 @@ export const generateData = (): Data => {
     data.hourlyData = hourlyDataDummy;
     data.yearlyData = yearlyDataDummy;
     data.topArtistsData = topArtistsDummy;
-    data.years = ["2016", "2018", "2019", "2020", "2023"]
+    data.years = ["2016", "2018", "2019", "2020", "2023"];
+    data.recommendations = recsDummy;
     return data
 }
 

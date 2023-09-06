@@ -16,17 +16,17 @@ function App() {
   const data: Data = checkExistingData();
   const cards = formCards(data);
 
-  //TODO - add media player functionality
   //TODO - add cached tracks functionality
   const audioRef = useRef<HTMLAudioElement>(null);
   const [mediaControls, setMediaControls] = useState<MediaControls | null>(
     null
   );
 
-  //? Last thing added... need to figure out how to connect audio html element to media controls
+  // initialize & set source when component mounts
   useEffect(() => {
-    if (audioRef.current) {
+    if (audioRef.current && data.recommendations.length > 0) {
       const controls = new MediaControls(audioRef.current);
+      controls.setSource(data.recommendations[0].previewUrl!);
       setMediaControls(controls);
     }
   }, []);

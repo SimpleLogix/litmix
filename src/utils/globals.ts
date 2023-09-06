@@ -271,3 +271,18 @@ export const yearlyDataDummy: YearlyDataType = {
   "2021": { year: "2021", streamTime: 700, cumSum: 2150 },
   "2022": { year: "2022", streamTime: 1800, cumSum: 2950 },
 };
+
+export const recsDummy: Track[] = [
+  {
+    id: '',
+    name: 'Song 1',
+    artistName: 'Artist 1',
+    image: '',
+    playCount: 0,
+    msStreamed: 0,
+    discovered: '',
+    genres: [],
+    topTrack: '',
+    previewUrl: ''
+  }
+]

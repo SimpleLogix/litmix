@@ -7,6 +7,7 @@ type Props = {
   playlist: Track[];
   refreshCallback: () => void;
   mediaControls: MediaControls | null;
+  isRefreshing: boolean;
 };
 
 const refreshImg = `${process.env.PUBLIC_URL}/assets/refresh.svg`;
@@ -15,33 +16,54 @@ const playImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/play.svg`;
 const pauseImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/pause.svg`;
 const likeImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/like.svg`;
 const likedImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/liked.svg`;
+const loadingGif = `${process.env.PUBLIC_URL}/assets/loading.gif`;
 
-const NowPlaying = ({ playlist, refreshCallback, mediaControls }: Props) => {
+const NowPlaying = ({
+  playlist,
+  refreshCallback,
+  mediaControls,
+  isRefreshing,
+}: Props) => {
   const [currentTrack, setCurrentTrack] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
+  const [trackTime, setTrackTime] = useState<number>(0);
 
-  //? change source when current track changes
-  //? can set next/prev indx as well and set Source when clicked
-  // useEffect(() => {
-  //   if (mediaControls) {
-  //     mediaControls.setSource(playlist[currentTrack].previewUrl!);
-  //   }
-  // }, [currentTrack]);
+  // update the track time every second
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (mediaControls && isPlaying && playlist.length > 0) {
+        setTrackTime(mediaControls.getTime());
+      }
+    }, 500); // Update every 1 second
+
+    return () => clearInterval(intervalId);
+  }, [mediaControls, isPlaying, playlist]);
 
   //? handlers
   const handlePlay = () => {
+    if (playlist.length === 0) return;
     setIsPlaying(!isPlaying);
     if (isPlaying) mediaControls?.pause();
     else mediaControls?.play();
   };
   const handleNext = () => {
-    if (currentTrack === playlist.length - 1) setCurrentTrack(0);
-    else setCurrentTrack(currentTrack + 1);
+    if (playlist.length === 0) return;
+    const nextIdx = currentTrack === playlist.length - 1 ? 0 : currentTrack + 1;
+    setCurrentTrack(nextIdx);
+    mediaControls?.setSource(playlist[nextIdx].previewUrl!);
+    mediaControls?.play();
+    setIsPlaying(true);
+    setTrackTime(0);
   };
   const handlePrev = () => {
-    if (currentTrack === 0) setCurrentTrack(playlist.length - 1);
-    else setCurrentTrack(currentTrack - 1);
+    if (playlist.length === 0) return;
+    const prevIdx = currentTrack === 0 ? playlist.length - 1 : currentTrack - 1;
+    setCurrentTrack(prevIdx);
+    mediaControls?.setSource(playlist[prevIdx].previewUrl!);
+    mediaControls?.play();
+    setIsPlaying(true);
+    setTrackTime(0);
   };
   const handleAdd = () => {};
   const handleLike = () => {
@@ -57,25 +79,41 @@ const NowPlaying = ({ playlist, refreshCallback, mediaControls }: Props) => {
           className="mp-refresh"
           src={refreshImg}
           alt=""
-          onClick={refreshCallback}
+          onClick={() => {
+            if (isRefreshing) return;
+            mediaControls?.pause();
+            refreshCallback();
+            setIsPlaying(true);
+          }}
         />
 
         <img
           className="mp-icon"
           src={
-            playlist[currentTrack].image
+            playlist.length > 0 && playlist[currentTrack].image && !isRefreshing
               ? playlist[currentTrack].image
               : noAlbumImg
           }
           alt=""
         />
-        <div className="mp-track-name">{playlist[currentTrack].name}</div>
+        <div className="mp-track-name">
+          {isRefreshing || playlist.length === 0 ? (
+            <img src={loadingGif} alt="" />
+          ) : (
+            playlist[currentTrack].name
+          )}
+        </div>
         <div className="mp-artist-name">
-          {playlist[currentTrack].artistName}
+          {isRefreshing || playlist.length === 0
+            ? ""
+            : playlist[currentTrack].artistName}
         </div>
 
         <div className="scrub-bar">
-          <div className="scrub-bar-played"></div>
+          <div
+            className="scrub-bar-played"
+            style={{ width: `${(trackTime / 30) * 100}%` }}
+          ></div>
         </div>
 
         <div className="mp-controls center">

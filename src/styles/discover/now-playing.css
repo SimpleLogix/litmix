@@ -20,6 +20,7 @@
     border-radius: 8px;
     position: relative;
     color: var(--fuel);
+    text-align: center;
 }
 
 .mp-refresh {
@@ -48,6 +49,8 @@
     margin-top: 16px;
     color: var(--bg2);
     letter-spacing: 0.25px;
+    margin-left: 24px;
+    margin-right: 24px;
 }
 
 .scrub-bar {
@@ -62,7 +65,6 @@
 }
 
 .scrub-bar-played {
-    width: 12%;
     height: 100%;
     background-color: var(--green);
 }
@@ -100,6 +102,10 @@
 
 .like {
     transition: transform 0.3s ease-in-out;
+}
+
+.mp-track-name>img {
+    height: 48px;
 }
 
 /* .like,.add{

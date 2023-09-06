@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/discover/discover.css";
 import NowPlaying from "../components/Discover/NowPlaying";
 import Playlist from "../components/Discover/Playlist";
 import TopArtists from "../components/Discover/TopArtistsTracks";
 import { Card, Data } from "../utils/globals";
-import { saveData } from "../utils/utils";
+import { formCards, saveData } from "../utils/utils";
 import { requestRecommendations } from "../utils/RESTCalls";
 import { MediaControls } from "../utils/MediaControls";
 
@@ -20,6 +20,7 @@ const Discover = ({ userData, cards, mediaControls }: Props) => {
     Record<string, string>[]
   >(userData.recommendationSeeds);
   const [cardsState, setCardsState] = useState(cards);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // set selected cards to true
   for (const seed of recommendationSeeds) {
@@ -28,11 +29,19 @@ const Discover = ({ userData, cards, mediaControls }: Props) => {
   }
 
   const handleRefresh = async () => {
-    //TODO- change click input delay
+    if (isRefreshing) return;
+
+    // request new recommendations and save to local storage
     // save seeds order to local storage
+    setIsRefreshing(true);
+    // request new recs
     userData.recommendationSeeds = recommendationSeeds;
     userData.recommendations = await requestRecommendations(userData);
+    setCardsState(formCards(userData));
     saveData(userData);
+    mediaControls?.setSource(userData.recommendations[0].previewUrl!);
+    mediaControls?.play();
+    setIsRefreshing(false);
   };
 
   return (
@@ -49,6 +58,7 @@ const Discover = ({ userData, cards, mediaControls }: Props) => {
           playlist={userData.recommendations}
           refreshCallback={handleRefresh}
           mediaControls={mediaControls}
+          isRefreshing={isRefreshing}
         />
         <Playlist />
       </div>
