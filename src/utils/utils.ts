@@ -1,4 +1,4 @@
-import { EMPTY_DATA, ColorMap, DAYS, Data, HeatmapData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy, SpotifyArtistData, Track, MONTHS, GENRES, Artist } from "./globals";
+import { EMPTY_DATA, ColorMap, DAYS, Data, HeatmapData, WeekdayDataType, heatmapDataType, hourlyDataDummy, topArtistsDummy, yearlyDataDummy, SpotifyArtistData, Track, MONTHS, GENRES, Artist, Card } from "./globals";
 
 // takes a number and returns a human-readable string
 // 18,123,456 => 18.1m
@@ -167,7 +167,7 @@ export const convertToWeekdayDataType = (daysData: Record<string, Record<string,
     return weekdayData;
 }
 
-//* Data Parsing
+//* Local storage
 // fetch data from local storage
 export const checkExistingData = (): Data => {
     return localStorage.getItem("data")
@@ -175,11 +175,12 @@ export const checkExistingData = (): Data => {
         : generateData();
 };
 
-
 export const saveData = (data: Data) => {
     localStorage.setItem("data", JSON.stringify(data));
 }
 
+
+//* Data Parsing
 export const calculateGenreBreakdown = (spotifyArtistData: Record<string, SpotifyArtistData>, userData: Data) => {
     // find the artist and add their msStreamed to the genres
     for (const artist of Object.values(spotifyArtistData)) {
@@ -243,12 +244,7 @@ export const updateTopTrackForArtists = (userData: Data, artistTrackCount: Recor
     const topTracks = Object.values(userData.topTracksData).slice(0, 3).map((track) => ({ track: track.id }));
     const topArtists = Object.values(userData.topArtistsData).slice(0, 2).map((artist) => ({ artist: artist.id }));
 
-    const topTrackIDs = topTracks.map((track) => track.track);
-    const topArtistIDs = topArtists.map((artist) => artist.artist);
-
     userData.recommendationSeeds = [...topTracks, ...topArtists];
-    userData.seedsOrder = [...topTrackIDs, ...topArtistIDs];
-    console.log(userData.seedsOrder)
 };
 
 
@@ -261,3 +257,35 @@ export const getEarliestDate = (heatmap: heatmapDataType, years: string[]): stri
     const day = Object.keys(heatmap[year][month]).sort((a, b) => { return Number(a) - Number(b) })[0];
     return `${MONTHS[parseInt(month)]}. ${day}, ${year}`;
 }
+
+export const formCards = (data: Data) => {
+    const trackCards = Object.values(data.topTracksData).map((track) => ({
+        type: "track",
+        selected: false,
+        ...track,
+
+    }));
+    const artistCards = Object.values(data.topArtistsData).map((artist) => ({
+        type: "artist",
+        selected: false,
+        ...artist,
+    }));
+
+    let cards: Card[] = [];
+    let trackIndex = 0;
+    let artistIndex = 0;
+
+    while (trackIndex < trackCards.length || artistIndex < artistCards.length) {
+        if (trackIndex < trackCards.length) {
+            cards.push(trackCards[trackIndex++]);
+        }
+        if (trackIndex < trackCards.length) {
+            cards.push(trackCards[trackIndex++]);
+        }
+        if (artistIndex < artistCards.length) {
+            cards.push(artistCards[artistIndex++]);
+        }
+    }
+
+    return cards;
+};

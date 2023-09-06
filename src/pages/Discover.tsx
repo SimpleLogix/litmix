@@ -3,51 +3,53 @@ import "../styles/discover/discover.css";
 import NowPlaying from "../components/Discover/NowPlaying";
 import Playlist from "../components/Discover/Playlist";
 import TopArtists from "../components/Discover/TopArtistsTracks";
-import { Data } from "../utils/globals";
+import { Card, Data } from "../utils/globals";
+import { saveData } from "../utils/utils";
+import { requestRecommendations } from "../utils/RESTCalls";
+import { MediaControls } from "../utils/MediaControls";
 
 type Props = {
   userData: Data;
-  cards: {
-    id: string;
-    name: string;
-    artistName: string;
-    image: string;
-    playCount: number;
-    msStreamed: number;
-    discovered: string;
-    genres: string[];
-    topTrack?: string | undefined;
-    previewUrl?: string | undefined;
-    type: string;
-  }[];
+  cards: Card[];
+  mediaControls: MediaControls | null;
 };
 
-const Discover = ({ userData, cards }: Props) => {
-  // convert top tracks / artists to cards to pass in
+const Discover = ({ userData, cards, mediaControls }: Props) => {
+  //? states
+  const [recommendationSeeds, setRecommendationSeeds] = useState<
+    Record<string, string>[]
+  >(userData.recommendationSeeds);
+  const [cardsState, setCardsState] = useState(cards);
 
-  // set the selected cards for seeding
-  const [selectedCards, setSelectedCards] = useState<Record<string, boolean>>(
-    cards.reduce((acc, item) => ({ ...acc, [item.id]: false }), {})
-  );
-
-  for (const seed of userData.seedsOrder) {
-    // console.log(seed, userData.recommendationSeeds[seed]);
-    selectedCards[seed] = true;
+  // set selected cards to true
+  for (const seed of recommendationSeeds) {
+    const id = seed.track || seed.artist;
+    cardsState.find((card) => card.id === id)!.selected = true;
   }
 
-  console.log(selectedCards);
+  const handleRefresh = async () => {
+    //TODO- change click input delay
+    // save seeds order to local storage
+    userData.recommendationSeeds = recommendationSeeds;
+    userData.recommendations = await requestRecommendations(userData);
+    saveData(userData);
+  };
 
   return (
     <div className="discover-root column">
       <TopArtists
         userData={userData}
-        cards={cards}
-        seedsOrder={userData.seedsOrder}
-        selectedCards={selectedCards}
-        setSelectedCards={setSelectedCards}
+        cards={cardsState}
+        setCards={setCardsState}
+        recommendationSeeds={recommendationSeeds}
+        setRecommendationSeeds={setRecommendationSeeds}
       />
       <div className="discover-bottom-container">
-        <NowPlaying playlist={[]} />
+        <NowPlaying
+          playlist={userData.recommendations}
+          refreshCallback={handleRefresh}
+          mediaControls={mediaControls}
+        />
         <Playlist />
       </div>
     </div>

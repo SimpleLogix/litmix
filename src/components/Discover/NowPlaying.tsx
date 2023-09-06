@@ -1,9 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../../styles/discover/now-playing.css";
 import { Track } from "../../utils/globals";
+import { MediaControls } from "../../utils/MediaControls";
 
 type Props = {
   playlist: Track[];
+  refreshCallback: () => void;
+  mediaControls: MediaControls | null;
 };
 
 const refreshImg = `${process.env.PUBLIC_URL}/assets/refresh.svg`;
@@ -13,17 +16,33 @@ const pauseImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/pause.svg`;
 const likeImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/like.svg`;
 const likedImg = `${process.env.PUBLIC_URL}/assets/mediaplayer/liked.svg`;
 
-const NowPlaying = (props: Props) => {
+const NowPlaying = ({ playlist, refreshCallback, mediaControls }: Props) => {
+  const [currentTrack, setCurrentTrack] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  // TODO - add mdedia player functionality
+
+  //? change source when current track changes
+  //? can set next/prev indx as well and set Source when clicked
+  // useEffect(() => {
+  //   if (mediaControls) {
+  //     mediaControls.setSource(playlist[currentTrack].previewUrl!);
+  //   }
+  // }, [currentTrack]);
 
   //? handlers
   const handlePlay = () => {
     setIsPlaying(!isPlaying);
+    if (isPlaying) mediaControls?.pause();
+    else mediaControls?.play();
   };
-  const handleNext = () => {};
-  const handlePrev = () => {};
+  const handleNext = () => {
+    if (currentTrack === playlist.length - 1) setCurrentTrack(0);
+    else setCurrentTrack(currentTrack + 1);
+  };
+  const handlePrev = () => {
+    if (currentTrack === 0) setCurrentTrack(playlist.length - 1);
+    else setCurrentTrack(currentTrack - 1);
+  };
   const handleAdd = () => {};
   const handleLike = () => {
     setIsLiked(!isLiked);
@@ -34,11 +53,26 @@ const NowPlaying = (props: Props) => {
       <h3>Now Playing</h3>
 
       <div className="media-player center column">
-        <img className="mp-refresh" src={refreshImg} alt="" />
+        <img
+          className="mp-refresh"
+          src={refreshImg}
+          alt=""
+          onClick={refreshCallback}
+        />
 
-        <img className="mp-icon" src={noAlbumImg} alt="" />
-        <div className="mp-track-name">Track Name</div>
-        <div className="mp-artist-name">Artist Name</div>
+        <img
+          className="mp-icon"
+          src={
+            playlist[currentTrack].image
+              ? playlist[currentTrack].image
+              : noAlbumImg
+          }
+          alt=""
+        />
+        <div className="mp-track-name">{playlist[currentTrack].name}</div>
+        <div className="mp-artist-name">
+          {playlist[currentTrack].artistName}
+        </div>
 
         <div className="scrub-bar">
           <div className="scrub-bar-played"></div>

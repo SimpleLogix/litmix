@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "./styles/app.css";
 import SideFrame from "./components/SideFrame";
 import Dashboard from "./pages/Dashboard";
 import Discover from "./pages/Discover";
 import { Data } from "./utils/globals";
 import "./styles/animations.css";
-import { checkExistingData } from "./utils/utils";
+import { checkExistingData, formCards } from "./utils/utils";
+import { MediaControls } from "./utils/MediaControls";
 
 function App() {
   const [page, setPage] = useState("Discover");
@@ -13,34 +14,22 @@ function App() {
   //? fetch data from storage if it exists
   // localStorage.clear()
   const data: Data = checkExistingData();
+  const cards = formCards(data);
 
-  //? convert top tracks / artists to cards to pass in Discover
-  const trackCards = Object.values(data.topTracksData).map((track) => ({
-    type: "track",
-    ...track,
-  }));
-  const artistCards = Object.values(data.topArtistsData).map((artist) => ({
-    type: "artist",
-    ...artist,
-  }));
+  //TODO - add media player functionality
+  //TODO - add cached tracks functionality
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [mediaControls, setMediaControls] = useState<MediaControls | null>(
+    null
+  );
 
-  let cards = [];
-  let trackIndex = 0;
-  let artistIndex = 0;
-
-  while (trackIndex < trackCards.length || artistIndex < artistCards.length) {
-    if (trackIndex < trackCards.length) {
-      cards.push(trackCards[trackIndex++]);
+  //? Last thing added... need to figure out how to connect audio html element to media controls
+  useEffect(() => {
+    if (audioRef.current) {
+      const controls = new MediaControls(audioRef.current);
+      setMediaControls(controls);
     }
-    if (trackIndex < trackCards.length) {
-      cards.push(trackCards[trackIndex++]);
-    }
-    if (artistIndex < artistCards.length) {
-      cards.push(artistCards[artistIndex++]);
-    }
-  }
-
-  console.log("first render");
+  }, []);
 
   return (
     <div className="app">
@@ -58,9 +47,15 @@ function App() {
         {page === "Dashboard" ? (
           <Dashboard data={data} />
         ) : (
-          <Discover userData={data} cards={cards} />
+          <Discover
+            userData={data}
+            cards={cards}
+            mediaControls={mediaControls}
+          />
         )}
       </div>
+
+      <audio ref={audioRef}></audio>
     </div>
   );
 }

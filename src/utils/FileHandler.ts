@@ -1,7 +1,7 @@
 import JSZip from 'jszip';
 import { EMPTY_DATA, DAYS, Data, HeatmapData, HourlyData, heatmapDataType, Track, Artist } from './globals';
 import { convertToWeekdayDataType, getEarliestDate, getTopTracks, getUsername, sortYears, updateTopTrackForArtists, uriToID } from './utils';
-import { requestSpotifyData } from './RESTCalls';
+import { requestRecommendations, requestSpotifyData } from './RESTCalls';
 
 type StreamingHistory = {
     // Define the fields based on Spotfy Data 
@@ -168,26 +168,24 @@ export const handleUploadedFile = (file: File, callBack: (heatmap: Data) => void
 
 
                 const userData: Data = {
+                    ...EMPTY_DATA,
                     heatmapData: heatmap,
                     topArtistsData: artistCount,
                     topTracksData: getTopTracks(trackCount), // will be updated in analyzeUserData
                     hourlyData: hourlyData,
                     weekdayData: convertToWeekdayDataType(daysData, totalMsStreamed),
                     years: sortYears(years),
-                    yearlyData: {}, // will be updated in analyzeUserData
-                    displayName: "",
                     joinDate: getEarliestDate(heatmap, years),
                     username: getUsername(userNameCount),
-                    profileImage: "",
-                    genres: {},
-                    recommendationSeeds: [],
-                    seedsOrder: [],
                 };
                 // update the data
                 updateYearlyData(userData); // update the yearly data
                 sortTopArtists(userData.topArtistsData, userData)
+
                 await requestSpotifyData(userData)
                 updateTopTrackForArtists(userData, artistTrackCount, artistCount)
+                const recommendations = await requestRecommendations(userData);
+                userData.recommendations = recommendations;
                 // Call back the data
                 callBack(userData);
             }

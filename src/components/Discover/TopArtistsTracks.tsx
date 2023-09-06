@@ -1,72 +1,69 @@
 import React from "react";
 import "../../styles/discover/top-artists-tracks.css";
-import { Data } from "../../utils/globals";
+import { Card, Data } from "../../utils/globals";
 
 type Props = {
   userData: Data;
-  cards: {
-    type: string;
-    id: string;
-    name: string;
-    artistName: string;
-    image: string;
-    playCount: number;
-    msStreamed: number;
-    discovered: string;
-    genres: string[];
-    topTrack?: string | undefined;
-  }[];
-  seedsOrder: string[];
-  selectedCards: Record<string, boolean>;
-  setSelectedCards: React.Dispatch<
-    React.SetStateAction<Record<string, boolean>>
+  cards: Card[];
+  setCards: React.Dispatch<React.SetStateAction<Card[]>>;
+  recommendationSeeds: Record<string, string>[];
+  setRecommendationSeeds: React.Dispatch<
+    React.SetStateAction<Record<string, string>[]>
   >;
 };
 
 const TopArtistsTracks = ({
   userData,
   cards,
-  selectedCards,
-  seedsOrder,
-  setSelectedCards,
+  setCards,
+  recommendationSeeds,
+  setRecommendationSeeds,
 }: Props) => {
-  const [selectedOrder, setSelectedOrder] = React.useState<string[]>(
-    userData.seedsOrder
-  );
+  const handleCardClick = (selectedCard: Card) => {
+    // if card is already selected, deselect and remove from seeds
+    if (cards.find((card) => card.id === selectedCard.id)!.selected) {
+      // deselect card
+      const newCards = cards.map((card) => {
+        if (card.id === selectedCard.id) card.selected = false;
+        return card;
+      });
+      setCards([...newCards]);
 
-  const handleCardClick = (id: string) => {
-    setSelectedCards((prevSelected) => {
-      const newSelected = { ...prevSelected };
-      let newOrder = [...selectedOrder];
+      // remove from seeds
+      const newSeeds = recommendationSeeds.filter((seed) => {
+        return (
+          seed.track !== selectedCard.id && seed.artist !== selectedCard.id
+        );
+      });
+      setRecommendationSeeds([...newSeeds]);
+      return;
+    }
 
-      if (newSelected[id]) {
-        // Deselect
-        newSelected[id] = false;
-        newOrder = newOrder.filter((itemId) => itemId !== id);
-      } else {
-        // Select
-        newSelected[id] = true;
-        newOrder.push(id);
+    // if card is not selected, select and add to seeds
+    let removedSeed;
+    if (recommendationSeeds.length >= 5) {
+      removedSeed = recommendationSeeds.shift();
+    }
+    recommendationSeeds.push({ [selectedCard.type]: selectedCard.id });
+    setRecommendationSeeds([...recommendationSeeds]);
 
-        if (newOrder.length > 5) {
-          // Deselect the first selected item
-          const firstSelected = newOrder[0];
-          newSelected[firstSelected] = false;
-          newOrder = newOrder.slice(1);
-        }
-      }
-
-      setSelectedOrder(newOrder);
-      return newSelected;
+    //update cards to selected
+    const newCards = cards.map((card) => {
+      if (card.id === selectedCard.id) card.selected = true;
+      return card;
     });
+    if (removedSeed) {
+      const removedID = removedSeed.track || removedSeed.artist;
+      newCards.find((card) => card.id === removedID)!.selected = false;
+    }
+
+    setCards([...newCards]);
   };
 
   return (
     <div className="top-artists-tracks column">
       <div className="center top-header">
         <h3>Top Tracks & Artists</h3>
-        {/* <span> Top 50</span>
-        <img src={`${process.env.PUBLIC_URL}/assets/info.svg`} alt="" /> */}
       </div>
       <div className="artists-row">
         {cards.map((item, i) => (
@@ -76,8 +73,8 @@ const TopArtistsTracks = ({
               item.type === "track"
                 ? "center column track-card-wrapper"
                 : "artist-card-wrapper center column"
-            } ${selectedCards[item.id] ? "selected-card" : ""}`}
-            onClick={() => handleCardClick(item.id)}
+            } ${item.selected ? "selected-card" : ""}`}
+            onClick={() => handleCardClick(item)}
           >
             <img
               src={

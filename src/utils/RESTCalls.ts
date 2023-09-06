@@ -1,8 +1,9 @@
-import { Artist, Data, SpotifyArtistData, SpotifyTrackData, TOP_ARTISTS_NUM } from "./globals";
+import { Artist, Data, SpotifyArtistData, SpotifyTrackData, TOP_ARTISTS_NUM, Track } from "./globals";
 import { calculateGenreBreakdown } from "./utils";
 
 const baseURL = "https://us-central1-lit-mix.cloudfunctions.net"
 const dataEndpoint = "/getData"
+const recsEndpoint = "/getRecs"
 
 interface SpotifyDataRes {
     displayName: string;
@@ -62,3 +63,57 @@ export const requestSpotifyData = async (userData: Data) => {
         console.error('Error:', error);
     }
 };
+
+
+export const requestRecommendations = async (userData: Data): Promise<Track[]> => {
+    const recs: Track[] = [];
+    // separate track and artist seeds
+    const trackSeeds = [];
+    const artistSeeds = [];
+    for (const seed of userData.recommendationSeeds) {
+        if (seed.track) {
+            trackSeeds.push(seed.track);
+        } else {
+            artistSeeds.push(seed.artist);
+        }
+    }
+    if (trackSeeds.length > 0 && artistSeeds.length > 0) {
+        try {
+            const payload = {
+                seed_tracks: trackSeeds,
+                seed_artists: artistSeeds,
+            };
+
+            const url = `${baseURL}${recsEndpoint}`;
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            const json = await response.json();
+            const tracks: any[] = json.tracks;
+            for (const track of tracks) {
+                if (track.preview_url) {
+                    recs.push({
+                        id: track.id,
+                        name: track.name,
+                        artistName: track.artists[0].name,
+                        image: track.album.images[0].url,
+                        playCount: 0,
+                        msStreamed: 0,
+                        discovered: "",
+                        genres: [],
+                        previewUrl: track.preview_url,
+                    })
+                }
+            }
+        }
+        catch (error) {
+            console.error('Error:', error);
+        }
+    }
+    return recs;
+}

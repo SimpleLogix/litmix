@@ -26,11 +26,12 @@ interface SpotifyDataRes {
 }
 
 // initlize app
-const app = express();
-app.use(bodyParser.json());
-app.use(cors({ origin: true }));
+const getDataApp = express();
+getDataApp.use(bodyParser.json());
+getDataApp.use(cors({ origin: true }));
 
-app.post('/', async (req, res) => {
+
+getDataApp.post('/', async (req, res) => {
 
 
   const config = functions.config().spotify;
@@ -181,5 +182,70 @@ app.post('/', async (req, res) => {
 });
 
 
+
+
+
 // Expose Express API as a single Cloud Function
-exports.getData = functions.https.onRequest(app);
+exports.getData = functions.https.onRequest(getDataApp);
+
+
+//! GET RECS
+
+const getRecsApp = express();
+getRecsApp.use(bodyParser.json());
+getRecsApp.use(cors({ origin: true }));
+
+getRecsApp.post('/', async (req, res) => {
+
+  const config = functions.config().spotify;
+  if (!config || !config.client_id || !config.client_secret) {
+    res.status(500).send("Spotify config missing");
+    return;
+  }
+
+  // Retrieve the client ID and secret from the Firebase config
+  const { client_id: SPOTIFY_CLIENT_ID, client_secret: SPOTIFY_CLIENT_SECRET } = config;
+  const base64Credentials = Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64');
+
+  const seed_tracks = req.body.seed_tracks || [];
+  const seed_artists = req.body.seed_artists || [];
+
+  if (seed_tracks.length > 0 && seed_artists.length > 0) {
+    try {
+      const tokenResponse = await fetch('https://accounts.spotify.com/api/token', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${base64Credentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'grant_type=client_credentials'
+      });
+      const tokenData = await tokenResponse.json();
+      const accessToken = tokenData.access_token;
+      const header = {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      }
+      console.log(header)
+
+      const recsResponse = await fetch(`https://api.spotify.com/v1/recommendations?limit=50&seed_artists=${seed_artists.join("%2C")}&seed_tracks=${seed_tracks.join("%2C")}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`
+        }
+      });
+
+      const json = await recsResponse.json();
+      // return data
+      res.status(200).send(json);
+    }
+    catch (error) {
+      console.error(`An error occurred: ${error}`);
+      res.status(500).send(`An error occurred\n${error}`);
+      return;
+    }
+  }
+
+});
+
+exports.getRecs = functions.https.onRequest(getRecsApp);

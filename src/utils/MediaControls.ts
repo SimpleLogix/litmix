@@ -1,4 +1,4 @@
-export class MediaPlayer {
+export class MediaControls {
     constructor(private media: HTMLMediaElement) { }
 
     play() {
@@ -8,4 +8,14 @@ export class MediaPlayer {
     pause() {
         this.media.pause();
     }
+
+    setSource(url: string) {
+        this.media.src = url;
+        this.media.load(); 
+      }
+
+    on(event: string, callback: Function) {
+        this.media.addEventListener(event, () => callback());
+    }
+    
 }

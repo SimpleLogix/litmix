@@ -12,7 +12,7 @@ export interface Data {
   genres: Record<string, number>;
   joinDate: string;
   recommendationSeeds: Record<string, string>[];
-  seedsOrder: string[];
+  recommendations: Track[];
 }
 
 export interface HeatmapData {
@@ -84,7 +84,7 @@ export const EMPTY_DATA: Data = {
   profileImage: "",
   genres: {},
   recommendationSeeds: [],
-  seedsOrder: [],
+  recommendations: []
 }
 
 export interface SpotifyArtistData {
@@ -99,6 +99,20 @@ export interface SpotifyTrackData {
   name: string;
   artistID: string;
   image: string;
+}
+
+export interface Card {
+  type: string;
+  id: string;
+  name: string;
+  artistName: string;
+  image: string;
+  playCount: number;
+  msStreamed: number;
+  discovered: string;
+  genres: string[];
+  topTrack?: string | undefined;
+  selected: boolean;
 }
 
 export const TOP_ARTISTS_NUM = 15;
