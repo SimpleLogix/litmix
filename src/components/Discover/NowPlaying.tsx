@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../../styles/discover/now-playing.css";
 import { Track } from "../../utils/globals";
 import { MediaControls } from "../../utils/MediaControls";
+import { saveData } from "../../utils/utils";
 
 type Props = {
   playlist: Track[];
   refreshCallback: () => void;
   mediaControls: MediaControls | null;
   isRefreshing: boolean;
+  likeCallback: (trackIdx: number) => void;
 };
 
 const refreshImg = `${process.env.PUBLIC_URL}/assets/refresh.svg`;
@@ -23,10 +25,10 @@ const NowPlaying = ({
   refreshCallback,
   mediaControls,
   isRefreshing,
+  likeCallback,
 }: Props) => {
   const [currentTrack, setCurrentTrack] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isLiked, setIsLiked] = useState(false);
   const [trackTime, setTrackTime] = useState<number>(0);
 
   // update the track time every second
@@ -66,9 +68,6 @@ const NowPlaying = ({
     setTrackTime(0);
   };
   const handleAdd = () => {};
-  const handleLike = () => {
-    setIsLiked(!isLiked);
-  };
 
   return (
     <div className="now-playing center column">
@@ -142,10 +141,12 @@ const NowPlaying = ({
             onClick={handleNext}
           />
           <img
-            className={`mp-control like ${isLiked ? "liked" : ""}`}
-            src={isLiked ? likedImg : likeImg}
+            className={`mp-control like ${
+              playlist[currentTrack].isLiked ? "liked" : ""
+            }`}
+            src={playlist[currentTrack].isLiked ? likedImg : likeImg}
             alt=""
-            onClick={handleLike}
+            onClick={() => likeCallback(currentTrack)}
           />
         </div>
       </div>

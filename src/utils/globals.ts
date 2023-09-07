@@ -11,8 +11,9 @@ export interface Data {
   profileImage: string;
   genres: Record<string, number>;
   joinDate: string;
-  recommendationSeeds: Record<string, string>[];
-  recommendations: Track[];
+  recommendationSeeds: Record<string, string>[]; // seeds for recommendations
+  recommendations: Track[]; // recommended tracks 
+  savedTracks: Track[]; // tracks user saved
 }
 
 export interface HeatmapData {
@@ -37,6 +38,7 @@ export interface TopStat {
   genres: string[];
   topTrack?: string;
   previewUrl?: string;
+  isLiked?: boolean;
 }
 
 export interface Track extends TopStat { }
@@ -84,7 +86,8 @@ export const EMPTY_DATA: Data = {
   profileImage: "",
   genres: {},
   recommendationSeeds: [],
-  recommendations: []
+  recommendations: [],
+  savedTracks: []
 }
 
 export interface SpotifyArtistData {

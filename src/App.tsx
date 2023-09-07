@@ -51,6 +51,7 @@ function App() {
             userData={data}
             cards={cards}
             mediaControls={mediaControls}
+            setMediaControls={setMediaControls}
           />
         )}
       </div>

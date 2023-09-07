@@ -90,3 +90,7 @@ html {
     display: none;
     backdrop-filter: blur(0px);
 }
+
+.shadow {
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 30px 90px;
+}

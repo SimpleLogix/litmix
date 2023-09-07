@@ -107,6 +107,7 @@ export const requestRecommendations = async (userData: Data): Promise<Track[]> =
                         discovered: "",
                         genres: [],
                         previewUrl: track.preview_url,
+                        isLiked: false,
                     })
                 }
             }
