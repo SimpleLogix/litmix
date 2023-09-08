@@ -150,6 +150,12 @@ export const convertDate = (date: string): string => {
     return `${MONTHS[dateObj.getMonth()]}. ${dateObj.getFullYear()}`
 }
 
+export const formatMS = (ms: number): string => {
+    const mins = Math.floor(ms / 1000 / 60) % 60;
+    const secs = Math.floor(ms / 1000) % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+}
+
 // Record<string, Record<string, any>> -> WeekdayDataType
 export const convertToWeekdayDataType = (daysData: Record<string, Record<string, any>>, totalMsStreamed: number): WeekdayDataType => {
     let weekdayData: WeekdayDataType = {};
@@ -230,7 +236,6 @@ export const getUsername = (usernames: Record<string, number>): string => {
 export const updateTopTrackForArtists = (userData: Data, artistTrackCount: Record<string, Record<string, number>>, artistCount: Record<string, Artist>) => {
     // Sort artists by msStreamed and take the top 15
     const artistNames = Object.keys(userData.topArtistsData).slice(0, 15);
-    console.log(artistNames)
     for (const artist of artistNames) {
         // Sort tracks for each artist
         const sortedTracks = Object.keys(artistTrackCount[artist]).sort((a, b) => {

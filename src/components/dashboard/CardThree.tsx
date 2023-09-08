@@ -122,7 +122,7 @@ const CardThree = ({ heatmapData, years }: Props) => {
           <div className="mins-super-wrapper">
             <p className="bold-text">{msToHours(selectedDate?.msStreamed)}</p>
             <p className="thin-text">mins</p>
-            <HeatDiff />
+            {/* <HeatDiff /> */}
           </div>
 
           <div className="center column">

@@ -9,7 +9,7 @@ import { checkExistingData, formCards } from "./utils/utils";
 import { MediaControls } from "./utils/MediaControls";
 
 function App() {
-  const [page, setPage] = useState("Discover");
+  const [page, setPage] = useState("Dashboard");
 
   //? fetch data from storage if it exists
   // localStorage.clear()
@@ -51,7 +51,6 @@ function App() {
             userData={data}
             cards={cards}
             mediaControls={mediaControls}
-            setMediaControls={setMediaControls}
           />
         )}
       </div>

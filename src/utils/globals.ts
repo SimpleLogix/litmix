@@ -37,11 +37,14 @@ export interface TopStat {
   discovered: string;
   genres: string[];
   topTrack?: string;
-  previewUrl?: string;
   isLiked?: boolean;
 }
 
-export interface Track extends TopStat { }
+export interface Track extends TopStat {
+  duration?: number;
+  externalUrl?: string;
+  previewUrl?: string;
+}
 export interface Artist extends TopStat { }
 
 export interface HourlyData {

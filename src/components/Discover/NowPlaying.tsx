@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../../styles/discover/now-playing.css";
 import { Track } from "../../utils/globals";
 import { MediaControls } from "../../utils/MediaControls";
-import { saveData } from "../../utils/utils";
 
 type Props = {
   playlist: Track[];
@@ -10,6 +9,14 @@ type Props = {
   mediaControls: MediaControls | null;
   isRefreshing: boolean;
   likeCallback: (trackIdx: number) => void;
+  isPlaying: boolean;
+  setIsPlaying: React.Dispatch<React.SetStateAction<boolean>>;
+  trackTime: number;
+  setTrackTime: React.Dispatch<React.SetStateAction<number>>;
+  resetPlayingIdx: () => void;
+  handleNext: () => void;
+  currentTrack: number;
+  setCurrentTrack: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const refreshImg = `${process.env.PUBLIC_URL}/assets/refresh.svg`;
@@ -26,10 +33,16 @@ const NowPlaying = ({
   mediaControls,
   isRefreshing,
   likeCallback,
+  isPlaying,
+  setIsPlaying,
+  trackTime,
+  setTrackTime,
+  resetPlayingIdx,
+  handleNext,
+  currentTrack,
+  setCurrentTrack,
 }: Props) => {
-  const [currentTrack, setCurrentTrack] = useState<number>(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [trackTime, setTrackTime] = useState<number>(0);
+  const [isShuffle, setIsShuffle] = useState<boolean>(false);
 
   // update the track time every second
   useEffect(() => {
@@ -37,27 +50,24 @@ const NowPlaying = ({
       if (mediaControls && isPlaying && playlist.length > 0) {
         setTrackTime(mediaControls.getTime());
       }
-    }, 500); // Update every 1 second
+    }, 50); // Update every 1 second
 
     return () => clearInterval(intervalId);
   }, [mediaControls, isPlaying, playlist]);
 
   //? handlers
-  const handlePlay = () => {
+  // now playing handlers
+  const handleNowPlayingPlay = (trackIdx: number) => {
     if (playlist.length === 0) return;
     setIsPlaying(!isPlaying);
+    if (mediaControls?.element.src !== playlist[trackIdx].previewUrl) {
+      mediaControls?.setSource(playlist[trackIdx].previewUrl!);
+    }
     if (isPlaying) mediaControls?.pause();
     else mediaControls?.play();
+    resetPlayingIdx();
   };
-  const handleNext = () => {
-    if (playlist.length === 0) return;
-    const nextIdx = currentTrack === playlist.length - 1 ? 0 : currentTrack + 1;
-    setCurrentTrack(nextIdx);
-    mediaControls?.setSource(playlist[nextIdx].previewUrl!);
-    mediaControls?.play();
-    setIsPlaying(true);
-    setTrackTime(0);
-  };
+
   const handlePrev = () => {
     if (playlist.length === 0) return;
     const prevIdx = currentTrack === 0 ? playlist.length - 1 : currentTrack - 1;
@@ -66,8 +76,8 @@ const NowPlaying = ({
     mediaControls?.play();
     setIsPlaying(true);
     setTrackTime(0);
+    resetPlayingIdx();
   };
-  const handleAdd = () => {};
 
   return (
     <div className="now-playing center column">
@@ -111,16 +121,16 @@ const NowPlaying = ({
         <div className="scrub-bar">
           <div
             className="scrub-bar-played"
-            style={{ width: `${(trackTime / 30) * 100}%` }}
+            style={{ width: `${Math.round((trackTime / 30) * 100) + 1}%` }}
           ></div>
         </div>
 
         <div className="mp-controls center">
           <img
-            className="mp-control add"
-            src={`${process.env.PUBLIC_URL}/assets/mediaplayer/add.svg`}
+            className={`mp-control add ${isShuffle ? "shuffle" : ""}`}
+            src={`${process.env.PUBLIC_URL}/assets/mediaplayer/shuffle.svg`}
             alt=""
-            onClick={handleAdd}
+            onClick={() => setIsShuffle(!isShuffle)}
           />
           <img
             className="mp-control prev"
@@ -132,19 +142,30 @@ const NowPlaying = ({
             className={`mp-control center ${isPlaying ? "pause" : "play"}`}
             src={isPlaying ? pauseImg : playImg}
             alt=""
-            onClick={handlePlay}
+            onClick={() => handleNowPlayingPlay(currentTrack)}
           />
           <img
             className="mp-control next"
             src={`${process.env.PUBLIC_URL}/assets/mediaplayer/next.svg`}
             alt=""
-            onClick={handleNext}
+            onClick={() => {
+              const nextIdx =
+                currentTrack === playlist.length - 1 ? 0 : currentTrack + 1;
+              handleNext();
+              setCurrentTrack(nextIdx);
+            }}
           />
           <img
             className={`mp-control like ${
-              playlist[currentTrack].isLiked ? "liked" : ""
+              playlist.length > 0 && playlist[currentTrack].isLiked
+                ? "liked"
+                : ""
             }`}
-            src={playlist[currentTrack].isLiked ? likedImg : likeImg}
+            src={
+              playlist.length > 0 && playlist[currentTrack].isLiked
+                ? likedImg
+                : likeImg
+            }
             alt=""
             onClick={() => likeCallback(currentTrack)}
           />

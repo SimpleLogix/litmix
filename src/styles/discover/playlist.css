@@ -9,6 +9,7 @@
     height: 80%;
     gap: 4px;
     overflow-y: scroll;
+    overflow-x: hidden;
     scrollbar-color: #888 transparent;
     scrollbar-width: thin;
 }
@@ -24,9 +25,10 @@
     border: 1px solid var(--ice-opaque);
     border-radius: 8px;
     margin-bottom: 8px;
-    justify-content: flex-start;
+    justify-content: space-between;
     padding-left: 4px;
     padding-right: 8px;
+    color: var(--ice);
 }
 
 .playlist-item-image {
@@ -36,22 +38,20 @@
 }
 
 .playlist-item-play {
-    height: 48px;
-    width: 48px;
+    height: 40px;
+    width: 40px;
     margin-right: 16px;
     margin-left: 4px;
-    border: 3px solid var(--ice-opaque);
     border-radius: 50%;
     cursor: pointer;
-
 }
 
 .playlist-item-play>img {
-    width: 24px;
-    height: 24px;
-    margin-left: 4px;
+    width: 22px;
+    height: 22px;
     opacity: 0.5;
 }
+
 
 .playlist-item-track-name {
     font-size: 16px;
@@ -68,13 +68,11 @@
 }
 
 .playlist-item-track-duration {
-
     text-overflow: ellipsis;
 }
 
 .playlist-clear-button {
     justify-self: center;
-    border: 1px solid white;
     border-radius: 8px;
     padding: 8px;
     margin: 0 45%;
@@ -101,3 +99,37 @@
 .playlist-container::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+.playlist-item-export-wrapper {
+    width: 64px;
+    height: 64px;
+    opacity: 0.8;
+}
+
+.playlist-item-export {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
+
+.circular-chart {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .circle-bg {
+    fill: none;
+    stroke: var(--fuel-opaque);
+    stroke-width: 4;
+  }
+  
+  .circle {
+    fill: none;
+    stroke: var(--green-opaque);
+    stroke-width: 4;
+    stroke-linecap: round;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+  

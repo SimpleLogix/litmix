@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/side.css";
 
 type Props = {
@@ -31,13 +31,24 @@ const UserIcon = ({ imgUrl }: { imgUrl: string }) => (
 );
 
 const SideFrame = ({ page, setPage, displayName, joinDate, imgUrl }: Props) => {
+  const [isShaking, setIsShaking] = useState(false);
+  const [shakeKey, setShakeKey] = useState(0);
+
   // Creates a menu item with the given name
   const MenuItem = ({ name }: { name: string }) => (
     <div
+      key={name === "Discover" ? shakeKey : undefined}
       className={`menu-item-container ${
-        page === name ? "menu-selected" : ""
-      } center`}
-      onClick={() => setPage(name)}
+        isShaking && name === "Discover" ? "shake" : ""
+      } ${page === name ? "menu-selected" : ""} center`}
+      onClick={() => {
+        if (displayName !== "Username") {
+          setPage(name);
+        } else if (name === "Discover") {
+          setIsShaking(true);
+          setShakeKey((prevKey) => prevKey + 1); // force rerender
+        }
+      }}
     >
       <IconDiv iconName={name.toLowerCase()} />
       <div>{name}</div>

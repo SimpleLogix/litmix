@@ -108,6 +108,8 @@ export const requestRecommendations = async (userData: Data): Promise<Track[]> =
                         genres: [],
                         previewUrl: track.preview_url,
                         isLiked: false,
+                        externalUrl: track.external_urls.spotify,
+                        duration: track.duration_ms,
                     })
                 }
             }
