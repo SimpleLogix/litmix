@@ -43,7 +43,7 @@ It's designed for a straightforward music experience.
 - Various visual stats (graphs & bars)
 
 ### Discover Music
-- Choose from top artists & tracks as seeds
+- Choose from your pool of top artists & tracks as seeds
 - Get continuous recommendations
 - Add tracks to a playlist
 
@@ -99,7 +99,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Walid Harkous- [@github](https://github.com/SimpleLogix) - harkouswalid@gmail.com
 
-Project Link: [Lofi Loft](https://github.com/SimpleLogix/litmix)
+Project Link: [Litmix](https://github.com/SimpleLogix/litmix)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
