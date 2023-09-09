@@ -1,29 +1,103 @@
+<a name="readme-top"></a>
+
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  <a href="https://litmix.web.app">
+    <img src="public/assets/logo.png" alt="Logo" width="320" height="60">
+  </a>
+
+
+  <p align="center">
+    <br />
+  </p>
+
+  
+</div>
+
+
+
+<div align="center">
+
+[![TS][TS]][TS-url]
+[![React][React]][React-url]
+[![Spotify][Spotify]][Spotify-url]
+
+<a href="https://litmix.web.app/">
+    litmix.web.app
+</a>
+    
+</div>
+
 ## About this project
 
-I want to combine all of the Spotify related work I have done into one single web app.
+This web app combines all my Spotify projects. To access, simply upload your Extended Spotify Data. 
+It's designed for a straightforward music exploration.
 
-User will have to connect their Spotify account OR upload their data to get started.
+### Streaming History Analysis
+- Yearly & total stream durations
+- Daily streaming heatmap
+- Top tracks & artists
+- Favorite genres
+- Peak streaming times (hour/day)
+- Various visual stats (graphs & bars)
 
-### **1. User Profile & Preferences:**
+### Discover Music
+- Choose from top artists & tracks as seeds
+- Get continuous recommendations
+- Add tracks to a playlist
 
-- Display the user's Spotify username and the platform used most often.
-- Show a map of countries where the user has streamed content.
-- Preferences like shuffle mode, offline mode, and private sessions.
+## Requesting your Data from Spotify
+To use this web app, you'll need to provide your Extended Spotify Data. Here's how you can request it:
 
-### **2. Listening Habits:**
+**Log in to Spotify**
+> Go to Spotify's Account page.
+> 
+> Sign in with your credentials.
 
-- A calendar heatmap to show the streaming activities on specific dates.
-- Average listening time per day or week.
-- The most common reason for starting and ending tracks (e.g., manual selection, track finished).
+**Navigate to the Privacy Settings**
+> On the left sidebar, click on Privacy Settings.
 
-### **3. Favorite Content:**
+**Request Your Data**
+> Scroll down until you see the Download Your Data section.
+>
+> Click on Request and Spotify will start preparing your data. This might take a few days.
 
-- Top songs, artists, and albums.
-- Favorite podcasts, including episodes and shows.
-- A clickable list of tracks and episodes with Spotify URIs to play them directly.
+**Download Your Data**
+> Once your data is ready, Spotify will send you an email with a download link.
+> 
+> Download the data and keep it safe.
 
-### **4. Trend Analysis:**
+**Upload to the Web App**
+> Return to our web app and upload the downloaded data where prompted.
 
-- Trend of genres over time.
-- Usage pattern over different devices or browsers.
-- How often the user skips tracks and in what context (e.g., playlist, artist's radio).
+<!-- SCREENSHOTS -->
+
+## Screenshots
+<div align="center">
+  
+  <a href="">
+    <img src="public/discover.png" width="840">
+  </a>
+
+  <br/>
+</div>
+
+<!-- CONTACT -->
+
+## Contact
+
+Distributed under the MIT License. See `LICENSE.txt` for more information.
+
+Walid Harkous- [@github](https://github.com/SimpleLogix) - harkouswalid@gmail.com
+
+Project Link: [Lofi Loft](https://github.com/SimpleLogix/Lofi-loft)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+[React]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
+[React-url]: https://react.dev/
+[TS]: https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white
+[TS-url]: https://www.typescriptlang.org/
+[Spotify]: https://img.shields.io/badge/Spotify-1ED760?&style=for-the-badge&logo=spotify&logoColor=white
+[Spotify-url]: https://developer.spotify.com/documentation/web-api
