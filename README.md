@@ -32,10 +32,10 @@
 ## About this project
 
 This web app combines all my Spotify projects. To access, simply upload your Extended Spotify Data. 
-It's designed for a straightforward music exploration.
+It's designed for a straightforward music experience.
 
 ### Streaming History Analysis
-- Yearly & total stream durations
+- Yearly & lifetime stream durations
 - Daily streaming heatmap
 - Top tracks & artists
 - Favorite genres
