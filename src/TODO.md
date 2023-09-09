@@ -1,0 +1,8 @@
+- CSS for half-size widow & mobile
+- Update Pallete / UI Colors
+- Cache Tracks and Automatically update the playlist when rreaching the end of current
+- Dark/Light Mode
+- Clean up dashboard fitment
+- Clean up side frame fitment
+- Add second option to connect to spotify API instead of uploading a file
+- 3rd page for overall stats / overview
