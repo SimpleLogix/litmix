@@ -71,6 +71,8 @@ To use this web app, you'll need to provide your Extended Spotify Data. Here's h
 **Upload to the Web App**
 > Return to our web app and upload the downloaded data where prompted.
 
+
+<br />
 <!-- SCREENSHOTS -->
 
 ## Screenshots
@@ -83,6 +85,12 @@ To use this web app, you'll need to provide your Extended Spotify Data. Here's h
   <br/>
 </div>
 
+<br/>
+
+## Data and Privacy
+
+We take your privacy seriously. All the data you upload is processed right on your own device; it doesn't go anywhere else. The only time the app reaches out to the internet is to fetch additional details like track images or audio files from Spotify, using secure connections. Your data stays yours, always.
+
 <!-- CONTACT -->
 
 ## Contact
@@ -91,7 +99,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 Walid Harkous- [@github](https://github.com/SimpleLogix) - harkouswalid@gmail.com
 
-Project Link: [Lofi Loft](https://github.com/SimpleLogix/Lofi-loft)
+Project Link: [Lofi Loft](https://github.com/SimpleLogix/litmix)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
